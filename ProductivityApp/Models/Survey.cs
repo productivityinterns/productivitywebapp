@@ -1,4 +1,4 @@
-class Survey {
+public class Survey {
     public Field[] fields {set; get;}
     public String user {set; get;}
     public DateTime timeCreated {set; get;}

@@ -1,4 +1,4 @@
-class Destination {
+public class Destination {
     public bool zip {set; get;}
     public String emailAddress {set; get;}
 

@@ -1,4 +1,4 @@
-class Field {
+public class Field {
 
    public String kind {set; get;}
    public String prompt {set; get;}

@@ -1,4 +1,4 @@
-class Form {
+public class Form {
     public String name {set; get;} 
     public String path {set; get;}
     public String kind {set; get;}

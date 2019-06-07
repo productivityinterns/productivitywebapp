@@ -33,4 +33,16 @@ public class Flow {
         newFlow.destinations = template.destinations;
         return newFlow;
     }
+    public bool checkFilter(Filter filter) {
+
+        foreach (Criteria criterion in this.criteria)
+        {   
+            if ( criterion.name == filter.name) {
+                if (criterion.value = filter.value) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -1,16 +1,19 @@
-class Criteria {
-    public String name {set; get;}
-    public String prompt {set; get;}
-    private Answer answer;
+using System;
+using System.Collections.Generic;
 
-    public Answer getAnswer() {
-        return this.answer;
-    }
-    public void setAnswer(String key, String value) {
-        this.answer = new Answer(key,value);
-    }
+public class Criteria {
+    public string name {set; get;}
+    public string prompt {set; get;}
+    public ICollection<Answer> answers { get; set; }
 
-    public Criteria(String name) {
+    //public Answer getAnswer() {
+    //    return this.answers;
+    //}
+    //public void setAnswer(string key, string value) {
+    //    this.answers = new Answer(key,value);
+    //}
+
+    public Criteria(string name) {
         this.name =  name;
         this.prompt = "Default criteria prompt.";
     } 

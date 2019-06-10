@@ -3,7 +3,7 @@
 @{
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     var showBanner = !consentFeature?.CanTrack ?? false;
-    var cookieString = consentFeature?.CreateConsentCookie();
+    var cookiestring = consentFeature?.CreateConsentCookie();
 }
 
 @if (showBanner)
@@ -25,7 +25,7 @@
                 </p>
                 <div class="navbar-right">
                     <a asp-controller="Home" asp-action="Privacy" class="btn btn-info navbar-btn">Learn More</a>
-                    <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">Accept</button>
+                    <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookiestring">Accept</button>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
     <script>
         (function () {
             document.querySelector("#cookieConsent button[data-cookie-string]").addEventListener("click", function (el) {
-                document.cookie = el.target.dataset.cookieString;
+                document.cookie = el.target.dataset.cookiestring;
                 document.querySelector("#cookieConsent").classList.add("hidden");
             }, false);
         })();

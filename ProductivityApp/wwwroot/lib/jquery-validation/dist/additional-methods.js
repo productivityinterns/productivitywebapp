@@ -238,9 +238,9 @@ $.validator.addMethod( "cifES", function( value, element ) {
 	}
 
 	all_sum = even_sum + odd_sum;
-	control_digit = ( 10 - ( all_sum ).toString().substr( -1 ) ).toString();
+	control_digit = ( 10 - ( all_sum ).tostring().substr( -1 ) ).tostring();
 	control_digit = parseInt( control_digit, 10 ) > 9 ? "0" : control_digit;
-	control_letter = "JABCDEFGHI".substr( control_digit, 1 ).toString();
+	control_letter = "JABCDEFGHI".substr( control_digit, 1 ).tostring();
 
 	// Control must be a digit
 	if ( letter.match( /[ABEH]/ ) ) {
@@ -457,9 +457,9 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
  *  }
  */
 $.validator.addMethod( "currency", function( value, element, param ) {
-    var isParamString = typeof param === "string",
-        symbol = isParamString ? param : param[ 0 ],
-        soft = isParamString ? true : param[ 1 ],
+    var isParamstring = typeof param === "string",
+        symbol = isParamstring ? param : param[ 0 ],
+        soft = isParamstring ? true : param[ 1 ],
         regex;
 
     symbol = symbol.replace( /,/g, "" );
@@ -730,7 +730,7 @@ $.validator.addMethod( "nieES", function( value, element ) {
 		letter = value.substr( value.length - 1 ).toUpperCase(),
 		number;
 
-	value = value.toString().toUpperCase();
+	value = value.tostring().toUpperCase();
 
 	// Quick format test
 	if ( value.length > 10 || value.length < 9 || !nieRegEx.test( value ) ) {

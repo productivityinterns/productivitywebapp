@@ -1,22 +1,11 @@
-class Filter{
-    public String name {set; get;}
-    public Object value {set; get;}
+using System;
+public class Filter{
+    public string name {set; get;}
+    public string value {set; get;}
 
-    public Filter(String name, Object value) {
+    public Filter(string name, string value) {
         this.name = name;
         this.value = value;
     }
 
-    public bool checkFilter(Critersia[] criteriaArray) {
-        foreach (Criteria criterion in criteriaArray)
-        {   
-            if ( criterion.name == this.name) {
-                Answer temp = criterion.answer;
-                if (criterion.value = this.value) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

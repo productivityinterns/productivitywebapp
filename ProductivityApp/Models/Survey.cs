@@ -1,10 +1,14 @@
-class Survey {
+using System;
+public class Survey {
     public Field[] fields {set; get;}
-    public String user {set; get;}
+    public string user {set; get;}
     public DateTime timeCreated {set; get;}
-    public String comment{set; get;}
+    public string comment{set; get;}
+    public Survey()
+    {
 
-    public Survey(String user) {
+    }
+    public Survey(string user) {
         this.user = user;
         this.timeCreated = DateTime.Now; //Date time in local time, maybe standardize in future
     }

@@ -10,11 +10,48 @@ namespace ProductivityApp.Controllers
 {
     public class FlowController : Controller
     {
+        private Database database;
+        public FlowController()
+        {
+            database = new Database();
+        }
         public IActionResult Index()
         {
-            var database = new Database();
+        
             var templates = database.GetTemplates();
             return View(templates);
+        }
+
+        [HttpGet]
+        public IActionResult Fill(string id)
+        {
+           // var existingFlow = database.GetTemplates().Where(t=>t.name == id).FirstOrDefault();
+            var existingFlow = database.GetTemplates().FirstOrDefault();
+            if(existingFlow == null)
+            {
+                return NotFound();
+            }
+            return View(existingFlow);
+        }
+
+        [HttpPost]
+        public IActionResult Fill(Flow flow)
+        {
+            database.SaveFlow(flow);
+            return RedirectToAction("Index");
+        }
+        //initialize takes a template identified by name as specified in id, and creates a new flow based 
+        // on that template.
+        public IActionResult Initialize(string id)
+        {
+            var existingTemplate = database.GetTemplates().Where(t=>t.name == id).FirstOrDefault();
+            if(existingTemplate == null)
+            {
+                return NotFound();
+            }
+
+            Flow newFlow = database.InitializeTemplate(existingTemplate);
+            return RedirectToAction($"fill/{newFlow.Id}");
         }
         public IActionResult Survey()
         {

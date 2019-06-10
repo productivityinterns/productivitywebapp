@@ -7,6 +7,16 @@ namespace ProductivityApp.Models
 {
     public class Database
     {
+        public Flow InitializeTemplate(Flow template)
+        {//TODO: Copy all the values from teh template, into a new flow
+            
+            return template;
+        }
+
+        public void SaveFlow(Flow flow)
+        {
+            //TODO: Save something here!
+        }
         public List<Flow> GetTemplates()
         {//make a sample flow
             Flow flow1 = new Flow{
@@ -14,10 +24,39 @@ namespace ProductivityApp.Models
               Description = "To buy things.",
               inputSurvey = new Survey
               {
-                
+                fields = new List<Field> {
+                     new Field(Field.Kinds.String,"firstname","Please enter your first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter your last name",null),
+                    
+                }
               },
               assignments = {},
-              criteria = {},
+              criteria = new List<Criteria> {
+                  new Criteria{
+                       prompt = "Credit Card?",
+                       Category = "card",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                           new Answer("iunno","iunno")
+
+                       }
+                       
+                  },
+                  new Criteria{
+                       prompt = "Greater Than 100?",
+                       Category = "gr100",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                           new Answer("Unknown","unknown")
+
+                       }
+                       
+                  }
+              },
               destinations = {}
       
             };
@@ -29,7 +68,7 @@ namespace ProductivityApp.Models
                 
               },
               assignments = {},
-              criteria = {},
+              criteria = new List<Criteria>(),
               destinations = {}
       
             };

@@ -1,0 +1,50 @@
+@model Flow
+<div class="container">
+    <form method="POST"> 
+    <div class="row">
+        <h1>Filling Flow: @Model.name</h1>
+    </div>
+    @{int criteriaIndex = 0;}
+    @foreach(Criteria criteria in Model.criteria)
+    {
+        string catName = $"criteria[{criteriaIndex}].Category";
+        <input type="hidden" name="@catName" value="@criteria.Category">
+<div class="row">
+        <h4>@criteria.prompt</h4>
+        @for(int answerIndex = 0; answerIndex <  criteria.answers.Count(); answerIndex++)
+        {
+            var answerDisplay = criteria.answers[answerIndex].Text;
+            var value =  criteria.answers[answerIndex].value;
+            string radioName = $"criteria[{criteriaIndex}].SelectedValue";
+            <input type="radio" name='@radioName' value='@value'>@answerDisplay<br>
+
+        }
+    </div>
+    criteriaIndex++;
+    }
+    
+    <hr>
+    <div class="row">
+        <h4>@Model.name details</h4>
+        @for(int fieldIndex = 0;fieldIndex < @Model.inputSurvey.fields.Count();fieldIndex++)
+        {
+            var field = Model.inputSurvey.fields[fieldIndex];
+            string nameOfId = $"inputSurvey.fields[{fieldIndex}].Id";
+            string nameOfAnswer = $"inputSurvey.fields[{fieldIndex}].answer";
+            @field.prompt 
+            <br>
+            <input type="hidden" name="@nameOfId" value="@field.id" />
+            <input type="text" name="@nameOfAnswer"  value="@field.answer" />
+            <br>
+        }
+          
+       
+        <br>
+        <h4>Comments:</h4>
+        
+            <textarea rows="10" cols="50"></textarea>
+        
+        <button name="generateBtn"  type="submit">Generate</button>
+    </div>
+    </form>
+</div>

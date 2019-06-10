@@ -6,10 +6,11 @@ public class Flow {
   
     //Fields:: Setters and getters
     public string name {set; get;}
+    public string Description {get;set;}
     public Survey inputSurvey {set; get;}
     public Assignment[] assignments {set; get;}
-    private Criteria[] criteria {set; get;}
-    private Destination[] destinations {set; get;}
+    public Criteria[] criteria {set; get;}
+    public Destination[] destinations {set; get;}
 
     //Constructor
     public Flow() {

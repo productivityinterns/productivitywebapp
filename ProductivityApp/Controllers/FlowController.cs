@@ -12,7 +12,9 @@ namespace ProductivityApp.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var database = new Database();
+            var templates = database.GetTemplates();
+            return View(templates);
         }
         public IActionResult Survey()
         {

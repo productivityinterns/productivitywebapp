@@ -13,7 +13,7 @@ namespace ProductivityApp.Controllers
         public IActionResult Index()
         {
             Database db = new Database();
-            var flows = db.GetFlows();
+            var flows = db.GetTemplates();
             return View(flows);
         }
         /// <summary>
@@ -34,7 +34,7 @@ namespace ProductivityApp.Controllers
 
             */
             Database db = new Database();
-            var flows = db.GetFlows();
+            var flows = db.GetTemplates();
             return View(flows);
         }
 

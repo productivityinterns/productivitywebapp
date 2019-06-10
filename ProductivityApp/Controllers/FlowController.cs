@@ -8,7 +8,7 @@ using ProductivityApp.Models;
 
 namespace ProductivityApp.Controllers
 {
-    public class HomeController : Controller
+    public class FlowController : Controller
     {
         public IActionResult Flows()
         {

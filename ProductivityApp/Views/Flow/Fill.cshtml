@@ -32,8 +32,8 @@
             string nameOfId = $"inputSurvey.fields[{fieldIndex}].Id";
             string nameOfAnswer = $"inputSurvey.fields[{fieldIndex}].answer";
             @field.prompt 
-            <br>
-            <input type="hidden" name="@nameOfId" value="@field.id" />
+            <br>            
+            <input type="hidden" name="@nameOfId" value="@field.Id" />
             <input type="text" name="@nameOfAnswer"  value="@field.answer" />
             <br>
         }

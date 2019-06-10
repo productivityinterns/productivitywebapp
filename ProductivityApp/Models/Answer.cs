@@ -1,5 +1,10 @@
 using System;
+/// <summary>
+/// An answer is a object that is shown to the user as a possible response to a criteria. 
+/// </summary>
 public class Answer {
+
+    public Guid Id { get; set; }
     /// <summary>
     /// The display name of the answer
     /// </summary>
@@ -12,7 +17,10 @@ public class Answer {
     /// True if the user has selected this answer for this criteria
     /// </summary>
    
+    public Answer()
+    {
 
+    }
     
     public Answer(string text, string value) {
         this.Text = text;

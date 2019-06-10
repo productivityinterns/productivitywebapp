@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 public class Survey {
-    public List<Field> fields {set; get;}
+    public Guid Id { get; set; }
+    public IList<Field> fields {set; get;}
     public string user {set; get;}
     public DateTime timeCreated {set; get;}
     public string comment{set; get;}

@@ -10,9 +10,9 @@ public class Flow {
     public string name {set; get;}
     public string Description {get;set;}
     public Survey inputSurvey {set; get;}
-    public Assignment[] assignments {set; get;}
-    public List<Criteria> criteria {set; get;}
-    public Destination[] destinations {set; get;}
+    public IList<Assignment> assignments {set; get;}
+    public IList<Criteria> criteria {set; get;}
+    public IList<Destination> destinations {set; get;}
 
     //Constructor
     public Flow() {

@@ -2,14 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace ProductivityApp.Models
 {
-    public class Database
+    /// <summary>
+    /// The Database implements the dbcontext functionality and exposes specific ease-of-use functions for manipulating flows
+    /// </summary>
+    public class Database : DbContext
     {
+
+
+        private DbSet<Flow> Flows { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        private DbSet<Flow> Templates { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=flows.db");
+        }
+
+        /// <summary>
+        /// Instantiate a new flow object from the source template.
+        /// The new flow object is then saved to a new id, and returned as the function output
+        /// </summary>
+        /// <param name="template">The source template to copy</param>
+        /// <returns>the newly instantiated flow</returns>
         public Flow InitializeTemplate(Flow template)
-        {//TODO: Copy all the values from teh template, into a new flow
-            
+        {
+            var newFlow = template.initializeFlow();
+
             return template;
         }
 
@@ -25,8 +50,8 @@ namespace ProductivityApp.Models
               inputSurvey = new Survey
               {
                 fields = new List<Field> {
-                     new Field(Field.Kinds.String,"firstname","Please enter your first name",null),
-                     new Field(Field.Kinds.String,"lastname","Please enter your last name",null),
+                     new Field(Field.Kinds.String,"Please enter your first name",null),
+                     new Field(Field.Kinds.String,"Please enter your last name",null),
                     
                 }
               },

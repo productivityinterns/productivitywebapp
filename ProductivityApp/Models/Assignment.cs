@@ -1,4 +1,4 @@
-class Assignment {
+public class Assignment {
     private Field inputField;
     private Field outputField;
     private Filter filter;

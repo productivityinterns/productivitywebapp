@@ -1,10 +1,10 @@
 using System;
-class Form {
-    public String name {set; get;} 
-    public String path {set; get;}
-    public String kind {set; get;}
+public class Form {
+    public string name {set; get;} 
+    public string path {set; get;}
+    public string kind {set; get;}
 
-    public Form(String name, String kind, String path) {
+    public Form(string name, string kind, string path) {
         this.name = name;
         this.kind = kind;
         this.path = path;

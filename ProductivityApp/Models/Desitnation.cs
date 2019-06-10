@@ -1,8 +1,9 @@
-class Destination {
+using System;
+public class Destination {
     public bool zip {set; get;}
-    public String emailAddress {set; get;}
+    public string emailAddress {set; get;}
 
-    public Destination(String emailAddress, bool zip) {
+    public Destination(string emailAddress, bool zip) {
         this.zip = zip;
         this.emailAddress = emailAddress;    
     }

@@ -1,3 +1,4 @@
+using System;
 class Criteria {
     public String name {set; get;}
     public String prompt {set; get;}

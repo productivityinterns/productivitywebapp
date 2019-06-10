@@ -7,7 +7,7 @@ class Filter{
         this.value = value;
     }
 
-    public bool checkFilter(Critersia[] criteriaArray) {
+    public bool checkFilter(Criteria[] criteriaArray) {
         foreach (Criteria criterion in criteriaArray)
         {   
             if ( criterion.name == this.name) {

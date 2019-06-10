@@ -12,7 +12,30 @@ namespace ProductivityApp.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            Database db = new Database();
+            var flows = db.GetFlows();
+            return View(flows);
+        }
+        /// <summary>
+        /// Show all the flows
+        /// </summary>
+        /// <param name="survey"></param>
+        /// <returns></returns>
+        public IActionResult Flows()
+        {
+
+            /*
+             * name
+               questions
+               criteria
+
+              input 1 = name
+              question[0].value 
+
+            */
+            Database db = new Database();
+            var flows = db.GetFlows();
+            return View(flows);
         }
 
         public IActionResult About()

@@ -1,3 +1,4 @@
+using ProductivityApp.Models.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +25,63 @@ public class Flow {
     }
     public Flow initializeFlow() {
         //copy templates
-            //Get from database
-        //copy forms
-            //get from paths
-        //return new Flow
-        return new Flow();      //temporary
-    }
+        Flow newFlow = CloneTemplate();
+        //Get from database -- we already have the template from db, so this step probably doesn't need to do anything -MG
 
+        //copy forms 
+        //get form paths
+
+        //return new Flow
+        return newFlow;  //not yet saved to db!
+    }
+    /// <summary>
+    /// Clone a flow by serializing/deserializing and then resetting all Id's to new ids
+    /// </summary>
+    /// <returns></returns>
+    public Flow CloneTemplate()
+    {
+        Flow clonedFlow = CopyHelpers.Clone<Flow>(this);
+        //now set all guid id's to new id's. There are fancy ways to do this, but let's jsut get it done and worry about that another time. -MG
+        //we could for example tag stuff with [JsonIgnore] and then use the jsonserializers. but we might want to actually send the flow id later in json in the webapp
+
+        //we might also consider just using a combination of parent id and unique-to-this-flow but again this is probably aside from trying to get this done ASAP. Once we know the mechanics of it
+        //this gets a lot easier and we can approach it with a "I've done this before" attitude!
+        // ok, i started doing below, and it felt realy wrong, so I will try to do this in reflection. -MG
+        /*
+        clonedFlow.Id = Guid.NewGuid();
+        clonedFlow.inputSurvey.Id = Guid.NewGuid();
+        foreach(var field in clonedFlow.inputSurvey.fields)
+        {
+            field.Id = Guid.NewGuid();
+        }
+        foreach(var assignment in clonedFlow.assignments)
+        {
+            assignment.Id = Guid.NewGuid();
+            assignment.inputField.Id = Guid.NewGuid();
+        }
+        foreach(var criteria in clonedFlow.criteria)
+        {
+            criteria.Id = Guid.NewGuid();
+            foreach(var ca in criteria.answers)
+            {
+                ca.Id = Guid.NewGuid();
+            }
+        }
+        foreach(var dest in clonedFlow.destinations)
+        {
+            dest.Id = Guid.NewGuid();
+        }
+        ....that was way too wordy, see below for inefficient yet way less manual-intensive reflection method
+         */
+
+        clonedFlow.AssignNewGuidIds();
+        //we created the flow right now...
+        clonedFlow.inputSurvey.timeCreated = DateTime.Now;
+        //we'll figure out how to add the user later..
+        clonedFlow.inputSurvey.user = "we don't get the userid right now";
+        return clonedFlow;
+    }
+    //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG
     public Flow copyFromTemplate(Flow template) {
         Flow newFlow = new Flow();
         newFlow.name = template.name;

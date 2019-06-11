@@ -13,17 +13,15 @@ namespace ProductivityApp.Models
     public class Database : DbContext
     {
 
-
+        /// <summary>
+        /// The list of flows (user instances of templates)
+        /// </summary>
         private DbSet<Flow> Flows { get; set; }
         /// <summary>
-        /// 
+        /// The list of templates from which flows are spawned
         /// </summary>
         private DbSet<Flow> Templates { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=flows.db");
-        }
 
         /// <summary>
         /// Instantiate a new flow object from the source template.
@@ -33,75 +31,22 @@ namespace ProductivityApp.Models
         /// <returns>the newly instantiated flow</returns>
         public Flow InitializeTemplate(Flow template)
         {
+            //get a copy of flow from the template
             var newFlow = template.initializeFlow();
-
-            return template;
+            //add the new flow to the tracked database
+            Flows.Add(newFlow);
+            //commit changes, must do this!
+            SaveChanges();
+            return newFlow;
         }
 
         public void SaveFlow(Flow flow)
         {
             //TODO: Save something here!
         }
-        public List<Flow> GetTemplates()
+        public IList<Flow> GetTemplates()
         {//make a sample flow
-            Flow flow1 = new Flow{
-              name = "Purchase",
-              Description = "To buy things.",
-              inputSurvey = new Survey
-              {
-                fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter your first name",null),
-                     new Field(Field.Kinds.String,"Please enter your last name",null),
-                    
-                }
-              },
-              assignments = {},
-              criteria = new List<Criteria> {
-                  new Criteria{
-                       prompt = "Credit Card?",
-                       Category = "card",
-                       answers = new List<Answer>
-                       {
-                           new Answer("Yes","yes"),
-                           new Answer("No","no"),
-                           new Answer("iunno","iunno")
-
-                       }
-                       
-                  },
-                  new Criteria{
-                       prompt = "Greater Than 100?",
-                       Category = "gr100",
-                       answers = new List<Answer>
-                       {
-                           new Answer("Yes","yes"),
-                           new Answer("No","no"),
-                           new Answer("Unknown","unknown")
-
-                       }
-                       
-                  }
-              },
-              destinations = {}
-      
-            };
-             Flow flow2 = new Flow{
-              name = "Hire",
-              Description = "Hire people!",
-              inputSurvey = new Survey
-              {
-                
-              },
-              assignments = {},
-              criteria = new List<Criteria>(),
-              destinations = {}
-      
-            };
-            List<Flow> flows = new List<Flow>();
-            flows.Add(flow1);
-            flows.Add(flow2);
-            
-            return flows;
+            return Templates.ToList();
         }
     }
 }

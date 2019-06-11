@@ -5,9 +5,9 @@ using System;
 public class Assignment {
 
     public Guid Id { get; set; }
-    private Field inputField;
-    private Field outputField;
-    private Filter filter;
+    public Field inputField { get; set; }
+    public Field outputField { get; set; }
+    public Filter filter { get; set; }
 
     public Assignment()
     {

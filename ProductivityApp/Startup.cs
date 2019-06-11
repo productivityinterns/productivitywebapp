@@ -35,7 +35,7 @@ namespace ProductivityApp
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<Database>();
+            services.AddDbContext<Database>(o=>o.UseSqlite("Data Source=flows.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

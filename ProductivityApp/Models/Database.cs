@@ -45,6 +45,9 @@ namespace ProductivityApp.Models
         public void SaveFlow(Flow flow)
         {
             //TODO: Save something here!
+            Flows.Add(flow);
+
+
         }
         /// <summary>
         /// Get all forms in the database that are flagged as a template
@@ -88,6 +91,17 @@ namespace ProductivityApp.Models
                 .ToList();
         }
 
+        public IList<Flow> GetFlows() {
+            var flows = Flows.Where(t=> !t.IsATemplate) ;
+            return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
+                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
+                .Include(t=>t.destinations)
+                .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                .Include(t => t.assignments).ThenInclude(t => t.outputField)
+                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                .ToList();
+
+        }
 
         public List<Flow> GetSampleTemplates()
         {//make a sample flow

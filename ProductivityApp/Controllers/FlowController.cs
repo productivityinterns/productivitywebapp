@@ -17,9 +17,13 @@ namespace ProductivityApp.Controllers
         }
         public IActionResult Index()
         {
-        
             var templates = database.GetTemplates();
-            return View(templates);
+            var filled = database.GetFlows();
+            AllFlows allFlows = new AllFlows() {
+                allTemplates = templates,
+                allFlows = filled,
+            };
+            return View(allFlows);
         }
 
         [HttpGet]

@@ -1,7 +1,9 @@
-@model List<Flow>   
+@model AllFlows 
 <div class="container">
   <h1>Start a new Flow</h1>
-  @foreach(Flow template in Model)
+  @{  var temps = Model.allTemplates;
+      var fills = Model.allFlows;}
+  @foreach(Flow template in temps)
   {
 <div class="row">
   <div class="col-lg-4" style="background-color:darkgrey;height: 75px;width: 100px;margin: 15px;">
@@ -27,31 +29,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Purchase</td>
-            <td>New car</td>
-            <td>Connor R.</td>
-            <td>6/6/2019 4:45pm</td>
-            <td>Completed</td>
-            <td> <a href="#">Edit</a> | <a href="#">Delete</a> | <a href="#">Send</a></td>
-          </tr>
-          <tr>
-            <td>Purchase</td>
-            <td>Lunch</td>
-            <td>Connor R.</td>
-            <td>6/5/2019 9:15am</td>
-            <td>In Progress</td>
-            <td> <a href="#">Edit</a> | <a href="#">Delete</a> | <a href="#">Send</a></td>
-          </tr>
-          <tr>
-            <td>New Hire</td>
-            <td>Hiring Connor</td>
-            <td>John Smith</td>
-            <td>6/4/2019 2:00pm</td>
-            <td>In Progress</td>
-            <td> <a href="#">Edit</a> | <a href="#">Delete</a> | <a href="#">Send</a></td>
-          </tr>
-          </tbody>
+          @foreach(Flow fill in fills)
+         { <tr>
+           <td>@fill.name</td>
+           <td>@fill.Description</td>
+           <td>@fill.Id</td>
+           <td>@fill.inputSurvey.timeCreated</td>
+           <td>Chilling</td>
+           <td> <a href="#">Edit</a> | <a href="#">Delete</a> | <a href="#">Send</a></td>
+           </tr>
+          }
+        </tbody>
       </table>
   </div>
 </div>

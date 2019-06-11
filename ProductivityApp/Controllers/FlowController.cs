@@ -23,10 +23,10 @@ namespace ProductivityApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Fill(string id)
+        public IActionResult Fill(Guid id)
         {
-           // var existingFlow = database.GetTemplates().Where(t=>t.name == id).FirstOrDefault();
-            var existingFlow = database.GetTemplates().FirstOrDefault();
+           
+            var existingFlow = database.GetForms().Where(t=>t.Id == id).FirstOrDefault();
             if(existingFlow == null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace ProductivityApp.Controllers
             }
 
             Flow newFlow = database.InitializeTemplate(existingTemplate);
-            return RedirectToAction($"fill/{newFlow.Id}");
+            return RedirectToAction("fill",new { id = newFlow.Id });
         }
         public IActionResult Survey()
         {

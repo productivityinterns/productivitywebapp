@@ -1,8 +1,19 @@
+using System;
+/// <summary>
+/// An assignment is a particular mapping of a field to a document
+/// </summary>
+[Serializable]
 public class Assignment {
-    private Field inputField;
-    private Field outputField;
-    private Filter filter;
 
+    public Guid Id { get; set; }
+    public Field inputField { get; set; }
+    public Field outputField { get; set; }
+    public Filter filter { get; set; }
+
+    public Assignment()
+    {
+
+    }
     public Assignment(Field input, Field output, Filter filter) {
         this.inputField = input;
         this.outputField = output;

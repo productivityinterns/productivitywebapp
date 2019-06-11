@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Criteria {
+    public Guid Id { get; set; }
     /// <summary>
     /// The name of the group of answers displayed in answers[]
     /// </summary>
     public string Category {set; get;}
     public string prompt {set; get;}
-    public List<Answer> answers { get; set; }
+    /// <summary>
+    /// A list of possible answers to present to the user. Only used to show the user the fillable form
+    /// </summary>
+    public IList<Answer> answers { get; set; }
 
     ///<summary>
     ///The selected value among the answers

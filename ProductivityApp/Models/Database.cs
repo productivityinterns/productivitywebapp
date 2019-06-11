@@ -23,6 +23,10 @@ namespace ProductivityApp.Models
         private DbSet<Flow> Templates { get; set; }
 
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=flows.db");
+        }
         /// <summary>
         /// Instantiate a new flow object from the source template.
         /// The new flow object is then saved to a new id, and returned as the function output
@@ -45,7 +49,16 @@ namespace ProductivityApp.Models
             //TODO: Save something here!
         }
         public IList<Flow> GetTemplates()
-        {//make a sample flow
+        {   //get sample flow if none exist
+            if(Templates.Count() < 2)
+            {
+                foreach(var template in GetSampleTemplates())
+                {
+                    Templates.Add(template);
+
+                }
+                SaveChanges();
+            }
             return Templates.ToList();
         }
 

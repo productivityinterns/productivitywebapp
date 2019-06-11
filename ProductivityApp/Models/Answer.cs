@@ -2,6 +2,7 @@ using System;
 /// <summary>
 /// An answer is a object that is shown to the user as a possible response to a criteria. 
 /// </summary>
+[Serializable]
 public class Answer {
 
     public Guid Id { get; set; }
@@ -24,6 +25,7 @@ public class Answer {
     
     public Answer(string text, string value) {
         this.Text = text;
+        this.Id = Guid.NewGuid();
         this.value = value;
        }
 

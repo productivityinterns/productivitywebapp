@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+[Serializable]
 public class Flow {
   
     //Fields:: Setters and getters
@@ -26,6 +27,11 @@ public class Flow {
     public Flow initializeFlow() {
         //copy templates
         Flow newFlow = CloneTemplate();
+        newFlow.AssignNewGuidIds();
+        //we created the flow right now...
+        newFlow.inputSurvey.timeCreated = DateTime.Now;
+        //we'll figure out how to add the user later..
+        newFlow.inputSurvey.user = "we don't get the userid right now";
         //Get from database -- we already have the template from db, so this step probably doesn't need to do anything -MG
 
         //copy forms 
@@ -71,14 +77,10 @@ public class Flow {
         {
             dest.Id = Guid.NewGuid();
         }
-        ....that was way too wordy, see below for inefficient yet way less manual-intensive reflection method
+        ....that was way too wordy, see body of InitializeFlow for inefficient yet way less manual-intensive reflection method
          */
 
-        clonedFlow.AssignNewGuidIds();
-        //we created the flow right now...
-        clonedFlow.inputSurvey.timeCreated = DateTime.Now;
-        //we'll figure out how to add the user later..
-        clonedFlow.inputSurvey.user = "we don't get the userid right now";
+        
         return clonedFlow;
     }
     //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG

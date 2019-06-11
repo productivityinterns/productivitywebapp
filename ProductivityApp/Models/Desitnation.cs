@@ -1,4 +1,6 @@
 using System;
+
+[Serializable]
 public class Destination {
 
     public Guid Id { get; set; }

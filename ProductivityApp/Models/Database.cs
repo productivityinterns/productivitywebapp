@@ -48,5 +48,75 @@ namespace ProductivityApp.Models
         {//make a sample flow
             return Templates.ToList();
         }
+
+
+        public List<Flow> GetSampleTemplates()
+        {//make a sample flow
+            Flow flow1 = new Flow
+            {
+                name = "Purchase",
+                Id = Guid.NewGuid(),
+                Description = "To buy things.",
+                inputSurvey = new Survey
+                {
+                    Id = Guid.NewGuid(),
+                    fields = new List<Field> {
+                     new Field(Field.Kinds.String,"Please enter your first name",null),
+                     new Field(Field.Kinds.String,"Please enter your last name",null),
+
+                }
+                },
+                assignments = { },
+                criteria = new List<Criteria> {
+                  new Criteria{
+                       Id = Guid.NewGuid(),
+                       prompt = "Credit Card?",
+                       Category = "card",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                           new Answer("iunno","iunno")
+
+                       }
+
+                  },
+                  new Criteria{
+                      Id = Guid.NewGuid(),
+                       prompt = "Greater Than 100?",
+                       Category = "gr100",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                           new Answer("Unknown","unknown")
+
+                       }
+
+                  }
+              },
+                destinations = { }
+
+            };
+            Flow flow2 = new Flow
+            {
+                Id = Guid.NewGuid(),
+                name = "Hire",
+                Description = "Hire people!",
+                inputSurvey = new Survey
+                {
+
+                },
+                assignments = { },
+                criteria = new List<Criteria>(),
+                destinations = { }
+
+            };
+            List<Flow> flows = new List<Flow>();
+            flows.Add(flow1);
+            flows.Add(flow2);
+
+            return flows;
+        }
     }
 }

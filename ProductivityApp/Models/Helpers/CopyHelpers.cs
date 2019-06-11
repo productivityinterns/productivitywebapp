@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,29 +39,46 @@ namespace ProductivityApp.Models.Helpers
         /// Set all Guid properties to new values
         /// 
         /// p.s: Thanks stackoverflow! https://stackoverflow.com/questions/42566721/how-to-find-values-of-nested-object-properties?rq=1
+        /// 
+        /// 
+        /// .... 2 hours later: Maybe not so thanks stackoverflow. But a good starting point. 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static T AssignNewGuidIds<T>(this T obj)
+        public static void AssignNewGuidIds(this object obj)
         {
             //iterate through each property of the object
-            foreach(PropertyInfo property in typeof(T).GetProperties())
+            Type objType = obj.GetType();
+            PropertyInfo[] properties = objType.GetProperties();
+            foreach(PropertyInfo property in properties)
             {
                 //get the value, if it's another class, we will inspect and change that class as well
                 object value = property.GetValue(obj, null);
-                if(value.GetType().IsClass)
+                if(value == null)
                 {
-                    //go through subproperties of the child object
-                    AssignNewGuidIds(value);
-                } //only care about props where the type is guid -- we reset all guid values
+                    continue;
+                }
+                 //only care about props where the type is guid -- we reset all guid values
                 else if (value.GetType() == typeof(Guid))
                 {
                     //set the property to Guid.NewGUid();
                     property.SetValue(obj, Guid.NewGuid());
                 }
-            }
-            return obj;
+                else if(typeof(IEnumerable).IsAssignableFrom(property.PropertyType)) //if the thing we are looking at is a list, do this to each list member, don't enumerate list props, bad juju                    
+                {
+                    IEnumerable enumerable = (IEnumerable)value;
+                    foreach(object child in enumerable)
+                    {
+                        AssignNewGuidIds(child);
+                    }
+                }
+                else if (value.GetType().IsClass && value.GetType() != typeof(String)) //skip strings for subclasses
+                {
+                    //go through subproperties of the child object
+                    AssignNewGuidIds(value);
+                }
+            }            
         }
 
     }

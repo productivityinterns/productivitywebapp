@@ -1,4 +1,6 @@
 using System;
+
+[Serializable]
 public class Form {
     public string name {set; get;} 
     public string path {set; get;}

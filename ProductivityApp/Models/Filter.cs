@@ -1,4 +1,5 @@
 using System;
+[Serializable]
 public class Filter{
     public Guid Id { get; set; }
     public string name {set; get;}

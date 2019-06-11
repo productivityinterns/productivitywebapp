@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+
+
+[Serializable]
 public class Survey {
     public Guid Id { get; set; }
     public IList<Field> fields {set; get;}
@@ -10,9 +13,5 @@ public class Survey {
     {
 
     }
-    public Survey(string user) {
-        this.user = user;
-        this.timeCreated = DateTime.Now; //Date time in local time, maybe standardize in future
-    }
-
+    
 }

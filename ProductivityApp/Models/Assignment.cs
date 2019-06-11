@@ -2,6 +2,7 @@ using System;
 /// <summary>
 /// An assignment is a particular mapping of a field to a document
 /// </summary>
+[Serializable]
 public class Assignment {
 
     public Guid Id { get; set; }

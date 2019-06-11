@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+[Serializable]
 public class Field {
 
     /// <summary>
@@ -32,8 +33,8 @@ public class Field {
         
     }
    public Field(Kinds kind,  string prompt, Filter filter){
-       this.Kind = kind;       
-   
+       this.Kind = kind;
+       Id = Guid.NewGuid();
        this.prompt = prompt;
        this.filter = filter;
    }

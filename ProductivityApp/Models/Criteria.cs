@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Criteria {
     public Guid Id { get; set; }
     /// <summary>

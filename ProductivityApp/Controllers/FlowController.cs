@@ -57,6 +57,11 @@ namespace ProductivityApp.Controllers
             Flow newFlow = database.InitializeTemplate(existingTemplate);
             return RedirectToAction("fill",new { id = newFlow.Id });
         }
+        public IActionResult Remove(Guid id)
+        {
+            database.DeleteFlow(id);
+            return RedirectToAction("index",null);
+        }
         public IActionResult Survey()
         {
             return View();

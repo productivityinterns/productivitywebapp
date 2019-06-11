@@ -56,14 +56,14 @@ namespace ProductivityApp.Models
         {
             Flows.Remove(flow);
         }
-         ///This method removes a flow from the DBSet called Flows by identifying a specified GUID
-        public void DeleteFlow(GUID Id)
+         ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
+        public void DeleteFlow(Guid Id)
         {
             foreach (Flow currentFlow in Flows)
             {
                 if (currentFlow.Id == Id){
-                    Flows.Remove(currentFlow)
-                    SaveChanges();
+                    Flows.Remove(currentFlow);
+                   //THIS BREAKS THE DELETE SaveChanges();
                     return;
                 }
             }
@@ -96,7 +96,6 @@ namespace ProductivityApp.Models
                 foreach(var template in GetSampleTemplates())
                 {
                     Flows.Add(template);
-
                 }
                 SaveChanges();
             }
@@ -111,6 +110,7 @@ namespace ProductivityApp.Models
         }
 
         public IList<Flow> GetFlows() {
+            SaveChanges();
             var flows = Flows.Where(t=> !t.IsATemplate) ;
             return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)

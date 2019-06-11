@@ -17,10 +17,7 @@ namespace ProductivityApp.Models
         /// The list of flows (user instances of templates)
         /// </summary>
         private DbSet<Flow> Flows { get; set; }
-        /// <summary>
-        /// The list of templates from which flows are spawned
-        /// </summary>
-        private DbSet<Flow> Templates { get; set; }
+     
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -37,6 +34,7 @@ namespace ProductivityApp.Models
         {
             //get a copy of flow from the template
             var newFlow = template.initializeFlow();
+            
             //add the new flow to the tracked database
             Flows.Add(newFlow);
             //commit changes, must do this!
@@ -48,25 +46,54 @@ namespace ProductivityApp.Models
         {
             //TODO: Save something here!
         }
+        /// <summary>
+        /// Get all forms in the database that are flagged as a template
+        /// </summary>
+        /// <returns></returns>
+        public IList<Flow> GetForms()
+        {
+            //get all the forms that are not flagged as explicitly a template
+            //and include ALL subfields that exist (well, honestly, ones that I remembered!) -mg
+            var forms = Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+                .Include(t => t.criteria).ThenInclude(c => c.answers)
+                .Include(t => t.destinations)
+                .Include(t => t.assignments).ThenInclude(t => t.inputField)
+                .Include(t => t.assignments).ThenInclude(t => t.outputField)
+                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                .ToList();
+            return forms;
+        }
+        
+        //When we implement GetFlows() we have to filter on !IsATemplate (again, gross hack because we used the same class for both.)
         public IList<Flow> GetTemplates()
-        {   //get sample flow if none exist
-            if(Templates.Count() < 2)
+        {
+            var templates = Flows.Where(t => t.IsATemplate);
+            //get sample flow if none exist
+            if(templates.Count() < 2)
             {
                 foreach(var template in GetSampleTemplates())
                 {
-                    Templates.Add(template);
+                    Flows.Add(template);
 
                 }
                 SaveChanges();
             }
-            return Templates.ToList();
+            //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
+            return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
+                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
+                .Include(t=>t.destinations)
+                .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                .Include(t => t.assignments).ThenInclude(t => t.outputField)
+                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                .ToList();
         }
 
 
         public List<Flow> GetSampleTemplates()
         {//make a sample flow
-            Flow flow1 = new Flow
+            Flow template1 = new Flow
             {
+                IsATemplate = true,
                 name = "Purchase",
                 Id = Guid.NewGuid(),
                 Description = "To buy things.",
@@ -79,7 +106,7 @@ namespace ProductivityApp.Models
 
                 }
                 },
-                assignments = { },
+                assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
                        Id = Guid.NewGuid(),
@@ -108,28 +135,33 @@ namespace ProductivityApp.Models
 
                   }
               },
-                destinations = { }
-
+                destinations = new List<Destination>()
             };
-            Flow flow2 = new Flow
+            Flow template2 = new Flow
             {
+                IsATemplate = true,
                 Id = Guid.NewGuid(),
                 name = "Hire",
                 Description = "Hire people!",
                 inputSurvey = new Survey
                 {
+                    Id = Guid.NewGuid(),
+                    fields = new List<Field> {
+                     new Field(Field.Kinds.String,"Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"Please enter employee last name",null),
 
+                }
                 },
-                assignments = { },
+                assignments = new List<Assignment>(),
                 criteria = new List<Criteria>(),
-                destinations = { }
+                destinations = new List<Destination>()
 
             };
-            List<Flow> flows = new List<Flow>();
-            flows.Add(flow1);
-            flows.Add(flow2);
+            List<Flow> templates = new List<Flow>();
+            templates.Add(template1);
+            templates.Add(template2);
 
-            return flows;
+            return templates;
         }
     }
 }

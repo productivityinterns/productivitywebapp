@@ -145,6 +145,8 @@ namespace ProductivityApp.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<bool>("IsATemplate");
+
                     b.Property<Guid?>("inputSurveyId");
 
                     b.Property<string>("name");
@@ -153,7 +155,7 @@ namespace ProductivityApp.Migrations
 
                     b.HasIndex("inputSurveyId");
 
-                    b.ToTable("Flow");
+                    b.ToTable("Flows");
                 });
 
             modelBuilder.Entity("Survey", b =>

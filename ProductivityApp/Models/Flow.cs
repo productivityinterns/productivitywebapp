@@ -1,9 +1,12 @@
+using ProductivityApp.Models;
 using ProductivityApp.Models.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 [Serializable]
+[Table("Flows")]
 public class Flow {
   
     //Fields:: Setters and getters
@@ -15,6 +18,15 @@ public class Flow {
     public IList<Assignment> assignments {set; get;}
     public IList<Criteria> criteria {set; get;}
     public IList<Destination> destinations {set; get;}
+    /// <summary>
+    /// Ugly hack. If true, we get into templates.
+    /// 
+    /// If false, its a copied flow.
+    /// 
+    /// We really should make separate classes with separate models, lesson learned.
+  
+    /// </summary>
+    public bool IsATemplate { get; set; }
 
     //Constructor
     public Flow() {
@@ -27,13 +39,14 @@ public class Flow {
     public Flow initializeFlow() {
         //copy templates
         Flow newFlow = CloneTemplate();
+        
         newFlow.AssignNewGuidIds();
         //we created the flow right now...
         newFlow.inputSurvey.timeCreated = DateTime.Now;
         //we'll figure out how to add the user later..
         newFlow.inputSurvey.user = "we don't get the userid right now";
         //Get from database -- we already have the template from db, so this step probably doesn't need to do anything -MG
-
+        newFlow.IsATemplate = false;
         //copy forms 
         //get form paths
 

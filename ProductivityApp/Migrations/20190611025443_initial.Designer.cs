@@ -9,7 +9,7 @@ using ProductivityApp.Models;
 namespace ProductivityApp.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20190611015125_initial")]
+    [Migration("20190611025443_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,6 +147,8 @@ namespace ProductivityApp.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<bool>("IsATemplate");
+
                     b.Property<Guid?>("inputSurveyId");
 
                     b.Property<string>("name");
@@ -155,7 +157,7 @@ namespace ProductivityApp.Migrations
 
                     b.HasIndex("inputSurveyId");
 
-                    b.ToTable("Flow");
+                    b.ToTable("Flows");
                 });
 
             modelBuilder.Entity("Survey", b =>

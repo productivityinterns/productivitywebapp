@@ -64,19 +64,20 @@ namespace ProductivityApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Flow",
+                name: "Flows",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    inputSurveyId = table.Column<Guid>(nullable: true)
+                    inputSurveyId = table.Column<Guid>(nullable: true),
+                    IsATemplate = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flow", x => x.Id);
+                    table.PrimaryKey("PK_Flows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Flow_Survey_inputSurveyId",
+                        name: "FK_Flows_Survey_inputSurveyId",
                         column: x => x.inputSurveyId,
                         principalTable: "Survey",
                         principalColumn: "Id",
@@ -97,9 +98,9 @@ namespace ProductivityApp.Migrations
                 {
                     table.PrimaryKey("PK_Assignment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Assignment_Flow_FlowId",
+                        name: "FK_Assignment_Flows_FlowId",
                         column: x => x.FlowId,
-                        principalTable: "Flow",
+                        principalTable: "Flows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -136,9 +137,9 @@ namespace ProductivityApp.Migrations
                 {
                     table.PrimaryKey("PK_Criteria", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Criteria_Flow_FlowId",
+                        name: "FK_Criteria_Flows_FlowId",
                         column: x => x.FlowId,
-                        principalTable: "Flow",
+                        principalTable: "Flows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -156,9 +157,9 @@ namespace ProductivityApp.Migrations
                 {
                     table.PrimaryKey("PK_Destination", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Destination_Flow_FlowId",
+                        name: "FK_Destination_Flows_FlowId",
                         column: x => x.FlowId,
-                        principalTable: "Flow",
+                        principalTable: "Flows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -229,8 +230,8 @@ namespace ProductivityApp.Migrations
                 column: "filterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flow_inputSurveyId",
-                table: "Flow",
+                name: "IX_Flows_inputSurveyId",
+                table: "Flows",
                 column: "inputSurveyId");
         }
 
@@ -252,7 +253,7 @@ namespace ProductivityApp.Migrations
                 name: "Field");
 
             migrationBuilder.DropTable(
-                name: "Flow");
+                name: "Flows");
 
             migrationBuilder.DropTable(
                 name: "Filter");

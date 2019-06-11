@@ -41,13 +41,32 @@ namespace ProductivityApp.Models
             SaveChanges();
             return newFlow;
         }
-
+        ///<summary>
+        ///This method saves a flow to the DBSet called Flows
+        ///</summary>
         public void SaveFlow(Flow flow)
         {
             //TODO: Save something here!
             Flows.Add(flow);
+            SaveChanges();
 
-
+        }
+        ///This method removes a flow from the DBSet called Flows 
+        public void DeleteFlow(Flow flow)
+        {
+            Flows.Remove(flow);
+        }
+         ///This method removes a flow from the DBSet called Flows by identifying a specified GUID
+        public void DeleteFlow(GUID Id)
+        {
+            foreach (Flow currentFlow in Flows)
+            {
+                if (currentFlow.Id == Id){
+                    Flows.Remove(currentFlow)
+                    SaveChanges();
+                    return;
+                }
+            }
         }
         /// <summary>
         /// Get all forms in the database that are flagged as a template

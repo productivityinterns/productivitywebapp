@@ -47,8 +47,12 @@ namespace ProductivityApp.Models
         public void SaveFlow(Flow flow)
         {
             //TODO: Save something here!
-            Flows.Add(flow);
-            SaveChanges();
+            Flows.Find(flow.Id).inputSurvey = flow.inputSurvey;
+            Flows.Find(flow.Id).assignments = flow.assignments;
+            Flows.Find(flow.Id).criteria = flow.criteria;
+            Flows.Find(flow.Id).destinations = flow.destinations;
+        
+            //SaveChanges();
 
         }
         ///This method removes a flow from the DBSet called Flows 

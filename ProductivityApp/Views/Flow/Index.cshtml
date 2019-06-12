@@ -38,7 +38,7 @@
            <td>@fill.Id</td>
            <td>@fill.inputSurvey.timeCreated</td>
            <td>Chilling</td>
-           <td> <a href="#">Edit</a> | <a asp-action="Remove" asp-route-id="@fill.Id" method="post">Delete</a>| <a asp-action="download">Send</a></td>
+           <td> <a asp-action="fill" asp-route-id="@fill.Id">Edit</a> | <a asp-action="Remove" asp-route-id="@fill.Id" method="post">Delete</a>| <a asp-action="download">Send</a></td>
            </tr>
           }
         </tbody>

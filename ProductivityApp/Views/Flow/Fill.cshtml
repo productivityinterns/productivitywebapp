@@ -16,8 +16,12 @@
             var answerDisplay = criteria.answers[answerIndex].Text;
             var value =  criteria.answers[answerIndex].value;
             string radioName = $"criteria[{criteriaIndex}].SelectedValue";
-            <input type="radio" name='@radioName' value='@value'>@answerDisplay<br>
-
+            if (criteria.SelectedValue != null && criteria.SelectedValue == value){
+                <input type="radio" name='@radioName' value='@value' checked>@answerDisplay<br>
+            }
+            else {
+                <input type="radio" name='@radioName' value='@value'>@answerDisplay<br>
+            }
         }
     </div>
     criteriaIndex++;

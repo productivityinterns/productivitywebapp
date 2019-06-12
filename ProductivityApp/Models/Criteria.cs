@@ -25,6 +25,14 @@ public class Criteria {
     //public void setAnswer(string key, string value) {
     //    this.answers = new Answer(key,value);
     //}
+    public void copyCriteriaInto(Criteria destination){
+        destination.Id = this.Id;
+        destination.Category = this.Category;
+        destination.answers = this.answers;
+        destination.prompt = this.prompt;
+        destination.SelectedValue = this.SelectedValue;
+    }
+
     public Criteria()
     {
         

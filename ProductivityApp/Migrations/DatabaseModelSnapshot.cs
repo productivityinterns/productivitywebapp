@@ -14,7 +14,7 @@ namespace ProductivityApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity("Answer", b =>
                 {
@@ -39,23 +39,19 @@ namespace ProductivityApp.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("FlowId");
+                    b.Property<Guid?>("FormId");
 
                     b.Property<Guid?>("filterId");
 
-                    b.Property<Guid?>("inputFieldId");
+                    b.Property<string>("inputField");
 
-                    b.Property<Guid?>("outputFieldId");
+                    b.Property<string>("outputField");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlowId");
+                    b.HasIndex("FormId");
 
                     b.HasIndex("filterId");
-
-                    b.HasIndex("inputFieldId");
-
-                    b.HasIndex("outputFieldId");
 
                     b.ToTable("Assignment");
                 });
@@ -111,6 +107,8 @@ namespace ProductivityApp.Migrations
 
                     b.Property<bool>("remember");
 
+                    b.Property<string>("tag");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SurveyId");
@@ -158,6 +156,26 @@ namespace ProductivityApp.Migrations
                     b.ToTable("Flows");
                 });
 
+            modelBuilder.Entity("Form", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("FlowId");
+
+                    b.Property<string>("fileName");
+
+                    b.Property<string>("kind");
+
+                    b.Property<string>("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlowId");
+
+                    b.ToTable("Form");
+                });
+
             modelBuilder.Entity("Survey", b =>
                 {
                     b.Property<Guid>("Id")
@@ -183,21 +201,13 @@ namespace ProductivityApp.Migrations
 
             modelBuilder.Entity("Assignment", b =>
                 {
-                    b.HasOne("Flow")
+                    b.HasOne("Form")
                         .WithMany("assignments")
-                        .HasForeignKey("FlowId");
+                        .HasForeignKey("FormId");
 
                     b.HasOne("Filter", "filter")
                         .WithMany()
                         .HasForeignKey("filterId");
-
-                    b.HasOne("Field", "inputField")
-                        .WithMany()
-                        .HasForeignKey("inputFieldId");
-
-                    b.HasOne("Field", "outputField")
-                        .WithMany()
-                        .HasForeignKey("outputFieldId");
                 });
 
             modelBuilder.Entity("Criteria", b =>
@@ -222,11 +232,18 @@ namespace ProductivityApp.Migrations
                 {
                     b.HasOne("Destination", "destination")
                         .WithMany()
-                        .HasForeignKey("destinationId").OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("destinationId");
 
                     b.HasOne("Survey", "inputSurvey")
                         .WithMany()
-                        .HasForeignKey("inputSurveyId").OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("inputSurveyId");
+                });
+
+            modelBuilder.Entity("Form", b =>
+                {
+                    b.HasOne("Flow")
+                        .WithMany("forms")
+                        .HasForeignKey("FlowId");
                 });
 #pragma warning restore 612, 618
         }

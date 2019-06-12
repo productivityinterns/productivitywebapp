@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProductivityApp.Migrations
 {
-    public partial class init : Migration
+    public partial class modifyAssignment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,9 +51,10 @@ namespace ProductivityApp.Migrations
                 name: "Field",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
                     Kind = table.Column<int>(nullable: false),
                     prompt = table.Column<string>(nullable: true),
-                    Id = table.Column<Guid>(nullable: false),
+                    tag = table.Column<string>(nullable: true),
                     answer = table.Column<string>(nullable: true),
                     remember = table.Column<bool>(nullable: false),
                     filterId = table.Column<Guid>(nullable: true),
@@ -67,13 +68,13 @@ namespace ProductivityApp.Migrations
                         column: x => x.SurveyId,
                         principalTable: "Survey",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Field_Filter_filterId",
                         column: x => x.filterId,
                         principalTable: "Filter",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,52 +96,13 @@ namespace ProductivityApp.Migrations
                         column: x => x.destinationId,
                         principalTable: "Destination",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Flows_Survey_inputSurveyId",
                         column: x => x.inputSurveyId,
                         principalTable: "Survey",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Assignment",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    inputFieldId = table.Column<Guid>(nullable: true),
-                    outputFieldId = table.Column<Guid>(nullable: true),
-                    filterId = table.Column<Guid>(nullable: true),
-                    FlowId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Assignment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Assignment_Flows_FlowId",
-                        column: x => x.FlowId,
-                        principalTable: "Flows",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Assignment_Filter_filterId",
-                        column: x => x.filterId,
-                        principalTable: "Filter",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Assignment_Field_inputFieldId",
-                        column: x => x.inputFieldId,
-                        principalTable: "Field",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Assignment_Field_outputFieldId",
-                        column: x => x.outputFieldId,
-                        principalTable: "Field",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,7 +123,28 @@ namespace ProductivityApp.Migrations
                         column: x => x.FlowId,
                         principalTable: "Flows",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Form",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    name = table.Column<string>(nullable: true),
+                    fileName = table.Column<string>(nullable: true),
+                    kind = table.Column<string>(nullable: true),
+                    FlowId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Form", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Form_Flows_FlowId",
+                        column: x => x.FlowId,
+                        principalTable: "Flows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,7 +164,34 @@ namespace ProductivityApp.Migrations
                         column: x => x.CriteriaId,
                         principalTable: "Criteria",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Assignment",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    inputField = table.Column<string>(nullable: true),
+                    outputField = table.Column<string>(nullable: true),
+                    filterId = table.Column<Guid>(nullable: true),
+                    FormId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Assignment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Assignment_Form_FormId",
+                        column: x => x.FormId,
+                        principalTable: "Form",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Assignment_Filter_filterId",
+                        column: x => x.filterId,
+                        principalTable: "Filter",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -190,24 +200,14 @@ namespace ProductivityApp.Migrations
                 column: "CriteriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Assignment_FlowId",
+                name: "IX_Assignment_FormId",
                 table: "Assignment",
-                column: "FlowId");
+                column: "FormId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assignment_filterId",
                 table: "Assignment",
                 column: "filterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Assignment_inputFieldId",
-                table: "Assignment",
-                column: "inputFieldId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Assignment_outputFieldId",
-                table: "Assignment",
-                column: "outputFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Criteria_FlowId",
@@ -233,6 +233,11 @@ namespace ProductivityApp.Migrations
                 name: "IX_Flows_inputSurveyId",
                 table: "Flows",
                 column: "inputSurveyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Form_FlowId",
+                table: "Form",
+                column: "FlowId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -244,16 +249,19 @@ namespace ProductivityApp.Migrations
                 name: "Assignment");
 
             migrationBuilder.DropTable(
-                name: "Criteria");
-
-            migrationBuilder.DropTable(
                 name: "Field");
 
             migrationBuilder.DropTable(
-                name: "Flows");
+                name: "Criteria");
+
+            migrationBuilder.DropTable(
+                name: "Form");
 
             migrationBuilder.DropTable(
                 name: "Filter");
+
+            migrationBuilder.DropTable(
+                name: "Flows");
 
             migrationBuilder.DropTable(
                 name: "Destination");

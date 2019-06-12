@@ -9,15 +9,19 @@ using System.Linq;
 [Table("Flows")]
 public class Flow {
   
+        //TODO: We need to add IList<Form> to this class and the database references
+        //RIght now theres nowhere for forms to connect 
+
     //Fields:: Setters and getters
     //unique id for filled flows
     public Guid Id {get;set;}
     public string name {set; get;}
     public string Description {get;set;}
     public Survey inputSurvey {set; get;}
-    public IList<Assignment> assignments {set; get;}
-    public IList<Criteria> criteria {set; get;}
+        public IList<Criteria> criteria {set; get;}
     public Destination destination {set; get;}
+
+    public IList<Form> forms {set; get;}
     /// <summary>
     /// Ugly hack. If true, we get into templates.
     /// 
@@ -101,7 +105,7 @@ public class Flow {
         Flow newFlow = new Flow();
         newFlow.name = template.name;
         newFlow.inputSurvey = template.inputSurvey;
-        newFlow.assignments = template.assignments;
+        //newFlow.assignments = template.assignments;
         newFlow.criteria = template.criteria;
         newFlow.destination = template.destination;
         return newFlow;

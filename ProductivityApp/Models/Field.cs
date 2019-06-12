@@ -21,7 +21,7 @@ public class Field {
     public Kinds Kind {set; get;}
     public string prompt {set; get;}
    
-   
+   public string tag {set; get;}
    public Guid Id {set; get;}  //string for now, change to guid?    
  
    public string answer {set; get;}

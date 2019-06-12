@@ -1,19 +1,20 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class Destination {
 
     public Guid Id { get; set; }
     public bool zip {set; get;}
-    public string emailAddress {set; get;}
+    public string EmailAddresses {set; get;}
 
     public Destination()
     {
 
     }
 
-    public Destination(string emailAddress, bool zip) {
+    public Destination(string emailAddresses, bool zip) {
         this.zip = zip;
-        this.emailAddress = emailAddress;    
+        this.EmailAddresses = emailAddresses;    
     }
 }

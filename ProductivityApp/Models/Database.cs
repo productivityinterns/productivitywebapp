@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using ProductivityApp.Controllers;
 
 namespace ProductivityApp.Models
 {
@@ -23,7 +23,17 @@ namespace ProductivityApp.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=flows.db");
+            
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);  
+            
+            
+        }
+
+
         /// <summary>
         /// Instantiate a new flow object from the source template.
         /// The new flow object is then saved to a new id, and returned as the function output
@@ -41,10 +51,69 @@ namespace ProductivityApp.Models
             SaveChanges();
             return newFlow;
         }
-
-        public void SaveFlow(Flow flow)
+        ///<summary>
+        ///This method saves a flow to the DBSet called Flows
+        ///</summary>
+        public void SaveFlow(FlowController.FillViewModel flow)
         {
-            //TODO: Save something here!
+
+            var existingFlow = Flows
+                .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.criteria)
+                .Include(f=>f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
+
+            if(existingFlow == null)
+            {
+                throw new ArgumentException("The specified flow does not exist.");
+            }
+            //fill in field answers frmo the user
+            foreach(var field in existingFlow.inputSurvey.fields)
+            {
+                var userField = flow.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();                
+                if(userField != null)
+                {
+                    field.answer = userField.answer;
+                }
+                else
+                {
+                    field.answer = "";
+                }
+            }
+            //Fill in criteria from user input
+            foreach(var criteria in existingFlow.criteria)
+            {
+                var userCriteria = flow.criteria.Where(c => c.Category == criteria.Category).FirstOrDefault();
+                if(userCriteria != null)
+                {
+                    criteria.SelectedValue = userCriteria.SelectedValue;
+                }
+                else
+                {
+                    criteria.SelectedValue = null;
+                }
+            }
+            if (flow.destination != null)
+            {
+                existingFlow.destination.EmailAddresses = flow.destination.EmailAddresses;
+                existingFlow.destination.zip = flow.destination.zip;
+            }
+            
+            SaveChanges();
+
+        }
+        ///This method removes a flow from the DBSet called Flows 
+        public void DeleteFlow(Flow flow)
+        {
+            Flows.Remove(flow);
+        }
+         ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
+        public void DeleteFlow(Guid Id)
+        {
+            var flow = Flows.Where(f => f.Id == Id).FirstOrDefault();
+            //flow.criteria = new List<Criteria>();
+            Flows.Remove(flow);
+            SaveChanges();
+            
         }
         /// <summary>
         /// Get all forms in the database that are flagged as a template
@@ -56,7 +125,7 @@ namespace ProductivityApp.Models
             //and include ALL subfields that exist (well, honestly, ones that I remembered!) -mg
             var forms = Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
-                .Include(t => t.destinations)
+                .Include(t => t.destination)
                 .Include(t => t.assignments).ThenInclude(t => t.inputField)
                 .Include(t => t.assignments).ThenInclude(t => t.outputField)
                 .Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -74,20 +143,31 @@ namespace ProductivityApp.Models
                 foreach(var template in GetSampleTemplates())
                 {
                     Flows.Add(template);
-
                 }
                 SaveChanges();
             }
             //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
             return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
-                .Include(t=>t.destinations)
+                .Include(t=>t.destination)
                 .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 .Include(t => t.assignments).ThenInclude(t => t.outputField)
                 .Include(t => t.assignments).ThenInclude(t => t.filter)
                 .ToList();
         }
 
+        public IList<Flow> GetFlows() {
+            SaveChanges();
+            var flows = Flows.Where(t=> !t.IsATemplate) ;
+            return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
+                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
+                .Include(t=>t.destination)
+                .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                .Include(t => t.assignments).ThenInclude(t => t.outputField)
+                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                .ToList();
+
+        }
 
         public List<Flow> GetSampleTemplates()
         {//make a sample flow
@@ -135,7 +215,7 @@ namespace ProductivityApp.Models
 
                   }
               },
-                destinations = new List<Destination>()
+                destination =  new Destination()
             };
             Flow template2 = new Flow
             {
@@ -154,7 +234,7 @@ namespace ProductivityApp.Models
                 },
                 assignments = new List<Assignment>(),
                 criteria = new List<Criteria>(),
-                destinations = new List<Destination>()
+                destination = new Destination()
 
             };
             List<Flow> templates = new List<Flow>();

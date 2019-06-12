@@ -17,9 +17,13 @@ namespace ProductivityApp.Controllers
         }
         public IActionResult Index()
         {
-        
             var templates = database.GetTemplates();
-            return View(templates);
+            var filled = database.GetFlows();
+            AllFlows allFlows = new AllFlows() {
+                allTemplates = templates,
+                allFlows = filled,
+            };
+            return View(allFlows);
         }
 
         [HttpGet]
@@ -34,8 +38,18 @@ namespace ProductivityApp.Controllers
             return View(existingFlow);
         }
 
+        public class FillViewModel
+        {
+            public Guid Id { get; set; }
+         
+            public Survey inputSurvey { set; get; }         
+            public IList<Criteria> criteria { set; get; }
+            public Destination destination { set; get; }
+        }
+
+
         [HttpPost]
-        public IActionResult Fill(Flow flow)
+        public IActionResult Fill(FillViewModel flow)
         {
             database.SaveFlow(flow);
             return RedirectToAction("Index");
@@ -52,6 +66,11 @@ namespace ProductivityApp.Controllers
 
             Flow newFlow = database.InitializeTemplate(existingTemplate);
             return RedirectToAction("fill",new { id = newFlow.Id });
+        }
+        public IActionResult Remove(Guid id)
+        {
+            database.DeleteFlow(id);
+            return RedirectToAction("index",null);
         }
         public IActionResult Survey()
         {

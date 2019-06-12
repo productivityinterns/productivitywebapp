@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 [Serializable]
 public class Criteria {
     public Guid Id { get; set; }
+
+    
     /// <summary>
     /// The name of the group of answers displayed in answers[]
     /// </summary>
@@ -25,6 +29,14 @@ public class Criteria {
     //public void setAnswer(string key, string value) {
     //    this.answers = new Answer(key,value);
     //}
+    public void copyCriteriaInto(Criteria destination){
+        destination.Id = this.Id;
+        destination.Category = this.Category;
+        destination.answers = this.answers;
+        destination.prompt = this.prompt;
+        destination.SelectedValue = this.SelectedValue;
+    }
+
     public Criteria()
     {
         

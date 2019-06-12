@@ -85,15 +85,11 @@ namespace ProductivityApp.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("FlowId");
-
-                    b.Property<string>("emailAddress");
+                    b.Property<string>("EmailAddresses");
 
                     b.Property<bool>("zip");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FlowId");
 
                     b.ToTable("Destination");
                 });
@@ -147,11 +143,15 @@ namespace ProductivityApp.Migrations
 
                     b.Property<bool>("IsATemplate");
 
+                    b.Property<Guid?>("destinationId");
+
                     b.Property<Guid?>("inputSurveyId");
 
                     b.Property<string>("name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("destinationId");
 
                     b.HasIndex("inputSurveyId");
 
@@ -207,13 +207,6 @@ namespace ProductivityApp.Migrations
                         .HasForeignKey("FlowId");
                 });
 
-            modelBuilder.Entity("Destination", b =>
-                {
-                    b.HasOne("Flow")
-                        .WithMany("destinations")
-                        .HasForeignKey("FlowId");
-                });
-
             modelBuilder.Entity("Field", b =>
                 {
                     b.HasOne("Survey")
@@ -227,9 +220,13 @@ namespace ProductivityApp.Migrations
 
             modelBuilder.Entity("Flow", b =>
                 {
+                    b.HasOne("Destination", "destination")
+                        .WithMany()
+                        .HasForeignKey("destinationId").OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Survey", "inputSurvey")
                         .WithMany()
-                        .HasForeignKey("inputSurveyId");
+                        .HasForeignKey("inputSurveyId").OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

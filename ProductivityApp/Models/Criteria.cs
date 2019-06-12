@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 [Serializable]
 public class Criteria {
     public Guid Id { get; set; }
+
+    
     /// <summary>
     /// The name of the group of answers displayed in answers[]
     /// </summary>

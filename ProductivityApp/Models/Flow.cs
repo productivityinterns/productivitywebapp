@@ -17,7 +17,7 @@ public class Flow {
     public Survey inputSurvey {set; get;}
     public IList<Assignment> assignments {set; get;}
     public IList<Criteria> criteria {set; get;}
-    public IList<Destination> destinations {set; get;}
+    public Destination destination {set; get;}
     /// <summary>
     /// Ugly hack. If true, we get into templates.
     /// 
@@ -103,7 +103,7 @@ public class Flow {
         newFlow.inputSurvey = template.inputSurvey;
         newFlow.assignments = template.assignments;
         newFlow.criteria = template.criteria;
-        newFlow.destinations = template.destinations;
+        newFlow.destination = template.destination;
         return newFlow;
     }
     public bool checkFilter(Filter filter) {

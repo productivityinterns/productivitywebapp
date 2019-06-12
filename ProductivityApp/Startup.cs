@@ -51,7 +51,7 @@ namespace ProductivityApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -59,7 +59,7 @@ namespace ProductivityApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Flow}/{action=Index}/{id?}");
             });
         }
     }

@@ -39,10 +39,9 @@ namespace ProductivityApp.Tests
                     Assert.NotEqual(flow.criteria[criteriaIndex].Id, newFlow.criteria[criteriaIndex].Id);
                 }
                 //finally, destinations
-                for (int destinationIndex = 0; destinationIndex < flow.destinations.Count; destinationIndex++)
-                {
-                    Assert.NotEqual(flow.destinations[destinationIndex].Id, newFlow.destinations[destinationIndex].Id);
-                }
+             
+                    Assert.NotEqual(flow.destination.Id, newFlow.destination.Id);
+              
             
 
             }

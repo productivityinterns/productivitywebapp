@@ -38,8 +38,18 @@ namespace ProductivityApp.Controllers
             return View(existingFlow);
         }
 
+        public class FillViewModel
+        {
+            public Guid Id { get; set; }
+         
+            public Survey inputSurvey { set; get; }         
+            public IList<Criteria> criteria { set; get; }
+            public Destination destination { set; get; }
+        }
+
+
         [HttpPost]
-        public IActionResult Fill(Flow flow)
+        public IActionResult Fill(FillViewModel flow)
         {
             database.SaveFlow(flow);
             return RedirectToAction("Index");

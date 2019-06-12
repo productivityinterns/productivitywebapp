@@ -136,6 +136,7 @@ namespace ProductivityApp.Models
         //When we implement GetFlows() we have to filter on !IsATemplate (again, gross hack because we used the same class for both.)
         public IList<Flow> GetTemplates()
         {
+            return GetSampleTemplates();
             var templates = Flows.Where(t => t.IsATemplate);
             //get sample flow if none exist
             if(templates.Count() < 3)

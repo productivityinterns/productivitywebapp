@@ -10,13 +10,16 @@ namespace ProductivityApp.Controllers
 {
     public class FlowController : Controller
     {
-        private Database database;
-        public FlowController()
+        private IDatabase database;
+        private IFileHandler fileHandler;
+        public FlowController(IFileHandler fileHandler,IDatabase db)
         {
-            database = new Database();
+            
+            this.fileHandler = fileHandler;
+            this.database = db;
         }
         public IActionResult Index()
-        {
+        {            
             var templates = database.GetTemplates();
             var filled = database.GetFlows();
             AllFlows allFlows = new AllFlows() {

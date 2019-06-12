@@ -196,14 +196,14 @@ namespace ProductivityApp.Migrations
                 {
                     b.HasOne("Criteria")
                         .WithMany("answers")
-                        .HasForeignKey("CriteriaId");
+                        .HasForeignKey("CriteriaId").OnDelete(DeleteBehavior.Cascade); 
                 });
 
             modelBuilder.Entity("Assignment", b =>
                 {
                     b.HasOne("Form")
                         .WithMany("assignments")
-                        .HasForeignKey("FormId");
+                        .HasForeignKey("FormId").OnDelete(DeleteBehavior.Cascade); 
 
                     b.HasOne("Filter", "filter")
                         .WithMany()
@@ -214,7 +214,7 @@ namespace ProductivityApp.Migrations
                 {
                     b.HasOne("Flow")
                         .WithMany("criteria")
-                        .HasForeignKey("FlowId");
+                        .HasForeignKey("FlowId").OnDelete(DeleteBehavior.Cascade); 
                 });
 
             modelBuilder.Entity("Field", b =>
@@ -232,11 +232,11 @@ namespace ProductivityApp.Migrations
                 {
                     b.HasOne("Destination", "destination")
                         .WithMany()
-                        .HasForeignKey("destinationId");
+                        .HasForeignKey("destinationId").OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Survey", "inputSurvey")
                         .WithMany()
-                        .HasForeignKey("inputSurveyId");
+                        .HasForeignKey("inputSurveyId").OnDelete(DeleteBehavior.Cascade); 
                 });
 
             modelBuilder.Entity("Form", b =>

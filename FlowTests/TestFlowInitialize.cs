@@ -14,7 +14,7 @@ namespace ProductivityApp.Tests
         {
             using(Database db = new Database())
             {
-                var flow = db.GetSampleTemplates().FirstOrDefault();
+                var flow = db.GetSampleTemplates().Last();
                 //make sure we got a flow
                 Assert.NotNull(flow);
 
@@ -29,9 +29,9 @@ namespace ProductivityApp.Tests
                     Assert.NotEqual(flow.inputSurvey.fields[fieldIndex].Id, newFlow.inputSurvey.fields[fieldIndex].Id);
                 }
                 //and assignments
-                for (int assignIndex = 0; assignIndex < flow.assignments.Count; assignIndex++)
+                for (int formIndex = 0; formIndex < flow.forms.Count; formIndex++)
                 {
-                    Assert.NotEqual(flow.assignments[assignIndex].Id, newFlow.assignments[assignIndex].Id);
+                    Assert.NotEqual(flow.forms[formIndex].Id, newFlow.forms[formIndex].Id);
                 }
                 //and criteria
                 for (int criteriaIndex = 0; criteriaIndex < flow.criteria.Count; criteriaIndex++)

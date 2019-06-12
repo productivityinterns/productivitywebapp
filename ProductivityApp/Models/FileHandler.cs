@@ -1,12 +1,26 @@
+using Microsoft.AspNetCore.Hosting;
 using System;
-public class FileHandler {
+using System.Diagnostics;
+/// <summary>
+/// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
+/// </summary>
+public class FileHandler : IFileHandler
+{
 
+    IHostingEnvironment _environment;
+    public FileHandler(IHostingEnvironment env)
+    {
+        _environment = env;
+    }
 //connor
-    public void InstantiateDirectory(Guid templateId, Guid destinationId) {
+    public void InstantiateDirectory(Guid templateId, Guid destinationId)
+    {
+        var foo = GetActiveFormsPath();
+        Debug.WriteLine(foo);
             // copying files with directory name of  forms/templateForms/[templateId]
             //Make destination for forms/activeForms/[destinationId]
             // into directory name of  forms/activeForms/[destinationId]
-
+            
     }
     //tyrek
     public void WriteToFiles(Flow flow) {
@@ -28,13 +42,13 @@ public class FileHandler {
     }
 
     public string GetActiveFormsPath() {
-        return null;
+        return _environment.WebRootFileProvider.GetFileInfo("forms/activeForms").PhysicalPath;
     }
     public string GetActiveTemplatesPath() {
-        return null;
+        return _environment.WebRootFileProvider.GetFileInfo("forms/templateForms").PhysicalPath;
     }
     //matt
-    public string zip(Flow flow) {
+    public string Zip(Flow flow) {
         //take a flow and zip all the forms
         //returns path to the zip
         return null; 

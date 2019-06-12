@@ -10,7 +10,7 @@ namespace ProductivityApp.Models
     /// <summary>
     /// The Database implements the dbcontext functionality and exposes specific ease-of-use functions for manipulating flows
     /// </summary>
-    public class Database : DbContext
+    public class Database : DbContext, IDatabase
     {
 
         /// <summary>
@@ -101,11 +101,7 @@ namespace ProductivityApp.Models
             SaveChanges();
 
         }
-        ///This method removes a flow from the DBSet called Flows 
-        public void DeleteFlow(Flow flow)
-        {
-            Flows.Remove(flow);
-        }
+    
          ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
         public void DeleteFlow(Guid Id)
         {
@@ -188,6 +184,7 @@ namespace ProductivityApp.Models
 
                 }
                 },
+                forms = new List<Form>(),
                // assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
@@ -237,6 +234,7 @@ namespace ProductivityApp.Models
                 Id = Guid.NewGuid(),
                 name = "Hire",
                 Description = "Hire people!",
+                forms = new List<Form>(),
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
@@ -257,7 +255,7 @@ namespace ProductivityApp.Models
                 IsATemplate = true,
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
                 name = "Taxes",
-                Description = "File your taxes.",
+                Description = "File your taxes.",                
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),

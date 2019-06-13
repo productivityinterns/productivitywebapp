@@ -70,6 +70,9 @@ public class FileHandler : IFileHandler
          var formsPath = Path.Combine(filePath,"forms");
          var zipName= id.ToString()+".zip";
          var zipPath = Path.Combine(filePath, zipName);
+        if (File.Exists(zipPath)){
+            File.Delete(zipPath);
+        }
         ZipFile.CreateFromDirectory(formsPath, zipPath);
         return zipPath; 
     }

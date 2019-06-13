@@ -22,6 +22,7 @@ public class FileHandler : IFileHandler
         var fPath = GetActiveFormsPath();
         var sourcePath = Path.Combine(tPath,templateId.ToString());
         var destPath = Path.Combine(fPath,destinationId.ToString());
+        destPath = Path.Combine(destPath,"forms");
         if (!Directory.Exists(destPath)){
             Directory.CreateDirectory(destPath);
         }
@@ -66,12 +67,10 @@ public class FileHandler : IFileHandler
         //take a flow and zip all the forms
          var fPath = GetActiveFormsPath();
          var filePath = Path.Combine(fPath,id.ToString());
+         var formsPath = Path.Combine(filePath,"forms");
          var zipName= id.ToString()+".zip";
          var zipPath = Path.Combine(filePath, zipName);
-         ZipFile.CreateFromDirectory(filePath, zipName);
-         
-        
-        //returns path to the zip
+        ZipFile.CreateFromDirectory(formsPath, zipPath);
         return zipPath; 
     }
 }

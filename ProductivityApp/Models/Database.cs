@@ -60,6 +60,7 @@ namespace ProductivityApp.Models
 
             var existingFlow = Flows
                 .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.forms).ThenInclude(f=>f.assignments)
                 .Include(f=>f.criteria)
                 .Include(f=>f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
 
@@ -162,6 +163,7 @@ namespace ProductivityApp.Models
             SaveChanges();
             var flows = Flows.Where(t=> !t.IsATemplate) ;
             return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
+                .Include(t=>t.forms).ThenInclude(f=>f.assignments)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
@@ -177,7 +179,7 @@ namespace ProductivityApp.Models
             {
                 IsATemplate = true,
                 name = "Purchase",
-                Id = Guid.NewGuid(),
+                Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea11111"),
                 Description = "To buy things.",
                 inputSurvey = new Survey
                 {
@@ -194,10 +196,24 @@ namespace ProductivityApp.Models
                         assignments = new List<Assignment>
                         {
                             new Assignment("firstname","0",null),
+                            new Assignment("lastname","1",null)
                         },
                        fileName = "form1.txt",
                        kind = "text",
                     name = "Form 1"
+                    },
+                    new Form{
+                        assignments = new List<Assignment>
+                        {
+                            new Assignment("lastname","0",null),
+                            new Assignment("lastname","1",null),
+                            new Assignment("lastname","2",null),
+                            new Assignment("lastname","3",null),
+                            new Assignment("lastname","4",null)
+                        },
+                       fileName = "form2.txt",
+                       kind = "text",
+                    name = "Form 2"
                     }
                 },
                // assignments = new List<Assignment>(),

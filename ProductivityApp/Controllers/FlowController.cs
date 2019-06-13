@@ -53,10 +53,10 @@ namespace ProductivityApp.Controllers
 
 
         [HttpPost]
-        public IActionResult Fill(FillViewModel flow)
+        public IActionResult Fill(FillViewModel flowVm)
         {
              
-            Flow theRealFlow = database.SaveFlow(flow);
+            Flow flow = database.SaveFlow(flowVm);
             fileHandler.WriteToFiles(flow);
             return RedirectToAction("Index");
         }

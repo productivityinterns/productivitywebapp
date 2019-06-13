@@ -132,8 +132,19 @@ public class Flow {
         }
         return false;
     }
-    public string GetAssignmentText(Assignment assignments){
-        return "";
 
+    /// <summary>
+    /// Read the template in the assignment inputfield, and render the results.
+    /// </summary>
+    /// <param name="assignment"></param>
+    /// <returns></returns>
+    public string GetAssignmentText(Assignment assignment){
+        string theText = "";
+        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+        if(matchingField != null)
+        {
+            theText = matchingField.answer;
+        }
+        return theText;
     }
 }

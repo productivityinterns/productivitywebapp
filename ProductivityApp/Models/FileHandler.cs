@@ -103,14 +103,10 @@ public class FileHandler : IFileHandler
     //path is the full path to the file we're writing
     //and kind is the type of file. Right now we have established "text', "pdf"
     public void printToDocument(string text,string field,string path, string kind) {
-        string mainPath = GetActiveFormsPath();
-        string filePath = Path.Combine(mainPath,"placeholder.txt");
-                using(StreamWriter sw = new StreamWriter(filePath))
-        {
-               
+        
+                using(StreamWriter sw = new StreamWriter(path,true))
+        {             
                sw.WriteLine(text);
-               
-
         }
 
     }

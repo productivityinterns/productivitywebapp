@@ -20,7 +20,10 @@ public class Field {
     ///</summary>
     public Kinds Kind {set; get;}
     public string prompt {set; get;}
-   
+   /// <summary>
+   /// A survey-unique short text name of the field. Used in assignment templates.
+   /// 
+   /// </summary>
    public string tag {set; get;}
    public Guid Id {set; get;}  //string for now, change to guid?    
  
@@ -35,6 +38,7 @@ public class Field {
    public Field(Kinds kind, string tag, string prompt, Filter filter){
        this.Kind = kind;
        Id = Guid.NewGuid();
+       this.tag = tag;
        this.prompt = prompt;
        this.filter = filter;
    }

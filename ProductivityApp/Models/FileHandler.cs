@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.IO;
 using System.Diagnostics;
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
@@ -15,8 +16,19 @@ public class FileHandler : IFileHandler
 //connor
     public void InstantiateDirectory(Guid templateId, Guid destinationId)
     {
-        var foo = GetActiveFormsPath();
-        Debug.WriteLine(foo);
+        var tPath = GetActiveTemplatesPath();
+        var fPath = GetActiveFormsPath();
+        var sourcePath = Path.Combine(tPath,templateId.ToString());
+        var destPath = Path.Combine(fPath,destinationId.ToString());
+        if (!Directory.Exists(destPath)){
+            Directory.CreateDirectory(destPath);
+        }
+        foreach(string file in Directory.GetFiles(sourcePath)) {
+            string dest = Path.Combine(destPath, Path.GetFileName(file));
+            File.Copy(file, dest);
+        }
+
+        Debug.WriteLine(fPath);
             // copying files with directory name of  forms/templateForms/[templateId]
             //Make destination for forms/activeForms/[destinationId]
             // into directory name of  forms/activeForms/[destinationId]

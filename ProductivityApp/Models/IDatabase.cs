@@ -11,7 +11,7 @@ namespace ProductivityApp.Models
         IList<Flow> GetFlows();
         IList<Flow> GetForms();
         IList<Flow> GetTemplates();
-        Flow InitializeTemplate(Flow template);
+        Flow InitializeTemplate(Flow template, IFileHandler fileHandler);
         void SaveFlow(FlowController.FillViewModel flow);
     }
 }

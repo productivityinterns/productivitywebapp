@@ -67,7 +67,7 @@ namespace ProductivityApp.Controllers
                 return NotFound();
             }
 
-            Flow newFlow = database.InitializeTemplate(existingTemplate);
+            Flow newFlow = database.InitializeTemplate(existingTemplate,fileHandler);
             return RedirectToAction("fill",new { id = newFlow.Id });
         }
         public IActionResult Remove(Guid id)

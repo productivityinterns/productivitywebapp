@@ -17,8 +17,6 @@ namespace ProductivityApp.Models
         /// The list of flows (user instances of templates)
         /// </summary>
         private DbSet<Flow> Flows { get; set; }
-     
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,10 +38,13 @@ namespace ProductivityApp.Models
         /// </summary>
         /// <param name="template">The source template to copy</param>
         /// <returns>the newly instantiated flow</returns>
-        public Flow InitializeTemplate(Flow template)
+        public Flow InitializeTemplate(Flow template,IFileHandler fileHandler)
         {
             //get a copy of flow from the template
             var newFlow = template.initializeFlow();
+
+            //copy forms from template to newFlow
+            fileHandler.InstantiateDirectory(template.Id,newFlow.Id);
             
             //add the new flow to the tracked database
             Flows.Add(newFlow);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Web;
+using System.IO;
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
 /// </summary>
@@ -39,6 +40,25 @@ public class FileHandler : IFileHandler
     }
     //tyrek
     public void WriteToFiles(Flow flow) {
+         string mainPath = GetActiveFormsPath();
+        string filePath = Path.Combine(mainPath,"placeholder.txt");
+        string[] names = new string[] {"yeezus","11037","cyka blyat"};
+        
+        //iterate through each form
+        foreach (Form form in flow.forms)
+        {
+            foreach(Assignment assignment in form.assignments)
+            {
+ //then through each assignment
+            //check if assignment's filter is true
+            if (assignment.filter == null || flow.checkFilter(assignment.filter) == true)
+            {
+                string theText = flow.GetAssignmentText(assignment);
+                printToDocument(theText,assignment.outputField,GetFormPath(flow,form),"text");
+            }
+            }
+
+        }
         //grabs foroms from forms/activeForms/[destinationId]
         //writes criteria/ fields from survey 
 
@@ -51,12 +71,51 @@ public class FileHandler : IFileHandler
             //printToDocument
         //else it doesnt
     }
+
+     public void Write(Flow flow, IFileHandler fileHandler)
+    {
+       
+       
+            //if its true, get the text from new func Flow.GetAssignmentText() 
+            //we'll stub this out, itl will just return the inputFIeld
+
+            //then, write the text to the doc path in the form
+    
+/*
+        using(StreamWriter sw = new StreamWriter(filePath))
+        {
+               foreach (string s in names) 
+               {
+               sw.WriteLine(s);
+               }
+
+        }
+*/
+    }
+
+    public  string GetFormPath(Flow flow, Form form)
+    {
+      return System.IO.Path.Combine(GetActiveFormsPath(),flow.Id.ToString(),"forms",form.fileName);
+    }
     //ben
-    public void printToDocument(string text,string path, string kind) {
+    //text is what im writing
+    //field is where it goes in the doc (e.g. "name" or 0)
+    //path is the full path to the file we're writing
+    //and kind is the type of file. Right now we have established "text', "pdf"
+    public void printToDocument(string text,string field,string path, string kind) {
+        string mainPath = GetActiveFormsPath();
+        string filePath = Path.Combine(mainPath,"placeholder.txt");
+                using(StreamWriter sw = new StreamWriter(filePath))
+        {
+               
+               sw.WriteLine(text);
+               
+
+        }
 
     }
 
-    public string GetActiveFormsPath() {
+    public  string GetActiveFormsPath() {
         return _environment.WebRootFileProvider.GetFileInfo("forms/activeForms").PhysicalPath;
     }
     public string GetActiveTemplatesPath() {

@@ -7,4 +7,6 @@ public interface IFileHandler
     string Zip(Guid id);
 
     void DeleteFolder(Guid id);
+
+    string GetActiveFormsPath();
 }

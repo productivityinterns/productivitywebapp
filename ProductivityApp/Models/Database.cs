@@ -55,7 +55,7 @@ namespace ProductivityApp.Models
         ///<summary>
         ///This method saves a flow to the DBSet called Flows
         ///</summary>
-        public void SaveFlow(FlowController.FillViewModel flow)
+        public Flow SaveFlow(FlowController.FillViewModel flow)
         {
 
             var existingFlow = Flows
@@ -100,7 +100,7 @@ namespace ProductivityApp.Models
             }
             
             SaveChanges();
-
+            return existingFlow;
         }
     
          ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
@@ -183,13 +183,23 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter your first name",null),
-                     new Field(Field.Kinds.String,"Please enter your last name",null),
-                     new Field(Field.Kinds.String,"Please enter your job title",null),
+                     new Field(Field.Kinds.String,"firstname","Please enter your first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter your last name",null),
+                     new Field(Field.Kinds.String,"jobtitle","Please enter your job title",null),
 
                 }
                 },
-                forms = new List<Form>(),
+                forms = new List<Form> {
+                    new Form{
+                        assignments = new List<Assignment>
+                        {
+                            new Assignment("firstname","0",null),
+                        },
+                       fileName = "form1.txt",
+                       kind = "text",
+                    name = "Form 1"
+                    }
+                },
                // assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
@@ -244,8 +254,8 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter employee first name",null),
-                     new Field(Field.Kinds.String,"Please enter employee last name",null),
+                     new Field(Field.Kinds.String,"firstname","Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter employee last name",null),
 
                 }
                 },
@@ -265,8 +275,8 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter employee first name",null),
-                     new Field(Field.Kinds.String,"Please enter employee last name",null),
+                     new Field(Field.Kinds.String,"fisrtname","Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter employee last name",null),
 
                 }
                 },

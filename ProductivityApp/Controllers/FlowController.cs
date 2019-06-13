@@ -20,6 +20,7 @@ namespace ProductivityApp.Controllers
         }
         public IActionResult Index()
         {            
+            
             var templates = database.GetTemplates();
             var filled = database.GetFlows();
             AllFlows allFlows = new AllFlows() {
@@ -54,14 +55,16 @@ namespace ProductivityApp.Controllers
         [HttpPost]
         public IActionResult Fill(FillViewModel flow)
         {
-            database.SaveFlow(flow);                     
-                
+             
+            Flow theRealFlow = database.SaveFlow(flow);
+            fileHandler.WriteToFiles(flow);
             return RedirectToAction("Index");
         }
         //initialize takes a template identified by name as specified in id, and creates a new flow based 
         // on that template.
         public IActionResult Initialize(string id)
         {
+           
             var existingTemplate = database.GetTemplates().Where(t=>t.name == id).FirstOrDefault();
             if(existingTemplate == null)
             {
@@ -86,6 +89,7 @@ namespace ProductivityApp.Controllers
             return View(id);
         }
 
+//please forgive me -MG
         public IActionResult DownloadForReels(Guid id)
         {
             string path = fileHandler.Zip(id);

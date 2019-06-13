@@ -32,7 +32,7 @@ public class Field {
     {
         
     }
-   public Field(Kinds kind,  string prompt, Filter filter){
+   public Field(Kinds kind, string tag, string prompt, Filter filter){
        this.Kind = kind;
        Id = Guid.NewGuid();
        this.prompt = prompt;

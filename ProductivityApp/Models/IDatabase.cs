@@ -12,7 +12,7 @@ namespace ProductivityApp.Models
         IList<Flow> GetForms();
         IList<Flow> GetTemplates();
         Flow InitializeTemplate(Flow template, IFileHandler fileHandler);
-        void SaveFlow(FlowController.FillViewModel flow);
+        Flow SaveFlow(FlowController.FillViewModel flow);
         Flow FindFlowById(Guid Id);
     }
 }

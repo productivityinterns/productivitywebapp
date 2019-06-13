@@ -132,4 +132,8 @@ public class Flow {
         }
         return false;
     }
+    public string GetAssignmentText(Assignment assignments){
+        return "";
+
+    }
 }

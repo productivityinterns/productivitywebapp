@@ -79,7 +79,8 @@ namespace ProductivityApp.Controllers
         {
             return View();
         }
-        public IActionResult Download() {
+        public IActionResult Download(Guid id) {
+            fileHandler.Zip(id);
             return View();
         }
 

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Web;
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
 /// </summary>
@@ -60,9 +62,16 @@ public class FileHandler : IFileHandler
         return _environment.WebRootFileProvider.GetFileInfo("forms/templateForms").PhysicalPath;
     }
     //matt
-    public string Zip(Flow flow) {
+    public string Zip(Guid id) {
         //take a flow and zip all the forms
+         var fPath = GetActiveFormsPath();
+         var filePath = Path.Combine(fPath,id.ToString());
+         var zipName= id.ToString()+".zip";
+         var zipPath = Path.Combine(filePath, zipName);
+         ZipFile.CreateFromDirectory(filePath, zipName);
+         
+        
         //returns path to the zip
-        return null; 
+        return zipPath; 
     }
 }

@@ -10,7 +10,7 @@ namespace ProductivityApp.Models
     /// <summary>
     /// The Database implements the dbcontext functionality and exposes specific ease-of-use functions for manipulating flows
     /// </summary>
-    public class Database : DbContext
+    public class Database : DbContext, IDatabase
     {
 
         /// <summary>
@@ -101,11 +101,7 @@ namespace ProductivityApp.Models
             SaveChanges();
 
         }
-        ///This method removes a flow from the DBSet called Flows 
-        public void DeleteFlow(Flow flow)
-        {
-            Flows.Remove(flow);
-        }
+    
          ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
         public void DeleteFlow(Guid Id)
         {
@@ -126,9 +122,9 @@ namespace ProductivityApp.Models
             var forms = Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
-                .Include(t => t.assignments).ThenInclude(t => t.inputField)
-                .Include(t => t.assignments).ThenInclude(t => t.outputField)
-                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                //.Include(t => t.assignments).ThenInclude(t => t.inputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.outputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.filter)
                 .ToList();
             return forms;
         }
@@ -136,9 +132,10 @@ namespace ProductivityApp.Models
         //When we implement GetFlows() we have to filter on !IsATemplate (again, gross hack because we used the same class for both.)
         public IList<Flow> GetTemplates()
         {
+            return GetSampleTemplates();
             var templates = Flows.Where(t => t.IsATemplate);
             //get sample flow if none exist
-            if(templates.Count() < 2)
+            if(templates.Count() < 3)
             {
                 foreach(var template in GetSampleTemplates())
                 {
@@ -150,9 +147,9 @@ namespace ProductivityApp.Models
             return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
-                .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
-                .Include(t => t.assignments).ThenInclude(t => t.outputField)
-                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.outputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.filter)
                 .ToList();
         }
 
@@ -162,9 +159,9 @@ namespace ProductivityApp.Models
             return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
-                .Include(t=>t.assignments).ThenInclude(t=>t.inputField)
-                .Include(t => t.assignments).ThenInclude(t => t.outputField)
-                .Include(t => t.assignments).ThenInclude(t => t.filter)
+                //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.outputField)
+                //.Include(t => t.assignments).ThenInclude(t => t.filter)
                 .ToList();
 
         }
@@ -183,10 +180,12 @@ namespace ProductivityApp.Models
                     fields = new List<Field> {
                      new Field(Field.Kinds.String,"Please enter your first name",null),
                      new Field(Field.Kinds.String,"Please enter your last name",null),
+                     new Field(Field.Kinds.String,"Please enter your job title",null),
 
                 }
                 },
-                assignments = new List<Assignment>(),
+                forms = new List<Form>(),
+               // assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
                        Id = Guid.NewGuid(),
@@ -196,15 +195,15 @@ namespace ProductivityApp.Models
                        {
                            new Answer("Yes","yes"),
                            new Answer("No","no"),
-                           new Answer("iunno","iunno")
+                           new Answer("Unknown","unknown")
 
                        }
 
                   },
                   new Criteria{
                       Id = Guid.NewGuid(),
-                       prompt = "Greater Than 100?",
-                       Category = "gr100",
+                       prompt = "Purchase less than $700,000?",
+                       Category = "less700k",
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
@@ -213,6 +212,18 @@ namespace ProductivityApp.Models
 
                        }
 
+                  },
+                new Criteria{
+                    Id = Guid.NewGuid(),
+                   prompt = "Purchase between $700,000 and $13.5 Million?",
+                   Category = "gr100",
+                   answers = new List<Answer>
+                   {
+                       new Answer("Yes","yes"),
+                       new Answer("No","no"),
+                       new Answer("Unknown","unknown")
+
+                    }
                   }
               },
                 destination =  new Destination()
@@ -223,6 +234,7 @@ namespace ProductivityApp.Models
                 Id = Guid.NewGuid(),
                 name = "Hire",
                 Description = "Hire people!",
+                forms = new List<Form>(),
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
@@ -232,14 +244,55 @@ namespace ProductivityApp.Models
 
                 }
                 },
-                assignments = new List<Assignment>(),
+                //assignments = new List<Assignment>(),
                 criteria = new List<Criteria>(),
                 destination = new Destination()
 
             };
+
+            Flow template3 = new Flow
+            {
+                IsATemplate = true,
+                Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
+                name = "Taxes",
+                Description = "File your taxes.",                
+                inputSurvey = new Survey
+                {
+                    Id = Guid.NewGuid(),
+                    fields = new List<Field> {
+                     new Field(Field.Kinds.String,"Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"Please enter employee last name",null),
+
+                }
+                },
+                //assignments = new List<Assignment>(),
+                criteria = new List<Criteria>{
+                    new Criteria{
+                      Id = Guid.NewGuid(),
+                       prompt = "Did you provide goods or services in exchange for the vehicle?",
+                       Category = "trade",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+
+                  },
+                },
+                destination = new Destination(),
+                forms = new List<Form> {
+                    new Form {
+                        name = "1098-c",
+                        fileName = "f1098c.pfd",
+                        kind = "pdf"
+                        
+                    }
+                }
+            };
             List<Flow> templates = new List<Flow>();
             templates.Add(template1);
             templates.Add(template2);
+            templates.Add(template3);
 
             return templates;
         }

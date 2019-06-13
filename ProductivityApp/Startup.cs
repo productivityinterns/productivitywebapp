@@ -36,6 +36,9 @@ namespace ProductivityApp
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<Database>();
+            //Setup services for injection into controllers and etc
+            services.AddScoped<IFileHandler, FileHandler>();
+            services.AddScoped<IDatabase, Database>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

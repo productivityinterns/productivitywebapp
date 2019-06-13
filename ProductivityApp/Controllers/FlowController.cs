@@ -54,7 +54,8 @@ namespace ProductivityApp.Controllers
         [HttpPost]
         public IActionResult Fill(FillViewModel flow)
         {
-            database.SaveFlow(flow);
+            database.SaveFlow(flow);                     
+                
             return RedirectToAction("Index");
         }
         //initialize takes a template identified by name as specified in id, and creates a new flow based 
@@ -81,8 +82,14 @@ namespace ProductivityApp.Controllers
             return View();
         }
         public IActionResult Download(Guid id) {
+            
+            return View(id);
+        }
+
+        public IActionResult DownloadForReels(Guid id)
+        {
             string path = fileHandler.Zip(id);
-            return View();
+            return File($"~/forms/activeForms/{id.ToString()}/{id.ToString()}.zip", "application/octet-stream",$"forms-{id.ToString()}.zip");
         }
         // public IActionResult Download(string path) {
         //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));

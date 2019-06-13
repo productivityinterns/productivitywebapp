@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProductivityApp.Models;
-
+using System.IO;
 namespace ProductivityApp.Controllers
 {
     public class FlowController : Controller
@@ -73,6 +73,7 @@ namespace ProductivityApp.Controllers
         public IActionResult Remove(Guid id)
         {
             database.DeleteFlow(id);
+            fileHandler.DeleteFolder(id); 
             return RedirectToAction("index",null);
         }
         public IActionResult Survey()
@@ -80,10 +81,15 @@ namespace ProductivityApp.Controllers
             return View();
         }
         public IActionResult Download(Guid id) {
-            fileHandler.Zip(id);
+            string path = fileHandler.Zip(id);
             return View();
         }
-
+        // public IActionResult Download(string path) {
+        //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));
+        // }
+        // public IActionResult Download() {
+        //     return View();
+        // }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

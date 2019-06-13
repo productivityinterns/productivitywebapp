@@ -73,4 +73,12 @@ public class FileHandler : IFileHandler
         ZipFile.CreateFromDirectory(formsPath, zipPath);
         return zipPath; 
     }
+    public void DeleteFolder(Guid id) {
+        var fPath = GetActiveFormsPath();
+        var filePath = Path.Combine(fPath,id.ToString());
+        if (Directory.Exists(filePath)) {
+            Directory.Delete(filePath,true);
+
+        }
+    }
 }

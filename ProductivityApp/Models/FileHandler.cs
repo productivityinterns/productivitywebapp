@@ -161,6 +161,8 @@ public class FileHandler : IFileHandler
         IDictionary<String, PdfFormField> fields = form.GetFormFields();
         PdfFormField currentField;
         int i = 1;
+        //This is broken
+        //TODO: fix
         foreach(Field item in list) {
             try{
                 string value = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_"+i.ToString()+"[0]";

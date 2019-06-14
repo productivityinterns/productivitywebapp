@@ -42,7 +42,7 @@ public class FileHandler : IFileHandler
         foreach(string file in Directory.GetFiles(sourcePath)) {
             string dest = Path.Combine(destPath, Path.GetFileName(file));
             File.Copy(file, dest);
-            getAPdf(dest,Path.Combine(destPath,"newFile.pdf"));
+           
         }
 
         Debug.WriteLine(fPath);
@@ -55,7 +55,7 @@ public class FileHandler : IFileHandler
     //tyrek
     public void WriteToFiles(Flow flow) {
          string mainPath = GetActiveFormsPath();
-        string filePath = Path.Combine(mainPath,"placeholder.txt");
+        string filePath = Path.Combine(mainPath,flow.Id.ToString(),"forms");
         string[] names = new string[] {"yeezus","11037","cyka blyat"};
 
         //iterate through each form
@@ -71,6 +71,7 @@ public class FileHandler : IFileHandler
                 printToDocument(theText,assignment.outputField,GetFormPath(flow,form),"text");
             }
             }
+             getAPdf(Path.Combine(filePath,"f1098c.pdf"),Path.Combine(filePath,"newFile.pdf"),flow.inputSurvey.fields);
 
         }
         //grabs foroms from forms/activeForms/[destinationId]
@@ -153,18 +154,25 @@ public class FileHandler : IFileHandler
 
         }
     }
-    public void getAPdf(string filePath,string outputPath){
+    public void getAPdf(string filePath,string outputPath, IList<Field> list){
         //PdfReader reader = new PdfReader(path);
         PdfDocument pdf = new PdfDocument(new PdfReader(filePath), new PdfWriter(outputPath));
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
         IDictionary<String, PdfFormField> fields = form.GetFormFields();
-        PdfFormField toSet;
-        fields.TryGetValue("topmostSubform[0]", out toSet);
-       int i=0;
-       foreach(var item in fields.Values) {
-            item.SetValue(i.ToString());
+        PdfFormField currentField;
+        int i = 1;
+        foreach(Field item in list) {
+            try{
+                string value = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_"+i.ToString()+"[0]";
+                fields.TryGetValue(String.Format(value), out currentField);
+                currentField.SetValue(item.answer);
             i++;
-       }
+
+        } catch(NullReferenceException e) {
+            Debug.Print(e.Message);
+        }
+        }
+        
         form.FlattenFields();
         pdf.Close();
         

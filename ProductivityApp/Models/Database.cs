@@ -125,7 +125,8 @@ namespace ProductivityApp.Models
         {
             //get all the forms that are not flagged as explicitly a template
             //and include ALL subfields that exist (well, honestly, ones that I remembered!) -mg
-            var forms = Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+            var forms = Flows.Where(t => !t.IsATemplate)
+            .Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
@@ -280,8 +281,7 @@ namespace ProductivityApp.Models
                 destination = new Destination()
 
             };
-
-            Flow template3 = new Flow
+Flow template3 = new Flow
             {
                 IsATemplate = true,
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
@@ -290,9 +290,41 @@ namespace ProductivityApp.Models
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
-                    fields = new List<Field> {
-                     new Field(Field.Kinds.String,"fisrtname","Please enter employee first name",null),
-                     new Field(Field.Kinds.String,"lastname","Please enter employee last name",null),
+                    fields = new List<Field> {//0
+                     new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
+                     new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null),
+                    new Field(Field.Kinds.String,"street","Please enter street address",null),
+                     new Field(Field.Kinds.String,"address","Enter City, State, and Country",null),
+                     new Field(Field.Kinds.String,"zip","Enter Zip Code",null),
+                    // new Field(Field.Kinds.String,"Enter Telphone number",null),
+
+                    //  new Field(Field.Kinds.String,"Donee's TIN ",null),
+                    //   new Field(Field.Kinds.String,"Doner's TIN ",null),
+                    //    new Field(Field.Kinds.String,"Donor's name",null),
+                    //     new Field(Field.Kinds.String,"Street address",null),
+                    //      new Field(Field.Kinds.String,"City/town, State, Zip Code, Country",null),
+
+                    //      //1
+                    // new Field(Field.Kinds.String,"Date of contribution",null),
+                    // //2a
+                    // new Field(Field.Kinds.String,"Odometer mileage",null),
+                    // //2b
+                    //  new Field(Field.Kinds.String,"Year",null),
+                    //  //2c
+                    //   new Field(Field.Kinds.String,"Make",null),
+                    //   //2d
+                    //    new Field(Field.Kinds.String,"Model",null),
+                    //    //3
+                    //     new Field(Field.Kinds.String,"Vehicle or other Identification number ",null),
+                    //     //4b
+                    //      new Field(Field.Kinds.String,"Date of Sale",null),
+                    //      //4c
+                    //       new Field(Field.Kinds.String,"Gross proceeds from sale",null),
+                    //       //6b
+                     new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
+
+
+
 
                 }
                 },
@@ -301,20 +333,79 @@ namespace ProductivityApp.Models
                     new Criteria{
                       Id = Guid.NewGuid(),
                        prompt = "Did you provide goods or services in exchange for the vehicle?",
-                       Category = "trade",
+                       Category = "6a",
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
                            new Answer("No","no"),
                        }
-
+                    },
+                    new Criteria() {
+                        Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle was sold in arm's length transaction to unrelated party",
+                       Category = "Vehicle Transaction",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                    },
+            
+                        new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle will not be transferred for money, other property, or services before completion of material improvements or significant intervening use",
+                       Category = "Transfer Information",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                
+                  },  new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle is to be transferred to a needy individual for significantly below fair market value in furtherance of donee’s charitable purpose",
+                       Category = "Relocation of Vehicle",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
                   },
-                },
+                   new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies the following detailed description of material improvements or significant intervening use and duration of use",
+                       Category = "User Agreement",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                    },
+                          new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Describe the goods and services, if any, that were provided. If this box is checked, donee certifies that the goods and services consisted solely of intangible religious benefits.",
+                       Category = "Charitable Contributions",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                       }
+                    },
+                     new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Under the law, the donor may not claim a deduction of more than $500 for this vehicle if this box is checked",
+                       Category = "Contributions of Motor Vehicles, Boats and Airplanes",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                        
+                       }
+                    },
+                  }, 
                 destination = new Destination(),
                 forms = new List<Form> {
                     new Form {
                         name = "1098-c",
-                        fileName = "f1098c.pfd",
+                        fileName = "f1098c.pdf",
                         kind = "pdf"
                         
                     }

@@ -47,14 +47,14 @@ public class FileHandler : IFileHandler
         //iterate through each form
         foreach (Form form in flow.forms)
         {
-            foreach(Assignment assignment in form.assignments)
+            foreach(Field f in flow.inputSurvey.fields)
             {
  //then through each assignment
             //check if assignment's filter is true
-            if (assignment.filter == null || flow.checkFilter(assignment.filter) == true)
+            if (f.filter != null && flow.checkFilter(f.filter))
             {
-                string theText = flow.GetAssignmentText(assignment);
-                printToDocument(theText,assignment.outputField,GetFormPath(flow,form),"text");
+                //string theText = flow.GetAssignmentText(f.answer);
+               // printToDocument(theText,null,GetFormPath(flow,form),"text");
             }
             }
 

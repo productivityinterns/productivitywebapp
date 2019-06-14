@@ -3,8 +3,20 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Collections.Generic;
 using System.Web;
 using System.IO;
+using iText;
+using iText.Forms;
+using iText.Forms.Fields;
+using iText.Pdfa;
+using iText.IO.Colors;
+using iText.Signatures;
+using iText.Kernel;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Annot;
+using iText.Kernel.Pdf.Layer;
+
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
 /// </summary>
@@ -30,9 +42,11 @@ public class FileHandler : IFileHandler
         foreach(string file in Directory.GetFiles(sourcePath)) {
             string dest = Path.Combine(destPath, Path.GetFileName(file));
             File.Copy(file, dest);
+           
         }
 
         Debug.WriteLine(fPath);
+        
             // copying files with directory name of  forms/templateForms/[templateId]
             //Make destination for forms/activeForms/[destinationId]
             // into directory name of  forms/activeForms/[destinationId]
@@ -41,9 +55,9 @@ public class FileHandler : IFileHandler
     //tyrek
     public void WriteToFiles(Flow flow) {
          string mainPath = GetActiveFormsPath();
-        string filePath = Path.Combine(mainPath,"placeholder.txt");
+        string filePath = Path.Combine(mainPath,flow.Id.ToString(),"forms");
         string[] names = new string[] {"yeezus","11037","cyka blyat"};
-        
+
         //iterate through each form
         foreach (Form form in flow.forms)
         {
@@ -57,6 +71,7 @@ public class FileHandler : IFileHandler
                // printToDocument(theText,null,GetFormPath(flow,form),"text");
             }
             }
+             getAPdf(Path.Combine(filePath,"f1098c.pdf"),Path.Combine(filePath,"newFile.pdf"),flow.inputSurvey.fields);
 
         }
         //grabs foroms from forms/activeForms/[destinationId]
@@ -138,5 +153,28 @@ public class FileHandler : IFileHandler
             Directory.Delete(filePath,true);
 
         }
+    }
+    public void getAPdf(string filePath,string outputPath, IList<Field> list){
+        //PdfReader reader = new PdfReader(path);
+        PdfDocument pdf = new PdfDocument(new PdfReader(filePath), new PdfWriter(outputPath));
+        PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
+        IDictionary<String, PdfFormField> fields = form.GetFormFields();
+        PdfFormField currentField;
+        int i = 1;
+        foreach(Field item in list) {
+            try{
+                string value = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_"+i.ToString()+"[0]";
+                fields.TryGetValue(String.Format(value), out currentField);
+                currentField.SetValue(item.answer);
+            i++;
+
+        } catch(NullReferenceException e) {
+            Debug.Print(e.Message);
+        }
+        }
+        
+        form.FlattenFields();
+        pdf.Close();
+        
     }
 }

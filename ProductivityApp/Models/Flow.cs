@@ -97,7 +97,6 @@ public class Flow {
         ....that was way too wordy, see body of InitializeFlow for inefficient yet way less manual-intensive reflection method
          */
 
-        
         return clonedFlow;
     }
     //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG

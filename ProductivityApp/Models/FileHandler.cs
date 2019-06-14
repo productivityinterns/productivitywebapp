@@ -159,7 +159,7 @@ public class FileHandler : IFileHandler
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
         IDictionary<String, PdfFormField> fields = form.GetFormFields();
         PdfFormField toSet;
-       // fields.TryGetValue("topmostSubform[0]", out toSet);
+        fields.TryGetValue("topmostSubform[0]", out toSet);
        int i=0;
        foreach(var item in fields.Values) {
             item.SetValue(i.ToString());

@@ -291,7 +291,7 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"fisrtname","Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"fisrtname","Please enter employee first name",new Filter("trade","yes")),
                      new Field(Field.Kinds.String,"lastname","Please enter employee last name",null),
 
                 }

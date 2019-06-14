@@ -119,7 +119,7 @@ public class Flow {
                 var answer = criterion.SelectedValue;
                 
                 //if answer is null, we didn't find a match, don't apply the filter
-                if (!String.IsNullOrEmpty(answer))
+                if (!String.IsNullOrEmpty(answer) && answer == filter.value)
                 {
                     return true;
                 }

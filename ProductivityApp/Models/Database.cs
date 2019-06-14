@@ -293,34 +293,34 @@ Flow template3 = new Flow
                     fields = new List<Field> {//0
                      new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
                      new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null),
-                    new Field(Field.Kinds.String,"street","Please enter street address",null),
+                     new Field(Field.Kinds.String,"street","Please enter street address",null),
                      new Field(Field.Kinds.String,"address","Enter City, State, and Country",null),
                      new Field(Field.Kinds.String,"zip","Enter Zip Code",null),
-                    // new Field(Field.Kinds.String,"Enter Telphone number",null),
+                    new Field(Field.Kinds.String,"phone","Enter Telphone number",null),
 
-                    //  new Field(Field.Kinds.String,"Donee's TIN ",null),
-                    //   new Field(Field.Kinds.String,"Doner's TIN ",null),
-                    //    new Field(Field.Kinds.String,"Donor's name",null),
-                    //     new Field(Field.Kinds.String,"Street address",null),
-                    //      new Field(Field.Kinds.String,"City/town, State, Zip Code, Country",null),
+                     new Field(Field.Kinds.String,"tin1","Donee's TIN ",null),
+                      new Field(Field.Kinds.String,"tin2","Doner's TIN ",null),
+                       new Field(Field.Kinds.String,"name2","Donor's name",null),
+                        new Field(Field.Kinds.String,"address2","Street address",null),
+                         new Field(Field.Kinds.String,"address2","City/town, State, Zip Code, Country",null),
 
-                    //      //1
-                    // new Field(Field.Kinds.String,"Date of contribution",null),
-                    // //2a
-                    // new Field(Field.Kinds.String,"Odometer mileage",null),
-                    // //2b
-                    //  new Field(Field.Kinds.String,"Year",null),
-                    //  //2c
-                    //   new Field(Field.Kinds.String,"Make",null),
-                    //   //2d
-                    //    new Field(Field.Kinds.String,"Model",null),
-                    //    //3
-                    //     new Field(Field.Kinds.String,"Vehicle or other Identification number ",null),
-                    //     //4b
-                    //      new Field(Field.Kinds.String,"Date of Sale",null),
-                    //      //4c
-                    //       new Field(Field.Kinds.String,"Gross proceeds from sale",null),
-                    //       //6b
+                         //1
+                    new Field(Field.Kinds.String,"date","Date of contribution",null),
+                    //2a
+                    new Field(Field.Kinds.String,"miles","Odometer mileage",null),
+                    //2b
+                     new Field(Field.Kinds.String,"year","Year",null),
+                     //2c
+                      new Field(Field.Kinds.String,"make","Make",null),
+                      //2d
+                       new Field(Field.Kinds.String,"model","Model",null),
+                       //3
+                        new Field(Field.Kinds.String,"vin","Vehicle or other Identification number ",null),
+                        //4b
+                         new Field(Field.Kinds.String,"saleDate","Date of Sale",null),
+                         //4c
+                          new Field(Field.Kinds.String,"amount","Gross proceeds from sale",null),
+                          //6b
                      new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
 
 

@@ -3,8 +3,20 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Collections.Generic;
 using System.Web;
 using System.IO;
+using iText;
+using iText.Forms;
+using iText.Forms.Fields;
+using iText.Pdfa;
+using iText.IO.Colors;
+using iText.Signatures;
+using iText.Kernel;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Annot;
+using iText.Kernel.Pdf.Layer;
+
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
 /// </summary>
@@ -30,9 +42,11 @@ public class FileHandler : IFileHandler
         foreach(string file in Directory.GetFiles(sourcePath)) {
             string dest = Path.Combine(destPath, Path.GetFileName(file));
             File.Copy(file, dest);
+            getAPdf(dest,Path.Combine(destPath,"newFile.pdf"));
         }
 
         Debug.WriteLine(fPath);
+        
             // copying files with directory name of  forms/templateForms/[templateId]
             //Make destination for forms/activeForms/[destinationId]
             // into directory name of  forms/activeForms/[destinationId]
@@ -43,7 +57,7 @@ public class FileHandler : IFileHandler
          string mainPath = GetActiveFormsPath();
         string filePath = Path.Combine(mainPath,"placeholder.txt");
         string[] names = new string[] {"yeezus","11037","cyka blyat"};
-        
+
         //iterate through each form
         foreach (Form form in flow.forms)
         {
@@ -138,5 +152,21 @@ public class FileHandler : IFileHandler
             Directory.Delete(filePath,true);
 
         }
+    }
+    public void getAPdf(string filePath,string outputPath){
+        //PdfReader reader = new PdfReader(path);
+        PdfDocument pdf = new PdfDocument(new PdfReader(filePath), new PdfWriter(outputPath));
+        PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
+        IDictionary<String, PdfFormField> fields = form.GetFormFields();
+        PdfFormField toSet;
+       // fields.TryGetValue("topmostSubform[0]", out toSet);
+       int i=0;
+       foreach(var item in fields.Values) {
+            item.SetValue(i.ToString());
+            i++;
+       }
+        form.FlattenFields();
+        pdf.Close();
+        
     }
 }

@@ -167,6 +167,7 @@ namespace ProductivityApp.Models
                 .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
+                .OrderByDescending(t=>t.inputSurvey.timeCreated)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)

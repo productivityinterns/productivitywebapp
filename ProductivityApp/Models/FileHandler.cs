@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Web;
-using System.IO;
 using iText;
 using iText.Forms;
 using iText.Forms.Fields;
@@ -65,13 +64,13 @@ public class FileHandler : IFileHandler
             {
  //then through each assignment
             //check if assignment's filter is true
-            if (f.filter != null && flow.checkFilter(f.filter))
-            {
-                //string theText = flow.GetAssignmentText(f.answer);
-               // printToDocument(theText,null,GetFormPath(flow,form),"text");
+                if (f.filter != null && flow.checkFilter(f.filter))
+                {
+                    //string theText = flow.GetAssignmentText(f.answer);
+                // printToDocument(theText,null,GetFormPath(flow,form),"text");
+                }
             }
-            }
-             getAPdf(Path.Combine(filePath,"f1098c.pdf"),Path.Combine(filePath,"newFile.pdf"),flow.inputSurvey.fields);
+             getAPdf(Path.Combine(filePath,"f1098c.pdf"),Path.Combine(filePath,"newFile.pdf"),(List<Field>)flow.inputSurvey.fields);
 
         }
         //grabs foroms from forms/activeForms/[destinationId]
@@ -150,32 +149,54 @@ public class FileHandler : IFileHandler
         var fPath = GetActiveFormsPath();
         var filePath = Path.Combine(fPath,id.ToString());
         if (Directory.Exists(filePath)) {
-            Directory.Delete(filePath,true);
+            Directory.Delete(filePath,true);//deletes all children
+            //Directory.Delete(filePath);     //deletes the newly emptied folder
 
         }
     }
-    public void getAPdf(string filePath,string outputPath, IList<Field> list){
+    public void getAPdf(string filePath,string outputPath, List<Field> list){
         //PdfReader reader = new PdfReader(path);
         PdfDocument pdf = new PdfDocument(new PdfReader(filePath), new PdfWriter(outputPath));
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
         IDictionary<String, PdfFormField> fields = form.GetFormFields();
-        PdfFormField currentField;
-        int i = 1;
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_1[0]").SetValue(list[0].answer); //name
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_2[0]").SetValue(list[1].answer); //tin1
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]").SetValue("TIN 2"); //tin2
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]").SetValue("Other Name here"); //name other
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]").SetValue("Street address");    //address
+        form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_6[0]").SetValue("City state other info"); //state
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_7[0]").SetValue("Date"); //date
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_8[0]").SetValue("Miles"); //miles
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_9[0]").SetValue("Year");     //year
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_10[0]").SetValue("Make"); //make
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_11[0]").SetValue("Model"); //model
+        form.GetField("topmostSubform[0].CopyA[0].RghtCol[0].f1_12[0]").SetValue("Vin"); //vin
+        //PdfFormField currentField;
+        //int i = 1;
         //This is broken
         //TODO: fix
-        foreach(Field item in list) {
-            try{
-                string value = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_"+i.ToString()+"[0]";
-                fields.TryGetValue(String.Format(value), out currentField);
-                currentField.SetValue(item.answer);
-            i++;
-
-        } catch(NullReferenceException e) {
-            Debug.Print(e.Message);
-        }
-        }
         
-        form.FlattenFields();
+        //TODO: fill the pfd with a loop
+        /* if(list.Count > 0) {
+            for (int i = 0; i< list.Count; i++ ) {
+                try{
+                    Field item =list[i];
+                    string value = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_"+i.ToString()+"[0]";
+                    fields.TryGetValue(String.Format(value), out currentField);
+                    if (item.answer != null) {
+                        currentField.SetValue(item.answer);
+                    } else {
+                        currentField.SetValue("");
+                    }
+                    list.Remove(item);
+                } catch(NullReferenceException ex) {
+                    Debug.Print(ex.Message);
+                }
+            }     
+        }
+         */
+        // Call this when we send the set off, it makes the pdf non editable
+        //form.FlattenFields();
         pdf.Close();
         
     }

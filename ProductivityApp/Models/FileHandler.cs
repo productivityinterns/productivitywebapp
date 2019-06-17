@@ -53,11 +53,11 @@ public class FileHandler : IFileHandler
     public void WriteToFiles(Flow flow) {
         string mainPath = GetActiveFormsPath();
         string filePath = Path.Combine(mainPath,flow.Id.ToString(),"forms");
-        string[] names = new string[] {"yeezus","11037","cyka blyat"};
 
         //iterate through each form
         foreach (Form form in flow.forms)
         {
+
             PdfDocument pdf = getAPdf(Path.Combine(filePath,form.fileName),
                 Path.Combine(filePath,"newFile.pdf")  );
             PdfAcroForm acroform = PdfAcroForm.GetAcroForm(pdf, true);
@@ -65,10 +65,10 @@ public class FileHandler : IFileHandler
             foreach(Assignment a in form.assignments)
             {
                  //check if assignment's filter is true
-                if (true)// USE this after we fix the filter nonsense (a.filter != null && flow.checkFilter(a.filter))
+                if (flow.checkFilter(a.filter))
                 {
                     string theText = flow.GetAssignmentText(a);
-                    a.inputField = theText;
+                    //a.inputField = theText;
                     acroform.GetField(a.outputField).SetValue(theText);        
                     // This whole method replaces this -> printToDocument(theText,null,GetFormPath(flow,form),"text");
                 }

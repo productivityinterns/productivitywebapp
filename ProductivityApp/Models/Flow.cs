@@ -110,6 +110,9 @@ public class Flow {
         return newFlow;
     }
     public bool checkFilter(Filter filter) {
+        if (filter == null ) {
+            return true;
+        }
 
         foreach (Criteria criterion in this.criteria)
         {   
@@ -140,9 +143,12 @@ public class Flow {
     public string GetAssignmentText(Assignment assignment){
         string theText = "";
         var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
         if(matchingField != null)
         {
             theText = matchingField.answer;
+        }else if (matchingCriteria != null){
+            theText = matchingCriteria.SelectedValue;
         }
         return theText;
     }

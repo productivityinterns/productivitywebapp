@@ -97,7 +97,6 @@ public class Flow {
         ....that was way too wordy, see body of InitializeFlow for inefficient yet way less manual-intensive reflection method
          */
 
-        
         return clonedFlow;
     }
     //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG
@@ -111,6 +110,9 @@ public class Flow {
         return newFlow;
     }
     public bool checkFilter(Filter filter) {
+        if (filter == null ) {
+            return true;
+        }
 
         foreach (Criteria criterion in this.criteria)
         {   
@@ -119,7 +121,7 @@ public class Flow {
                 var answer = criterion.SelectedValue;
                 
                 //if answer is null, we didn't find a match, don't apply the filter
-                if (!String.IsNullOrEmpty(answer))
+                if (!String.IsNullOrEmpty(answer) && answer == filter.value)
                 {
                     return true;
                 }
@@ -131,5 +133,23 @@ public class Flow {
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// Read the template in the assignment inputfield, and render the results.
+    /// </summary>
+    /// <param name="assignment"></param>
+    /// <returns></returns>
+    public string GetAssignmentText(Assignment assignment){
+        string theText = "";
+        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+        if(matchingField != null)
+        {
+            theText = matchingField.answer;
+        }else if (matchingCriteria != null){
+            theText = matchingCriteria.SelectedValue;
+        }
+        return theText ?? "";
     }
 }

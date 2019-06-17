@@ -17,8 +17,6 @@ namespace ProductivityApp.Models
         /// The list of flows (user instances of templates)
         /// </summary>
         private DbSet<Flow> Flows { get; set; }
-     
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,10 +38,13 @@ namespace ProductivityApp.Models
         /// </summary>
         /// <param name="template">The source template to copy</param>
         /// <returns>the newly instantiated flow</returns>
-        public Flow InitializeTemplate(Flow template)
+        public Flow InitializeTemplate(Flow template,IFileHandler fileHandler)
         {
             //get a copy of flow from the template
             var newFlow = template.initializeFlow();
+
+            //copy forms from template to newFlow
+            fileHandler.InstantiateDirectory(template.Id,newFlow.Id);
             
             //add the new flow to the tracked database
             Flows.Add(newFlow);
@@ -54,11 +55,12 @@ namespace ProductivityApp.Models
         ///<summary>
         ///This method saves a flow to the DBSet called Flows
         ///</summary>
-        public void SaveFlow(FlowController.FillViewModel flow)
+        public Flow SaveFlow(FlowController.FillViewModel flow)
         {
 
             var existingFlow = Flows
                 .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(f=>f.criteria)
                 .Include(f=>f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
 
@@ -99,7 +101,7 @@ namespace ProductivityApp.Models
             }
             
             SaveChanges();
-
+            return existingFlow;
         }
     
          ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
@@ -111,6 +113,10 @@ namespace ProductivityApp.Models
             SaveChanges();
             
         }
+        public Flow FindFlowById(Guid Id) {
+            var flow = Flows.Where(t=> !t.IsATemplate && (t.Id == Id));
+            return flow.Single();
+        }
         /// <summary>
         /// Get all forms in the database that are flagged as a template
         /// </summary>
@@ -119,7 +125,8 @@ namespace ProductivityApp.Models
         {
             //get all the forms that are not flagged as explicitly a template
             //and include ALL subfields that exist (well, honestly, ones that I remembered!) -mg
-            var forms = Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+            var forms = Flows.Where(t => !t.IsATemplate)
+            .Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
@@ -157,8 +164,10 @@ namespace ProductivityApp.Models
             SaveChanges();
             var flows = Flows.Where(t=> !t.IsATemplate) ;
             return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
+                .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
+                .OrderByDescending(t=>t.inputSurvey.timeCreated)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -172,19 +181,43 @@ namespace ProductivityApp.Models
             {
                 IsATemplate = true,
                 name = "Purchase",
-                Id = Guid.NewGuid(),
+                Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea11111"),
                 Description = "To buy things.",
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter your first name",null),
-                     new Field(Field.Kinds.String,"Please enter your last name",null),
-                     new Field(Field.Kinds.String,"Please enter your job title",null),
+                     new Field(Field.Kinds.String,"firstname","Please enter your first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter your last name",null),
+                     new Field(Field.Kinds.String,"jobtitle","Please enter your job title",null),
 
                 }
                 },
-                forms = new List<Form>(),
+                forms = new List<Form> {
+                    new Form{
+                        assignments = new List<Assignment>
+                        {
+                            new Assignment("firstname","0",null),
+                            new Assignment("lastname","1",null)
+                        },
+                       fileName = "form1.txt",
+                       kind = "text",
+                    name = "Form 1"
+                    },
+                    new Form{
+                        assignments = new List<Assignment>
+                        {
+                            new Assignment("lastname","0",null),
+                            new Assignment("lastname","1",null),
+                            new Assignment("lastname","2",null),
+                            new Assignment("lastname","3",null),
+                            new Assignment("lastname","4",null)
+                        },
+                       fileName = "form2.txt",
+                       kind = "text",
+                    name = "Form 2"
+                    }
+                },
                // assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
@@ -239,8 +272,8 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter employee first name",null),
-                     new Field(Field.Kinds.String,"Please enter employee last name",null),
+                     new Field(Field.Kinds.String,"firstname","Please enter employee first name",null),
+                     new Field(Field.Kinds.String,"lastname","Please enter employee last name",null),
 
                 }
                 },
@@ -249,8 +282,7 @@ namespace ProductivityApp.Models
                 destination = new Destination()
 
             };
-
-            Flow template3 = new Flow
+Flow template3 = new Flow
             {
                 IsATemplate = true,
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
@@ -259,10 +291,40 @@ namespace ProductivityApp.Models
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
-                    fields = new List<Field> {
-                     new Field(Field.Kinds.String,"Please enter employee first name",null),
-                     new Field(Field.Kinds.String,"Please enter employee last name",null),
+                    fields = new List<Field> {//0)
+                     new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
+                     new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null),
+                     new Field(Field.Kinds.String,"street","Please enter street address",null),
+                     new Field(Field.Kinds.String,"address","Enter City, State, and Country",null),
+                     new Field(Field.Kinds.String,"zip","Enter Zip Code",null),
+                    new Field(Field.Kinds.String,"phone","Enter Telphone number",null),
 
+                     new Field(Field.Kinds.String,"tin1","Donee's TIN ",null),
+                      new Field(Field.Kinds.String,"tin2","Doner's TIN ",null),
+                       new Field(Field.Kinds.String,"name2","Donor's name",null),
+                        new Field(Field.Kinds.String,"address2","Street address",null),
+                         new Field(Field.Kinds.String,"address2","City/town, State, Zip Code, Country",null),
+
+                         //1
+                    new Field(Field.Kinds.String,"date","Date of contribution",null),
+                    //2a
+                    new Field(Field.Kinds.String,"miles","Odometer mileage",null),
+                    //2b
+                     new Field(Field.Kinds.String,"year","Year",null),
+                     //2c
+                      new Field(Field.Kinds.String,"make","Make",null),
+                      //2d
+                       new Field(Field.Kinds.String,"model","Model",null),
+                       //3
+                        new Field(Field.Kinds.String,"vin","Vehicle or other Identification number ",null),
+                        //4b
+                         new Field(Field.Kinds.String,"saleDate","Date of Sale",null),
+                         //4c
+                          new Field(Field.Kinds.String,"amount","Gross proceeds from sale",null),
+                          //6b
+                     new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
+
+                    
                 }
                 },
                 //assignments = new List<Assignment>(),
@@ -270,21 +332,111 @@ namespace ProductivityApp.Models
                     new Criteria{
                       Id = Guid.NewGuid(),
                        prompt = "Did you provide goods or services in exchange for the vehicle?",
-                       Category = "trade",
+                       Category = "6a",
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
                            new Answer("No","no"),
                        }
-
+                    },
+                    new Criteria() {
+                        Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle was sold in arm's length transaction to unrelated party",
+                       Category = "Vehicle Transaction",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                    },
+            
+                        new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle will not be transferred for money, other property, or services before completion of material improvements or significant intervening use",
+                       Category = "Transfer Information",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                
+                  },  new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies that vehicle is to be transferred to a needy individual for significantly below fair market value in furtherance of donee’s charitable purpose",
+                       Category = "Relocation of Vehicle",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
                   },
-                },
+                   new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Donee certifies the following detailed description of material improvements or significant intervening use and duration of use",
+                       Category = "User Agreement",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                           new Answer("No","no"),
+                       }
+                    },
+                          new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Describe the goods and services, if any, that were provided. If this box is checked, donee certifies that the goods and services consisted solely of intangible religious benefits.",
+                       Category = "Charitable Contributions",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                       }
+                    },
+                     new Criteria() {
+                      Id = Guid.NewGuid(),
+                       prompt = "Under the law, the donor may not claim a deduction of more than $500 for this vehicle if this box is checked",
+                       Category = "Contributions of Motor Vehicles, Boats and Airplanes",
+                       answers = new List<Answer>
+                       {
+                           new Answer("Yes","yes"),
+                        
+                       }
+                    },
+                  }, 
                 destination = new Destination(),
                 forms = new List<Form> {
                     new Form {
                         name = "1098-c",
-                        fileName = "f1098c.pfd",
-                        kind = "pdf"
+                        fileName = "f1098c.pdf",
+                        kind = "pdf",
+                        assignments = new List<Assignment> {
+                            new Assignment{
+                                inputField =  "firstname",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_1[0]",
+                            },
+                            new Assignment {
+                                inputField = "tin1",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_2[0]"
+                            },
+                            new Assignment {
+                                inputField = "tin2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]",
+                            },
+                            new Assignment {
+                                inputField = "name2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]"
+                            },
+                            new Assignment {
+                                inputField ="6a",
+                                outputField = "topmostSubform[0].CopyA[0].c1_3[0]"
+                            },
+                            new Assignment {
+                                 inputField ="barter",
+                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]",
+                                 filter = new Filter{
+                                     name = "6a",
+                                     value = "yes"
+
+                                 }
+                            }
+                        }
                         
                     }
                 }

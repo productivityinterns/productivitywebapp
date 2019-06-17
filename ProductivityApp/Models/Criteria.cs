@@ -10,6 +10,7 @@ public class Criteria {
     
     /// <summary>
     /// The name of the group of answers displayed in answers[]
+    /// Use this as a tag when doing an assignement
     /// </summary>
     public string Category {set; get;}
     public string prompt {set; get;}

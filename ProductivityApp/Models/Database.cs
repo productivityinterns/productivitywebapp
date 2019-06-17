@@ -291,7 +291,7 @@ Flow template3 = new Flow
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {//0)
-                     /*new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
+                     new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
                      new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null),
                      new Field(Field.Kinds.String,"street","Please enter street address",null),
                      new Field(Field.Kinds.String,"address","Enter City, State, and Country",null),
@@ -323,7 +323,7 @@ Flow template3 = new Flow
                           //6b
                      new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
 
-                    */
+                    
                 }
                 },
                 //assignments = new List<Assignment>(),
@@ -404,13 +404,25 @@ Flow template3 = new Flow
                     new Form {
                         name = "1098-c",
                         fileName = "f1098c.pdf",
-                        kind = "pdf"
+                        kind = "pdf",
+                        assignments = new List<Assignment> {
+                            new Assignment{
+                                inputField =  "firstname",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_1[0]",
+                            },
+                            new Assignment {
+                                inputField = "tin1",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_2[0]"
+                            },
+                            new Assignment {
+                                inputField = "tin2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]",
+                            }
+                        }
                         
                     }
                 }
             };
-            template3.inputSurvey.fields.Insert(template3.inputSurvey.fields.Count(),new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null));
-            template3.inputSurvey.fields.Insert(template3.inputSurvey.fields.Count(),new Field(Field.Kinds.String,"lastname","Please enter Donee's Tin", null));
             List<Flow> templates = new List<Flow>();
             templates.Add(template1);
             templates.Add(template2);

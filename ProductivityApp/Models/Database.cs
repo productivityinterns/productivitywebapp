@@ -60,7 +60,7 @@ namespace ProductivityApp.Models
 
             var existingFlow = Flows
                 .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
-                .Include(f=>f.forms).ThenInclude(f=>f.assignments)
+                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(f=>f.criteria)
                 .Include(f=>f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
 
@@ -164,7 +164,7 @@ namespace ProductivityApp.Models
             SaveChanges();
             var flows = Flows.Where(t=> !t.IsATemplate) ;
             return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
-                .Include(t=>t.forms).ThenInclude(f=>f.assignments)
+                .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
@@ -425,6 +425,15 @@ Flow template3 = new Flow
                             new Assignment {
                                 inputField ="6a",
                                 outputField = "topmostSubform[0].CopyA[0].c1_3[0]"
+                            },
+                            new Assignment {
+                                 inputField ="barter",
+                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]",
+                                 filter = new Filter{
+                                     name = "6a",
+                                     value = "yes"
+
+                                 }
                             }
                         }
                         

@@ -69,7 +69,14 @@ public class FileHandler : IFileHandler
                 {
                     string theText = flow.GetAssignmentText(a);
                     //a.inputField = theText;
-                    acroform.GetField(a.outputField).SetValue(theText);        
+                    var formfill = acroform.GetField(a.outputField);
+                        if (formfill is PdfButtonFormField && theText != "yes" && theText != "true")
+                        {
+                        } else {
+                            acroform.GetField(a.outputField).SetValue(theText);
+                        }
+                         
+                            
                     // This whole method replaces this -> printToDocument(theText,null,GetFormPath(flow,form),"text");
                 }
             }

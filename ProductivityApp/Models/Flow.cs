@@ -150,6 +150,6 @@ public class Flow {
         }else if (matchingCriteria != null){
             theText = matchingCriteria.SelectedValue;
         }
-        return theText;
+        return theText ?? "";
     }
 }

@@ -43,9 +43,7 @@ public class FileHandler : IFileHandler
             File.Copy(file, dest);
            
         }
-
         Debug.WriteLine(fPath);
-        
             // copying files with directory name of  forms/templateForms/[templateId]
             //Make destination for forms/activeForms/[destinationId]
             // into directory name of  forms/activeForms/[destinationId]
@@ -53,29 +51,33 @@ public class FileHandler : IFileHandler
     }
     //tyrek
     public void WriteToFiles(Flow flow) {
-         string mainPath = GetActiveFormsPath();
+        string mainPath = GetActiveFormsPath();
         string filePath = Path.Combine(mainPath,flow.Id.ToString(),"forms");
         string[] names = new string[] {"yeezus","11037","cyka blyat"};
 
         //iterate through each form
         foreach (Form form in flow.forms)
         {
+            PdfDocument pdf = getAPdf(Path.Combine(filePath,form.fileName),
+                Path.Combine(filePath,"newFile.pdf")  );
+            PdfAcroForm acroform = PdfAcroForm.GetAcroForm(pdf, true);
             //then through each assignment
             foreach(Assignment a in form.assignments)
             {
                  //check if assignment's filter is true
-                if (true)//(a.filter != null && flow.checkFilter(a.filter))
+                if (true)// USE this after we fix the filter nonsense (a.filter != null && flow.checkFilter(a.filter))
                 {
                     string theText = flow.GetAssignmentText(a);
                     a.inputField = theText;
-                     getAPdf(Path.Combine(filePath,"f1098c.pdf"),Path.Combine(filePath,"newFile.pdf"),a);
-                // printToDocument(theText,null,GetFormPath(flow,form),"text");
+                    acroform.GetField(a.outputField).SetValue(theText);        
+                    // This whole method replaces this -> printToDocument(theText,null,GetFormPath(flow,form),"text");
                 }
             }
+            pdf.Close();
             
 
         }
-        //grabs foroms from forms/activeForms/[destinationId]
+        //grabs forms from forms/activeForms/[destinationId]
         //writes criteria/ fields from survey 
 
         //goes through each form then each assignment in each form checking the filter
@@ -156,13 +158,14 @@ public class FileHandler : IFileHandler
 
         }
     }
-    public void getAPdf(string filePath,string outputPath, Assignment assignment){
+    public PdfDocument getAPdf(string filePath,string outputPath){
         //PdfReader reader = new PdfReader(path);
         PdfDocument pdf = new PdfDocument(new PdfReader(filePath), new PdfWriter(outputPath));
+        return pdf;
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdf, true);
         IDictionary<String, PdfFormField> fields = form.GetFormFields();
          
-        form.GetField(assignment.outputField).SetValue(assignment.inputField); //name
+        //form.GetField(assignment.outputField).SetValue(assignment.inputField); //name
         //TODO: REPLACE THESE WITH ASSIGNMENTS
         // form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]").SetValue("Other Name here"); //name other
         // form.GetField("topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]").SetValue("Street address");    //address
@@ -178,7 +181,7 @@ public class FileHandler : IFileHandler
          
         // Call this when we send the set off, it makes the pdf non editable
         //form.FlattenFields();
-        pdf.Close();
+        //pdf.Close();
         
     }
 }

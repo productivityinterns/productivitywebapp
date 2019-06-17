@@ -417,6 +417,10 @@ Flow template3 = new Flow
                             new Assignment {
                                 inputField = "tin2",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]",
+                            },
+                            new Assignment {
+                                inputField = "name2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]"
                             }
                         }
                         

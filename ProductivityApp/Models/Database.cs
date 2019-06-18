@@ -201,6 +201,7 @@ namespace ProductivityApp.Models
             {
                 IsATemplate = true,
                 name = "Purchase",
+                ThumbnailImage = "placeholder.jpg",
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea11111"),
                 Description = "To buy things.",
                 inputSurvey = new Survey
@@ -284,6 +285,7 @@ namespace ProductivityApp.Models
             Flow template2 = new Flow
             {
                 IsATemplate = true,
+                ThumbnailImage = "placeholder.jpg",
                 Id = Guid.NewGuid(),
                 name = "Hire",
                 Description = "Hire people!",
@@ -305,6 +307,7 @@ namespace ProductivityApp.Models
             Flow template3 = new Flow
             {
                 IsATemplate = true,
+                ThumbnailImage = "placeholder.jpg",
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
                 name = "Taxes",
                 Description = "File your taxes.",                

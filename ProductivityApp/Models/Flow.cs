@@ -21,6 +21,11 @@ public class Flow {
     public IList<Criteria> criteria {set; get;}
     public Destination destination {set; get;}
 
+    /// <summary>
+    /// The filename of the image for the flow button
+    /// </summary>
+    [NotMapped]
+    public string ThumbnailImage { get; set; }
     public IList<Form> forms {set; get;}
     /// <summary>
     /// Ugly hack. If true, we get into templates.

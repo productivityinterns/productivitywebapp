@@ -38,6 +38,12 @@ public class FileHandler : IFileHandler
         if (!Directory.Exists(destPath)){
             Directory.CreateDirectory(destPath);
         }
+         //NOW  create the sub dir to hold moded files to zip
+        var zippable = Path.Combine(destPath,"modified");
+        if (!Directory.Exists(zippable)) {
+            Directory.CreateDirectory(zippable);
+        }
+
         foreach(string file in Directory.GetFiles(sourcePath)) {
             string dest = Path.Combine(destPath, Path.GetFileName(file));
             File.Copy(file, dest);
@@ -59,7 +65,7 @@ public class FileHandler : IFileHandler
         {
 
             PdfDocument pdf = getAPdf(Path.Combine(filePath,form.fileName),
-                Path.Combine(filePath,"newFile.pdf")  );
+                Path.Combine(filePath,"modified",(form.name+"-filled."+form.kind))  );
             PdfAcroForm acroform = PdfAcroForm.GetAcroForm(pdf, true);
             //then through each assignment
             foreach(Assignment a in form.assignments)
@@ -147,7 +153,7 @@ public class FileHandler : IFileHandler
         //take a flow and zip all the forms
          var fPath = GetActiveFormsPath();
          var filePath = Path.Combine(fPath,id.ToString());
-         var formsPath = Path.Combine(filePath,"forms");
+         var formsPath = Path.Combine(filePath,"forms","modified");
          var zipName= id.ToString()+".zip";
          var zipPath = Path.Combine(filePath, zipName);
         if (File.Exists(zipPath)){

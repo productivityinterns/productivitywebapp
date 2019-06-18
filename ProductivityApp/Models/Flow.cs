@@ -18,7 +18,7 @@ public class Flow {
     public string name {set; get;}
     public string Description {get;set;}
     public Survey inputSurvey {set; get;}
-        public IList<Criteria> criteria {set; get;}
+    public IList<Criteria> criteria {set; get;}
     public Destination destination {set; get;}
 
     public IList<Form> forms {set; get;}
@@ -40,6 +40,10 @@ public class Flow {
         this.name = name;
         this.inputSurvey = survey;
     }
+    ///<summary>
+    /// This method creates a new flow based on a tamplate flow
+    /// <returns>copy of the template flow</returns>
+    ///</summary>
     public Flow initializeFlow() {
         //copy templates
         Flow newFlow = CloneTemplate();
@@ -100,15 +104,12 @@ public class Flow {
         return clonedFlow;
     }
     //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG
-    public Flow copyFromTemplate(Flow template) {
-        Flow newFlow = new Flow();
-        newFlow.name = template.name;
-        newFlow.inputSurvey = template.inputSurvey;
-        //newFlow.assignments = template.assignments;
-        newFlow.criteria = template.criteria;
-        newFlow.destination = template.destination;
-        return newFlow;
-    }
+
+    ///<summary>
+    /// This method determines if a given filter exists
+    /// <param name="filter">The filter that is being checked</param>
+    /// <returns>true if filter exists</returns>
+    ///</summary>
     public bool checkFilter(Filter filter) {
         if (filter == null ) {
             return true;

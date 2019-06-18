@@ -95,6 +95,10 @@ namespace ProductivityApp.Controllers
             string path = fileHandler.Zip(id);
             return File($"~/forms/activeForms/{id.ToString()}/{id.ToString()}.zip", "application/octet-stream",$"forms-{id.ToString()}.zip");
         }
+
+        public IActionResult About() {
+            return View();
+        }
         // public IActionResult Download(string path) {
         //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));
         // }

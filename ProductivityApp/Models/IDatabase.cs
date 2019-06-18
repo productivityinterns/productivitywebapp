@@ -6,8 +6,7 @@ namespace ProductivityApp.Models
 {
     public interface IDatabase
     {
-    
-        void DeleteFlow(Guid Id);
+            void DeleteFlow(Guid Id);
         IList<Flow> GetFlows();
         IList<Flow> GetForms();
         IList<Flow> GetTemplates();

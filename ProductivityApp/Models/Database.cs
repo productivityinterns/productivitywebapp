@@ -403,7 +403,7 @@ Flow template3 = new Flow
                 destination = new Destination(),
                 forms = new List<Form> {
                     new Form {
-                        name = "1098-c",
+                        name = "f1098c",
                         fileName = "f1098c.pdf",
                         kind = "pdf",
                         assignments = new List<Assignment> {

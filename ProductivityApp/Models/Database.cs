@@ -424,12 +424,18 @@ Flow template3 = new Flow
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]"
                             },
                             new Assignment {
+                                inputField = "address2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]"
+                            },
+                             //here is how to do a checkbox assignment
+                            new Assignment {
                                 inputField ="6a",
                                 outputField = "topmostSubform[0].CopyA[0].c1_3[0]"
                             },
+                            //here is the resulting filter that is dependent on the checkbox
                             new Assignment {
                                  inputField ="barter",
-                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]",
+                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_6[0]",
                                  filter = new Filter{
                                      name = "6a",
                                      value = "yes"
@@ -438,6 +444,25 @@ Flow template3 = new Flow
                             }
                         }
                         
+                    },
+                    new Form {
+                        name = "f1040ez",
+                        fileName = "f1040ez.pdf",
+                        kind = "pdf",
+                        assignments = new List<Assignment> {
+                            new Assignment {
+                                inputField= "firstname",
+                                outputField = "topmostSubform[0].Page1[0].Entity[0].f1_1[0]"
+                            },
+                            new Assignment {
+                                inputField= "lastname",
+                                outputField = "topmostSubform[0].Page1[0].Entity[0].f1_2[0]"
+                            },
+                            new Assignment {
+                                inputField = "address2",
+                                outputField = "topmostSubform[0].Page1[0].Entity[0].f1_6[0]"
+                            }
+                        }
                     }
                 }
             };

@@ -53,7 +53,9 @@ namespace ProductivityApp.Models
             return newFlow;
         }
         ///<summary>
-        ///This method saves a flow to the DBSet called Flows
+        /// This method saves a flow to a dbset called Flows
+        /// <param name="flow">The ViewModel returned from the Fill activity</param>
+        /// <returns>flow</returns>
         ///</summary>
         public Flow SaveFlow(FlowController.FillViewModel flow)
         {
@@ -103,8 +105,10 @@ namespace ProductivityApp.Models
             SaveChanges();
             return existingFlow;
         }
-    
+        ///<summary>
          ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
+        /// <param name="id">The Guid of the flow to be deleted</param>
+        ///</summary>
         public void DeleteFlow(Guid Id)
         {
             var flow = Flows.Where(f => f.Id == Id).FirstOrDefault();
@@ -113,6 +117,11 @@ namespace ProductivityApp.Models
             SaveChanges();
             
         }
+        ///<summary>
+        /// This method gets a flow from the database by its Guid 
+        /// <param name="id">The Guid of the desired flow</param>
+        /// <returns>flow</returns>
+        ///</summary>
         public Flow FindFlowById(Guid Id) {
             var flow = Flows.Where(t=> !t.IsATemplate && (t.Id == Id));
             return flow.Single();
@@ -120,7 +129,7 @@ namespace ProductivityApp.Models
         /// <summary>
         /// Get all forms in the database that are flagged as a template
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Collection of forms</returns>
         public IList<Flow> GetForms()
         {
             //get all the forms that are not flagged as explicitly a template
@@ -136,7 +145,11 @@ namespace ProductivityApp.Models
             return forms;
         }
         
-        //When we implement GetFlows() we have to filter on !IsATemplate (again, gross hack because we used the same class for both.)
+        ///<summary>
+        /// This method gets the templates from the database
+        /// NOTE: this is not being used yet, it redirects to the sample templates
+        /// <returns>Collection of template flows</returns>
+        ///</summary>
         public IList<Flow> GetTemplates()
         {
             return GetSampleTemplates();
@@ -160,6 +173,10 @@ namespace ProductivityApp.Models
                 .ToList();
         }
 
+        ///<summary>
+        /// This method gets the user created flows from the database
+        /// <returns>Collection of flows</returns>
+        ///</summary>
         public IList<Flow> GetFlows() {
             SaveChanges();
             var flows = Flows.Where(t=> !t.IsATemplate) ;
@@ -174,7 +191,10 @@ namespace ProductivityApp.Models
                 .ToList();
 
         }
-
+        ///<summary>
+        /// This method gets the sample templates that flows are copied from
+        /// <returns>Collection of template flows</returns>
+        ///</summary>
         public List<Flow> GetSampleTemplates()
         {//make a sample flow
             Flow template1 = new Flow
@@ -282,7 +302,7 @@ namespace ProductivityApp.Models
                 destination = new Destination()
 
             };
-Flow template3 = new Flow
+            Flow template3 = new Flow
             {
                 IsATemplate = true,
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),

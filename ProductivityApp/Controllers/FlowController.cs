@@ -99,6 +99,13 @@ namespace ProductivityApp.Controllers
         public IActionResult About() {
             return View();
         }
+
+        public IActionResult Create() {
+            return View(new Flow());
+        }
+        // public IActionResult Create(Flow newTemplate) {
+        //     return View(newTemplate);
+        // }
         // public IActionResult Download(string path) {
         //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));
         // }

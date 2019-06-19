@@ -4,6 +4,11 @@
   @{  var temps = Model.allTemplates;
       var fills = Model.allFlows;}
   <div class="row">
+    <div class="col-md-offset-10 col-md-2">
+      <a class="btn btn-sm btn-success" asp-action="create"><span class="glyphicon glyphicon-plus"></span> Create Template</a>
+    </div>
+  </div>
+  <div class="row">
   @foreach(Flow template in temps)
   {
         <div class="col-md-4 panel ">

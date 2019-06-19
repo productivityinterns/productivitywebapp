@@ -323,10 +323,11 @@ namespace ProductivityApp.Models
                     new Field(Field.Kinds.String,"phone","Enter Telphone number",null),
 
                      new Field(Field.Kinds.String,"tin1","Donee's TIN ",null),
-                      new Field(Field.Kinds.String,"tin2","Doner's TIN ",null),
-                       new Field(Field.Kinds.String,"name2","Donor's name",null),
-                        new Field(Field.Kinds.String,"address2","Street address",null),
-                         new Field(Field.Kinds.String,"address2","City/town, State, Zip Code, Country",null),
+                      new Field(Field.Kinds.String,"filerTin","Filer's TIN ",null),
+                       new Field(Field.Kinds.String,"filerFirstName","Filer's first name",null),
+                       new Field(Field.Kinds.String,"filerLastName","Filer's last name",null),
+                        new Field(Field.Kinds.String,"filerAddress1","Street address",null),
+                         new Field(Field.Kinds.String,"filerAdress2","City/town, State, Zip Code, Country",null),
 
                          //1
                     new Field(Field.Kinds.String,"date","Date of contribution",null),
@@ -346,7 +347,8 @@ namespace ProductivityApp.Models
                           new Field(Field.Kinds.String,"amount","Gross proceeds from sale",null),
                           //6b
                      new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
-
+                            //6c
+                            new Field(Field.Kinds.String,"goodsDescription", "Describe the goods and services, if any, that were provided.",new Filter("6a","yes"))
                     
                 }
                 },
@@ -439,31 +441,43 @@ namespace ProductivityApp.Models
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_2[0]"
                             },
                             new Assignment {
-                                inputField = "tin2",
+                                inputField = "filerTin",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]",
                             },
                             new Assignment {
-                                inputField = "name2",
+                                inputField = "filerFirstName",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]"
                             },
                             new Assignment {
-                                inputField = "address2",
+                                inputField = "filerAddress1",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]"
+                            },
+                            new Assignment {
+                                inputField = "filerAddress2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_7[0]"
                             },
                              //here is how to do a checkbox assignment
                             new Assignment {
                                 inputField ="6a",
-                                outputField = "topmostSubform[0].CopyA[0].c1_3[0]"
+                                outputField = "topmostSubform[0].CopyA[0].c1_5[0]"
                             },
                             //here is the resulting filter that is dependent on the checkbox
                             new Assignment {
                                  inputField ="barter",
-                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_6[0]",
+                                 outputField = "topmostSubform[0].CopyA[0].f1_16[0]",
                                  filter = new Filter{
                                      name = "6a",
                                      value = "yes"
 
                                  }
+                            },
+                            new Assignment {
+                                inputField = "goodsDescription",
+                                outputField = "topmostSubform[0].CopyA[0].f1_17[0]",
+                                filter = new Filter {
+                                    name = "6a",
+                                    value = "yes"
+                                }
                             }
                         }
                         
@@ -474,17 +488,22 @@ namespace ProductivityApp.Models
                         kind = "pdf",
                         assignments = new List<Assignment> {
                             new Assignment {
-                                inputField= "firstname",
+                                inputField= "filerFirstName",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_1[0]"
                             },
                             new Assignment {
-                                inputField= "lastname",
+                                inputField= "filerLastName",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_2[0]"
                             },
                             new Assignment {
-                                inputField = "address2",
+                                inputField = "filerAddress1",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_6[0]"
+                            },
+                             new Assignment {
+                                inputField = "filerAddress2",
+                                outputField = "topmostSubform[0].Page1[0].Entity[0].f1_8[0]"
                             }
+
                         }
                     }
                 }

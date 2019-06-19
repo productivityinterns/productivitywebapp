@@ -31,6 +31,12 @@ namespace ProductivityApp.Models
             
         }
 
+        public Flow SaveNewTemplate(Flow template) {
+            template.Id = Guid.NewGuid();
+            Flows.Add(template);
+            SaveChanges();
+            return template;
+        }
 
         /// <summary>
         /// Instantiate a new flow object from the source template.

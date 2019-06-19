@@ -99,13 +99,39 @@ namespace ProductivityApp.Controllers
         public IActionResult About() {
             return View();
         }
-
+        [HttpGet]
         public IActionResult Create() {
-            return View(new Flow());
+            return View(new TemplateViewModel ());
         }
-        // public IActionResult Create(Flow newTemplate) {
-        //     return View(newTemplate);
-        // }
+        public class TemplateViewModel
+        {
+            public Guid Id { get; set; }
+         
+            public Survey inputSurvey { set; get; }         
+            public IList<Criteria> criteria { set; get; }
+            public Destination destination { set; get; }
+            public  string name {set;get;}
+            public IList<Form> forms {set; get;}
+            public  string Description {set;get;}
+
+
+        }
+        [HttpPost]
+        public IActionResult Create(TemplateViewModel templateVm) {
+            //save the template in the template db
+            //this will redicrect to the pdf assignment page not index.
+            Debug.Print("FLow name: "+templateVm.name);
+            Debug.Print("Flow desc: "+templateVm.Description);
+            Flow template = new Flow {
+                name = templateVm.name,
+                Description = templateVm.Description,
+                IsATemplate = true
+                
+            };
+            database.SaveNewTemplate(template);
+            //make sure to 
+            return RedirectToAction("index");
+        }
         // public IActionResult Download(string path) {
         //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));
         // }

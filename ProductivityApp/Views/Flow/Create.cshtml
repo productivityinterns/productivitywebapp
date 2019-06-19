@@ -1,4 +1,4 @@
-@model Flow
+@model ProductivityApp.Controllers.FlowController.TemplateViewModel
 <div class="container">
     <form method="POST"> 
         <div class="row">
@@ -6,13 +6,13 @@
         </div>
         <div class="form-group">
                 <label>Name your workflow:</label>
-                <input class="form-control" type="text" name="nameOfFlow" value="@Model.name" />
+                <input class="form-control" type="text" name="name" value="@Model.name" />
                 <label>Describe your workflow:</label>
-                <input class="form-control" type="text" name="descriptionOfFlow" value="@Model.Description" />
+                <input class="form-control" type="text" name="Description" value="@Model.Description" />
         </div>
         <div class="form-group">
             <input type="file" name="files" multiple>
         </div>
-        <a class="btn btn-sm btn-success"><span class="glyphicon glyphicon-pencil"></span> Complete Template</a>
+        <button type="submit">Submit</button>
     </form>
 </div>

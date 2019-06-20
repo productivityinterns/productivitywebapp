@@ -125,7 +125,8 @@ namespace ProductivityApp.Controllers
             Flow template = new Flow {
                 name = templateVm.name,
                 Description = templateVm.Description,
-                IsATemplate = true
+                IsATemplate = true,
+                inputSurvey = new Survey(),
                 
             };
             database.SaveNewTemplate(template);

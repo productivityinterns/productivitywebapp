@@ -129,7 +129,12 @@ namespace ProductivityApp.Controllers
                 
             };
             database.SaveNewTemplate(template);
+            //DO NOT FORGET TO CREATE THE DIRECTORY FOR THE TEMPLATE
             //make sure to 
+            return RedirectToAction("index");
+        }
+        public IActionResult DeleteTemplate(Guid id) {
+            database.DeleteFlow(id);
             return RedirectToAction("index");
         }
         // public IActionResult Download(string path) {

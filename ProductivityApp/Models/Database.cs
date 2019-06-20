@@ -158,17 +158,17 @@ namespace ProductivityApp.Models
         ///</summary>
         public IList<Flow> GetTemplates()
         {
-            return GetSampleTemplates();
+            //return GetSampleTemplates();
             var templates = Flows.Where(t => t.IsATemplate);
             //get sample flow if none exist
-            if(templates.Count() < 3)
-            {
-                foreach(var template in GetSampleTemplates())
-                {
-                    Flows.Add(template);
-                }
-                SaveChanges();
-            }
+            // if(templates.Count() == 0)
+            // {
+            //     foreach(var template in GetSampleTemplates())
+            //     {
+            //         Flows.Add(template);
+            //     }
+            //     SaveChanges();
+            // }
             //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
             return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)

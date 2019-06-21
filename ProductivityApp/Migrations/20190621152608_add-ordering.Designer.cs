@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductivityApp.Models;
 
 namespace ProductivityApp.Migrations
 {
     [DbContext(typeof(Database))]
-    partial class DatabaseModelSnapshot : ModelSnapshot
+    [Migration("20190621152608_add-ordering")]
+    partial class addordering
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+           protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,6 +30,7 @@ namespace ProductivityApp.Migrations
                     b.Property<string>("value");
 
                     b.HasKey("Id");
+                    b.Property<int>("Order");
 
                     b.HasIndex("CriteriaId");
 
@@ -65,11 +68,10 @@ namespace ProductivityApp.Migrations
 
                     b.Property<Guid?>("FlowId");
 
-                    b.Property<int>("Order");
-
                     b.Property<string>("SelectedValue");
 
                     b.Property<string>("prompt");
+                    b.Property<int>("Order");
 
                     b.HasKey("Id");
 
@@ -99,11 +101,10 @@ namespace ProductivityApp.Migrations
 
                     b.Property<int>("Kind");
 
-                    b.Property<int>("Order");
-
                     b.Property<Guid?>("SurveyId");
 
                     b.Property<string>("answer");
+                    b.Property<int>("Order");
 
                     b.Property<Guid?>("filterId");
 
@@ -251,5 +252,6 @@ namespace ProductivityApp.Migrations
                 });
 #pragma warning restore 612, 618
         }
+    
     }
 }

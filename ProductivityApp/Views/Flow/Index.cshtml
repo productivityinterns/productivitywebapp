@@ -1,19 +1,25 @@
 @model AllFlows 
 <div class="container">
-  <h1>Start a new Flow</h1>
+  <h1 style = "border-bottom: 6px solid black;"></h1>
   @{  var temps = Model.allTemplates;
       var fills = Model.allFlows;}
+  <div class="row">
   @foreach(Flow template in temps)
   {
-<div class="row">
-  <div class="col-lg-4" style="background-color:darkgrey;height: 75px;width: 100px;margin: 15px;">
-      <a asp-action="initialize" asp-route-id="@template.name">@template.name</a>
-  </div>  
-  
-  <p class="col-lg-8"style="margin:25px">@template.Description</p>
-</div>
+        <div class="col-md-4 panel ">
+              <a asp-action="initialize" asp-route-id="@template.name" style="text-decoration:none;color:black;">
+                    <div class="panel-body mb-4" style="box-shadow: 5px 5px 10px  #d9dedb;">
+                     <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src='@($"images/{template.ThumbnailImage}")'data-holder-rendered="true">
+                                <div class="card-body">
+                                    <h4>@template.name</h4>
+                                    <em class="d-flex justify-content-between align-items-center">@template.Description</em>                                                  
+                                </div>     
+                    </div>
+              </a>
+        </div>  
   }
-      
+  </div>
+  
   <hr>
   <div class="row">
     <h3>Existing Flows</h3>
@@ -22,23 +28,20 @@
           <tr>
             <th>Flow</th>
             <th>Description</th>
-            <th>User</th>
             <th>Date started</th>
-            <th>Status</th>
             <th>Options</th>            
           </tr>
         </thead>
         <tbody>
           @foreach(Flow fill in fills)
          { 
-           //TODO: Sort chronologically
+           
            <tr>
-           <td>@fill.name</td>
+
+               <td><a class="btn btn-sm btn-primary" asp-action="fill" asp-route-id="@fill.Id" ><span class="glyphicon glyphicon-pencil"></span> Fill</a>  <a class="btn btn-sm btn-default" asp-action="download" asp-route-id="@fill.Id"><span class="glyphicon glyphicon-download"></span> Send</a>  @fill.name</td>
            <td>@fill.Description</td>
-           <td>@fill.Id</td>
            <td>@fill.inputSurvey.timeCreated</td>
-           <td>Chilling</td>
-           <td> <a asp-action="fill" asp-route-id="@fill.Id">Edit</a> | <a asp-action="Remove" asp-route-id="@fill.Id" method="post">Delete</a>| <a asp-action="download" asp-route-id="@fill.Id">Send</a></td>
+           <td><a class="btn btn-sm btn-danger" asp-action="Remove" asp-route-id="@fill.Id" method="post"><span class="glyphicon glyphicon-trash"></span> Delete</a> </td>
            </tr>
           }
         </tbody>

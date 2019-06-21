@@ -7,7 +7,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Criteria {
     public Guid Id { get; set; }
 
-    
+    /// <summary>
+    /// The order the criteria should be displayed to the user.
+    /// </summary>    
+    public int Order {get;set;}
     /// <summary>
     /// The name of the group of answers displayed in answers[]
     /// Use this as a tag when doing an assignement
@@ -30,21 +33,25 @@ public class Criteria {
     //public void setAnswer(string key, string value) {
     //    this.answers = new Answer(key,value);
     //}
+
+    //MG -- you should use generic copy funcs here to avoid 'forgetting' newly added fields later.    
     public void copyCriteriaInto(Criteria destination){
         destination.Id = this.Id;
         destination.Category = this.Category;
         destination.answers = this.answers;
         destination.prompt = this.prompt;
         destination.SelectedValue = this.SelectedValue;
+        destination.Order = this.Order;
     }
 
     public Criteria()
     {
         
     }
-    public Criteria(string category) {
+    public Criteria(string category,int order = 0) {
         this.Category =  category;
         this.prompt = "Default criteria prompt.";
+        this.Order = order;
     } 
 
 }

@@ -1,20 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.Collections.Generic;
-using System.Web;
-using iText;
 using iText.Forms;
 using iText.Forms.Fields;
-using iText.Pdfa;
-using iText.IO.Colors;
-using iText.Signatures;
-using iText.Kernel;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Layer;
 
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
@@ -57,6 +47,21 @@ public class FileHandler : IFileHandler
             File.Copy(file, dest); 
         }        
     }
+        //Create the directory for the templates
+        //
+        //
+        //        
+        public void SaveForm(Byte[] bytes,string fileName, Guid id, string kind) {
+            var templatePath = GetActiveTemplatesPath();
+            var templateFolderPath = Path.Combine(templatePath,id.ToString());
+            if (!Directory.Exists(templateFolderPath)) {
+                Directory.CreateDirectory(templateFolderPath);
+            }
+            var filePath = Path.Combine(templateFolderPath,(fileName + kind));
+            //maybe wrap this in using
+            System.IO.File.WriteAllBytes(filePath,bytes);
+        }
+
     ///<summary>
     /// This method iterates through the assignments for each form and prints the user inputed value
     /// to the form field

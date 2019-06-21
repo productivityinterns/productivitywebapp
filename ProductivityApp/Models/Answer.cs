@@ -18,15 +18,20 @@ public class Answer {
     /// True if the user has selected this answer for this criteria
     /// </summary>
    
+   /// <summary>
+   /// The order in which the answers should be displayed
+   /// </summary>   
+   public int Order {get;set;}
     public Answer()
     {
 
     }
     
-    public Answer(string text, string value) {
+    public Answer(string text, string value, int order = 0) {
         this.Text = text;
         this.Id = Guid.NewGuid();
         this.value = value;
+        this.Order = order;
        }
 
 }

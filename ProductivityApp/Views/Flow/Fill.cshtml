@@ -13,14 +13,18 @@
         <h4>@criteria.prompt</h4>
         @for(int answerIndex = 0; answerIndex <  criteria.answers.Count(); answerIndex++)
         {
-            var answerDisplay = criteria.answers[answerIndex].Text;
-            var value =  criteria.answers[answerIndex].value;
-            string radioName = $"criteria[{criteriaIndex}].SelectedValue";
-            if (criteria.SelectedValue != null && criteria.SelectedValue == value){
-                <input type="radio" name='@radioName' value='@value' checked>@answerDisplay<br>
+                        
+
+            string criteriaName = $"criteria[{criteriaIndex}]";//".SelectedValue";
+            string answerValue = criteria.answers[answerIndex].value;
+            string answerDisplay = criteria.answers[answerIndex].Text;
+
+            <input type="hidden" name='@($"{criteriaName}.Order")' value='@criteria.Order' />
+            if (criteria.SelectedValue != null && criteria.SelectedValue == answerValue){
+                <input type="radio" name='@($"{criteriaName}.SelectedValue")' value='@answerValue' checked>@answerDisplay<br>
             }
             else {
-                <input type="radio" name='@radioName' value='@value'>@answerDisplay<br>
+                <input type="radio" name='@($"{criteriaName}.SelectedValue")' value='@answerValue'>@answerDisplay<br>
             }
         }
     </div>
@@ -30,16 +34,17 @@
     <hr>
     <div class="row">
         <h4>@Model.name Form Fields</h4>
+        
         @for (int fieldIndex = 0; fieldIndex < @Model.inputSurvey.fields.Count(); fieldIndex++)
         {
             var field = Model.inputSurvey.fields[fieldIndex];
-            string nameOfId = $"inputSurvey.fields[{fieldIndex}].Id";
-            string nameOfAnswer = $"inputSurvey.fields[{fieldIndex}].answer";
-            
+            string fieldName =$"inputSurvey.fields[{fieldIndex}]";
+          
         <div class="form-group">
             <label>@field.prompt</label>
-            <input type="hidden" name="@nameOfId" value="@field.Id" />
-            <input class="form-control" type="text" name="@nameOfAnswer" value="@field.answer" />
+            <input type="hidden" name='@(fieldName + ".Id")' value="@field.Id" />
+            <input type="hidden" name='@(fieldName + ".Order")' value="@field.Order" />            
+            <input class="form-control" type="text" name='@(fieldName + ".answer")' value="@field.answer" />
         </div>
         }
 

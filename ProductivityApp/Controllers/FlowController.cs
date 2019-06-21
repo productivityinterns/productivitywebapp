@@ -101,39 +101,40 @@ namespace ProductivityApp.Controllers
         }
         [HttpGet]
         public IActionResult Create() {
-            return View(new TemplateViewModel ());
+            return RedirectToAction("create","template");
+            //return View(new TemplateViewModel ());
         }
-        public class TemplateViewModel
-        {
-            public Guid Id { get; set; }
+        // public class TemplateViewModel
+        // {
+        //     public Guid Id { get; set; }
          
-            public Survey inputSurvey { set; get; }         
-            public IList<Criteria> criteria { set; get; }
-            public Destination destination { set; get; }
-            public  string name {set;get;}
-            public IList<Form> forms {set; get;}
-            public  string Description {set;get;}
+        //     public Survey inputSurvey { set; get; }         
+        //     public IList<Criteria> criteria { set; get; }
+        //     public Destination destination { set; get; }
+        //     public  string name {set;get;}
+        //     public IList<Form> forms {set; get;}
+        //     public  string Description {set;get;}
 
 
-        }
-        [HttpPost]
-        public IActionResult Create(TemplateViewModel templateVm) {
-            //save the template in the template db
-            //this will redicrect to the pdf assignment page not index.
-            Debug.Print("FLow name: "+templateVm.name);
-            Debug.Print("Flow desc: "+templateVm.Description);
-            Flow template = new Flow {
-                name = templateVm.name,
-                Description = templateVm.Description,
-                IsATemplate = true,
-                inputSurvey = new Survey(),
+        // }
+        // [HttpPost]
+        // public IActionResult Create(TemplateViewModel templateVm) {
+        //     //save the template in the template db
+        //     //this will redicrect to the pdf assignment page not index.
+        //     Debug.Print("FLow name: "+templateVm.name);
+        //     Debug.Print("Flow desc: "+templateVm.Description);
+        //     Flow template = new Flow {
+        //         name = templateVm.name,
+        //         Description = templateVm.Description,
+        //         IsATemplate = true,
+        //         inputSurvey = new Survey(),
                 
-            };
-            database.SaveNewTemplate(template);
-            //DO NOT FORGET TO CREATE THE DIRECTORY FOR THE TEMPLATE
-            //make sure to 
-            return RedirectToAction("index");
-        }
+        //     };
+        //     database.SaveNewTemplate(template);
+        //     //DO NOT FORGET TO CREATE THE DIRECTORY FOR THE TEMPLATE
+        //     //make sure to 
+        //     return RedirectToAction("index");
+        // }
         public IActionResult DeleteTemplate(Guid id) {
             database.DeleteFlow(id);
             return RedirectToAction("index");

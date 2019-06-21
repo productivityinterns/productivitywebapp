@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProductivityApp.Models;
 using System.IO;
@@ -35,7 +31,7 @@ namespace ProductivityApp.Controllers
         }
         public ActionResult Create()
         {
-            return View();
+            return View(new TemplateViewModel ());
         }
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)

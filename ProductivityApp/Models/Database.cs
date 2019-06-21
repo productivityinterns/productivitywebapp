@@ -30,10 +30,63 @@ namespace ProductivityApp.Models
             
             
         }
-
-        public Flow SaveNewTemplate(Flow template) {
+        public Flow StartNewTemplate(Flow template) {
             template.Id = Guid.NewGuid();
             Flows.Add(template);
+            return template;
+        }
+        //this method is messed up, cant get it to dave to the db,
+        // and the one time i got it to save to the db the forms were nulled  out
+        public Flow SaveNewTemplate(Flow template) {
+
+            var existingFlow = Flows
+                //.Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.forms)//.ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
+                //.Include(f=>f.criteria)
+                //.Include(f=>f.destination)
+                .Where(f => f.Id == template.Id).FirstOrDefault();
+
+            if(existingFlow == null)
+            {
+                throw new ArgumentException("The specified flow does not exist.");
+            }
+            //fill in field answers frmo the user
+            foreach(var field in existingFlow.inputSurvey.fields)
+            {
+                var userField = template.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();                
+                if(userField != null)
+                {
+                    field.answer = userField.answer;
+                }
+                else
+                {
+                    field.answer = "";
+                }
+            }
+            //Fill in criteria from user input
+            foreach(var criteria in existingFlow.criteria)
+            {
+                var userCriteria = template.criteria.Where(c => c.Category == criteria.Category).FirstOrDefault();
+                if(userCriteria != null)
+                {
+                    criteria.SelectedValue = userCriteria.SelectedValue;
+                }
+                else
+                {
+                    criteria.SelectedValue = null;
+                }
+            }
+            if(existingFlow.forms == null) {
+                existingFlow.forms = template.forms;
+            }
+            if (template.destination != null)
+            {
+                existingFlow.destination.EmailAddresses = template.destination.EmailAddresses;
+                existingFlow.destination.zip = template.destination.zip;
+            }
+
+            
+            SaveChanges();
             SaveChanges();
             return template;
         }

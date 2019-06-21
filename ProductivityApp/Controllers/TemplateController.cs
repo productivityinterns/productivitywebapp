@@ -70,7 +70,8 @@ namespace ProductivityApp.Controllers
                         name = Path.GetFileNameWithoutExtension(file.FileName)
                    });  
                 }
-                Flow newTemplate  = database.SaveNewTemplate(template);
+                Flow newTemplate  = database.StartNewTemplate(template);
+                newTemplate = database.SaveNewTemplate(template);
                  //for each file that was uploaded, copy the file to where  it belongs
                 foreach(var file in templateViewModel.files)
                 {

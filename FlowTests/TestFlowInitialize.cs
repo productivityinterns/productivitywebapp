@@ -7,8 +7,71 @@ using Xunit;
 
 namespace ProductivityApp.Tests
 {
-    public class TestFlowInitialize
+    public class TestFlowInitialize    
     {
+
+        [Fact]
+        public void TestFlowOrdering()
+        {
+            using(Database db = new Database())
+            {
+                var flow = db.GetSampleTemplates().Last();
+                //perform ordering explicitly, and make sure stuff is in expected order!
+                flow = db.OrderFlowItems(flow);   
+                var firstCriteria = flow.criteria.FirstOrDefault();
+                Assert.Equal("6a",firstCriteria.Category);
+                var secondCriteria = flow.criteria.Skip(1).FirstOrDefault();
+                Assert.Equal("Transfer Information",secondCriteria.Category);
+
+                //and make sure if we forget to order the same test fails.
+                flow = db.GetSampleTemplates().Last();
+                secondCriteria = flow.criteria.Skip(1).FirstOrDefault();
+                Assert.NotEqual("Transfer Information",secondCriteria.Category);
+
+
+                //OK! Criteria are showing up correctly. Test fields.
+                //get a fresh flow
+                flow = db.OrderFlowItems(db.GetSampleTemplates().Last());
+                
+                //order should be: date, first, last
+                var firstField = flow.inputSurvey.fields.FirstOrDefault();
+                Assert.Equal("date",firstField.tag);
+                var secondField = flow.inputSurvey.fields.Skip(1).FirstOrDefault();
+                Assert.Equal("firstname",secondField.tag);
+                var thirdField = flow.inputSurvey.fields.Skip(2).FirstOrDefault();
+                Assert.Equal("lastname",thirdField.tag);
+
+
+                //make sure its not true when unsorted.
+                flow = db.GetSampleTemplates().Last();
+                
+                //order should be: date, first, last
+                firstField = flow.inputSurvey.fields.FirstOrDefault();
+                Assert.NotEqual("date",firstField.tag);
+                secondField = flow.inputSurvey.fields.Skip(1).FirstOrDefault();
+                Assert.NotEqual("firstname",secondField.tag);
+                thirdField = flow.inputSurvey.fields.Skip(2).FirstOrDefault();
+                Assert.NotEqual("lastname",thirdField.tag);
+
+
+
+                //Now test answer sorting. 
+                flow = db.OrderFlowItems(db.GetSampleTemplates().Last());
+                
+                firstCriteria = flow.criteria.FirstOrDefault();
+                Assert.Equal("6a",firstCriteria.Category);
+                var firstAnswer = firstCriteria.answers.FirstOrDefault();
+                Assert.Equal("no",firstAnswer.value);
+
+                //test inverse when sort is off
+                flow = db.GetSampleTemplates().Last();
+                firstCriteria = flow.criteria.Where(c=>c.Category == "6a").FirstOrDefault();
+                Assert.Equal("6a",firstCriteria.Category);
+                firstAnswer = firstCriteria.answers.FirstOrDefault();
+                Assert.NotEqual("no",firstAnswer.value);
+            }
+        }
+
         [Fact]
         public void TestInitializeCopiesValues()
         {

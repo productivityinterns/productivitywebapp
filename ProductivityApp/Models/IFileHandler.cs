@@ -9,4 +9,6 @@ public interface IFileHandler
     void DeleteFolder(Guid id);
 
     string GetActiveFormsPath();
+
+    void SaveForm(Byte[] bytes,string fileName, Guid id, string kind);
 }

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ProductivityApp.Models;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,6 +31,9 @@ namespace ProductivityApp.Controllers
             public List<Criteria> criteria {get;set;}
             public List<IFormFile> files {get;set;}
         }
+
+
+        [HttpGet]
         public ActionResult Create()
         {
             return View(new TemplateViewModel ());
@@ -36,7 +41,8 @@ namespace ProductivityApp.Controllers
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)
         {
-
+            
+            var files = HttpContext.Request.Form.Files;
             //make sur they filled it out correctly
             if(this.ModelState.IsValid)
             {
@@ -59,8 +65,9 @@ namespace ProductivityApp.Controllers
                    template.forms.Add(new Form
                    {
                         assignments = new List<Assignment>(),
-                        fileName = file.FileName,
-                        kind = "pdf" 
+                        fileName = Path.GetFileName(file.FileName),
+                        kind = "pdf" ,
+                        name = Path.GetFileNameWithoutExtension(file.FileName)
                    });  
                 }
                 Flow newTemplate  = database.SaveNewTemplate(template);
@@ -74,7 +81,7 @@ namespace ProductivityApp.Controllers
                         {
                             readStream.CopyTo(ms);
                             var bytes = ms.ToArray();
-                         //   fileHandler.SaveForm(bytes,file.FileName,newTemplate.Id,"pdf");
+                            fileHandler.SaveForm(bytes,Path.GetFileNameWithoutExtension(file.FileName),newTemplate.Id,"pdf");
                         }
                     }
                     

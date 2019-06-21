@@ -47,17 +47,18 @@ public class FileHandler : IFileHandler
             File.Copy(file, dest); 
         }        
     }
-        //Create the directory for the templates
-        //
-        //
-        //        
+        ///<summary>
+        /// THis function takes a byte array, a file, a guid, and a kind and saves the bytes as a file with
+        /// this name and extention given, in a folder in the templates folder with the name of the guid
+        ///
+        ///</summary>        
         public void SaveForm(Byte[] bytes,string fileName, Guid id, string kind) {
             var templatePath = GetActiveTemplatesPath();
             var templateFolderPath = Path.Combine(templatePath,id.ToString());
             if (!Directory.Exists(templateFolderPath)) {
                 Directory.CreateDirectory(templateFolderPath);
             }
-            var filePath = Path.Combine(templateFolderPath,(fileName + kind));
+            var filePath = Path.Combine(templateFolderPath,(fileName +"."+kind));
             //maybe wrap this in using
             System.IO.File.WriteAllBytes(filePath,bytes);
         }

@@ -183,7 +183,7 @@ namespace ProductivityApp.Models
         /// <returns>flow</returns>
         ///</summary>
         public Flow FindFlowById(Guid Id) {
-            var flow = Flows.Where(t=> !t.IsATemplate && (t.Id == Id));
+            var flow = Flows.Where((t=>(t.Id == Id)));
             return flow.Single();
         }
         /// <summary>

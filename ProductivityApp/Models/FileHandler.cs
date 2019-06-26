@@ -151,14 +151,16 @@ public class FileHandler : IFileHandler
     /// This method delets a specific directory and all of the child directories and files
     /// <param name="id">The guid of  the current flow, also the name of the flows directory</param>
     ///</summary>
-    public void DeleteFolder(Guid id) {
-        //TODO: Add a check to see if is a template, get path accordingly
-        var fPath = GetActiveFormsPath();
+    public void DeleteFolder(Guid id, bool isTemplate) {
+        var fPath = "";
+        if(isTemplate) {
+            fPath = GetActiveTemplatesPath();
+        } else {
+            fPath = GetActiveFormsPath();
+        }
         var filePath = Path.Combine(fPath,id.ToString());
         if (Directory.Exists(filePath)) {
             Directory.Delete(filePath,true);//deletes all children
-            //Directory.Delete(filePath);     //deletes the newly emptied folder
-
         }
     }
     ///<summary>

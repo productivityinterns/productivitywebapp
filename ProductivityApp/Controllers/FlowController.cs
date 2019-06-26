@@ -76,8 +76,9 @@ namespace ProductivityApp.Controllers
         }
         public IActionResult Remove(Guid id)
         {
+            var flow = database.FindFlowById(id);
             database.DeleteFlow(id);
-            fileHandler.DeleteFolder(id); 
+            fileHandler.DeleteFolder(id,flow.IsATemplate); 
             return RedirectToAction("index",null);
         }
         public IActionResult Survey()

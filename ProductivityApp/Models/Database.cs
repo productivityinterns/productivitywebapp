@@ -213,7 +213,7 @@ namespace ProductivityApp.Models
         public void UpdateFormTemplateAssignments(ViewModels.AssignSubmitViewModel submitFormViewModel)
         {
          
-            var theForm = Flows.Where(f => f.IsATemplate).SelectMany(f => f.forms).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
+            var theForm = Flows.Include(f=>f.forms).ThenInclude(f=>f.assignments).Where(f => f.IsATemplate).SelectMany(f => f.forms).Include(f=>f.assignments).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
 
             if(theForm == null)
             {
@@ -222,10 +222,14 @@ namespace ProductivityApp.Models
             //replace existing assignments if already there, or add new if not
             foreach(var assignment in submitFormViewModel.Assignments)
             {
+                if(theForm.assignments == null)
+                {
+                    theForm.assignments = new List<Assignment>();
+                }
                 var existingAssignment = theForm.assignments.Where(a => a.outputField == assignment.outputField).FirstOrDefault();
                 if(existingAssignment != null)
                 {
-                    existingAssignment.inputField = assignment.inputField;
+                    existingAssignment.inputField = assignment.inputField;                    
                 }
                 else
                 {
@@ -237,8 +241,7 @@ namespace ProductivityApp.Models
                     });
 
                 }
-            }
-            theForm.assignments = submitFormViewModel.Assignments;
+            }            
             SaveChanges();
         }
 

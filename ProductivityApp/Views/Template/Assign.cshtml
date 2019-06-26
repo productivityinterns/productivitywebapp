@@ -110,8 +110,8 @@
                         //build up a in-memory list of assignments
                         $(".assignment-input").each(function (element) {
                         var assignment = {
-                                inputField: $(this).data('fieldname'),
-                                outputField: $(this).val()
+                                outputField: $(this).data('fieldname'),
+                                inputField: $(this).val()
                             };
                             form.Assignments.push(assignment);
                 });
@@ -120,14 +120,17 @@
                         
                         //and post them to /assign
                         $.ajax({
-                type: "POST",
+                            type: "POST",
                             url: "/Template/Assign",
                             data: form,
                             success: function () {
-                        window.location = "/Flow";
-                    }
-                            ,
-                            dataType: "json"
+                                console.log("It worked.");
+                                window.location = "/Flow";
+                            }, error: function (err) {
+                                console.log(err);
+                            }
+                            
+                            
                         });
                         //when im done, take me back
                     });

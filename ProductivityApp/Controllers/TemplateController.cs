@@ -92,8 +92,8 @@ namespace ProductivityApp.Controllers
         {
           
             database.UpdateFormTemplateAssignments(vm);
-            
-            return RedirectToAction("Index", "Flow");
+
+            return Ok();
         }
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)

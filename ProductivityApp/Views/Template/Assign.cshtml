@@ -1,0 +1,41 @@
+﻿@model Flow
+<div class="container">
+<canvas id="the-canvas" width="500" height="500">
+    </canvas>
+    Test Viewer
+    </div>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        <script src="~/lib/pdf.js/pdf.js">
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function()
+            {
+
+        loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[0].fileName');
+        loadingtask.promise.then(function(pdf)
+        {
+            pdf.getPage(1).then(function(page) 
+            {
+                var scale = 1.5;
+var viewport = page.getViewport({ scale: scale, });
+
+var canvas = document.getElementById('the-canvas');
+var context = canvas.getContext('2d');
+canvas.height = viewport.height;
+canvas.width = viewport.width;
+
+var renderContext = {
+  canvasContext: context,
+  viewport: viewport
+};
+page.render(renderContext);
+
+            });
+        })
+      });
+    </script>
+
+
+
+    }

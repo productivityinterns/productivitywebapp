@@ -71,6 +71,17 @@ namespace ProductivityApp.Controllers
             }
             return RedirectToAction("Index");
         }
+                [HttpGet]
+        public ActionResult Assign(Guid id)
+        {
+            var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == id);
+
+            if(existingTemplate == null)
+            {
+                return NotFound();
+            }
+            return View(existingTemplate);
+        }
 
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)
@@ -127,4 +138,6 @@ namespace ProductivityApp.Controllers
         }
 
     }
+
+
 }

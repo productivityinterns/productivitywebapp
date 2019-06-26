@@ -152,6 +152,7 @@ public class FileHandler : IFileHandler
     /// <param name="id">The guid of  the current flow, also the name of the flows directory</param>
     ///</summary>
     public void DeleteFolder(Guid id) {
+        //TODO: Add a check to see if is a template, get path accordingly
         var fPath = GetActiveFormsPath();
         var filePath = Path.Combine(fPath,id.ToString());
         if (Directory.Exists(filePath)) {

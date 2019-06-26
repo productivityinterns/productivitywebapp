@@ -33,6 +33,7 @@ namespace ProductivityApp.Models
         public Flow StartNewTemplate(Flow template) {
             template.Id = Guid.NewGuid();
             Flows.Add(template);
+            SaveChanges();
             return template;
         }
         //this method is messed up, cant get it to dave to the db,
@@ -40,10 +41,10 @@ namespace ProductivityApp.Models
         public Flow SaveNewTemplate(Flow template) {
 
             var existingFlow = Flows
-                //.Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
-                .Include(f=>f.forms)//.ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
-                //.Include(f=>f.criteria)
-                //.Include(f=>f.destination)
+                .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
+                .Include(f=>f.criteria)
+                .Include(f=>f.destination)
                 .Where(f => f.Id == template.Id).FirstOrDefault();
 
             if(existingFlow == null)
@@ -197,6 +198,7 @@ namespace ProductivityApp.Models
             .Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
+                .Include(t=> t.forms)
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -226,6 +228,7 @@ namespace ProductivityApp.Models
             return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
+                .Include(t => t.forms)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -243,6 +246,7 @@ namespace ProductivityApp.Models
                 .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
+                .Include(t => t.forms)
                 .OrderByDescending(t=>t.inputSurvey.timeCreated)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)

@@ -71,10 +71,12 @@ namespace ProductivityApp.Controllers
             }
             return RedirectToAction("Index");
         }
-                [HttpGet]
+        [HttpGet]                
         public ActionResult Assign(Guid id)
         {
             var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == id);
+            //TODO: Change this later to the form being edited.
+            ViewBag.FormIndex = 0;
 
             if(existingTemplate == null)
             {
@@ -82,7 +84,17 @@ namespace ProductivityApp.Controllers
             }
             return View(existingTemplate);
         }
+     
 
+
+        [HttpPost]
+        public ActionResult Assign(AssignSubmitViewModel vm)
+        {
+          
+            database.UpdateFormTemplateAssignments(vm);
+            
+            return RedirectToAction("Index", "Flow");
+        }
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)
         {

@@ -1,42 +1,137 @@
 ﻿@model Flow
+<style>
+    .container
+    {
+        position:relative;
+    }
+
+    .container canvas, .overlay
+    {
+        position:absolute;
+    }
+    .overlay{
+        /* We wil use this overlay to draw th form ontop of the PDF document.
+           The PDF is for all intents and purposes a fancy background picture, and the guts of this are entirely in our overlay and the form inside of it
+        */
+        position:absolute;
+        
+        z-index:100;
+        opacity:.8;
+    }
+    .overlay input{
+        position:relative;
+    }
+</style>
 <div class="container">
-    <canvas id="canvas" width="500" height="500" ></canvas>       
+    <div id="overlaydiv" class="overlay">
+        <form id="overlay-form">
+
+        </form>
+    </div>
+    <canvas id="canvas" width="500" height="500" >        
+    </canvas>       
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script src="~/lib/pdf.js/pdf.js"></script>
     <script src="~/lib/pdf.js/pdf.worker.js"></script>
-    
+    <div class="btn btn-primary" id="save-button">Save Form</div>
     <script>
             document.addEventListener('DOMContentLoaded', function()
             {
 
-            loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[0].fileName');
-            loadingtask.promise.then(function(pdf)
-            {
-                pdf.getPage(1).then(function (page)            
+            
+            //put existing values from this assignment into a obj map
+                assignments = [];
+            @{foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
                 {
+                    @:assignemnt = { inputField: '@a.inputField', outputField: '@a.outputField' };
+                    @:assignments.push(assignemnt);                    
+
+
+                }
+            }
+                console.log(assignments);
+
+            loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[ViewBag.FormIndex].fileName');
+                            loadingtask.promise.then(function(pdf)
+            {
+                                pdf.getPage(1).then(function (page)
+                {
+                                    console.log("Annotations:");
+                                    page.getAnnotations().then(function (items) {
+                                        //For each input of "tx" type, make an input box
+                                        items.forEach((element) => {
+                                        if (element.fieldType = "Tx") {
+                                            //if there is a text field, create an input box in the overlay
+                                            inputTag = document.createElement('div');
+                                            inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style='width:10em' />`;
+                                //Figure out 
+                                document.getElementById("overlay-form").append(inputTag);
+                    }
+                });
+                        items[0].borderStyle.width = 10;
+                        console.log(items);
+                    });
+
                     console.log("I have a page.!");
                     console.log(page);
                     var scale = 1;
-                    var viewport = page.getViewport(1.0);
+                var viewport = page.getViewport(2.0);
 
-                    var canvas = document.getElementById('canvas');
-                    var context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
+                var canvas = document.getElementById('canvas');
+                var context = canvas.getContext('2d');
+                canvas.height = viewport.height;
                     canvas.width = viewport.width;
+                    var overlayDiv = document.getElementById('overlaydiv');
+                overlayDiv.style.height = viewport.height + "px";
+                    overlayDiv.style.width = viewport.width + "px";
 
                     var renderContext = {
                       canvasContext: context,
                       viewport: viewport
                     };
-                    renderTask = page.render(renderContext);
+                renderTask = page.render(renderContext);
                     renderTask.promise.then(function (err) {
                         console.log('Page rendered');
                         console.log(err);
                     });
                 });
-        })
+                })
+
+                //jquery stuff for submitting the form
+                $(function () {
+                    $("#save-button").click(() => {
+                    form = {
+                    id : '@Model.forms[ViewBag.FormIndex].Id',
+                            Assignments : []
+                        };
+                        //look at every box with class assignment-input
+                        //build up a in-memory list of assignments
+                        $(".assignment-input").each(function (element) {
+                        var assignment = {
+                                inputField: $(this).data('fieldname'),
+                                outputField: $(this).val()
+                            };
+                            form.Assignments.push(assignment);
+                });
+
+                        console.log(form);
+                        
+                        //and post them to /assign
+                        $.ajax({
+                type: "POST",
+                            url: "/Template/Assign",
+                            data: form,
+                            success: function () {
+                        window.location = "/Flow";
+                    }
+                            ,
+                            dataType: "json"
+                        });
+                        //when im done, take me back
+                    });
+                });
       });
     </script>
 

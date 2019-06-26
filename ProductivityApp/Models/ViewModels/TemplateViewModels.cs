@@ -28,5 +28,16 @@ namespace ProductivityApp.Models.ViewModels
         public List<IFormFile> files { get; set; }
     }
 
+    /// <summary>
+    /// Used when the user submits a form from the /Assign page
+    /// </summary>
+    public class AssignSubmitViewModel
+    {
+        /// <summary>
+        /// The Id of the specific form being edited
+        /// </summary>
+        public Guid Id { get; set; }
+        public List<Assignment> Assignments { get; set; }
+    }
 
 }

@@ -69,6 +69,7 @@
                         {
 
                         }
+                        
                     </div>
                 }
             </div>foreach
@@ -130,8 +131,7 @@
                     clone = $("#new-field-template").clone(false);
                     $(clone).find(".tag").attr("name", fieldName + ".tag");
                     $(clone).find(".kind").attr("name", fieldName + ".kind");
-                    $(clone).find(".prompt").attr("name", fieldName + ".prompt");
-                    
+                    $(clone).find(".prompt").attr("name", fieldName + ".prompt");                    
                     $(clone).show().appendTo("#fields-container");
                 })
             });

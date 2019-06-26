@@ -205,19 +205,55 @@ namespace ProductivityApp.Models
                 .ToList();
             return forms;
         }
-     
+
+        /// <summary>
+        /// Find a form that matches the id specified, and replace it's assignemnts with those passed in
+        /// </summary>
+        /// <param name="submitFormViewModel"></param>
+        public void UpdateFormTemplateAssignments(ViewModels.AssignSubmitViewModel submitFormViewModel)
+        {
+         
+            var theForm = Flows.Where(f => f.IsATemplate).SelectMany(f => f.forms).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
+
+            if(theForm == null)
+            {
+                throw new ArgumentOutOfRangeException("The form specified does not exist.");
+            }
+            //replace existing assignments if already there, or add new if not
+            foreach(var assignment in submitFormViewModel.Assignments)
+            {
+                var existingAssignment = theForm.assignments.Where(a => a.outputField == assignment.outputField).FirstOrDefault();
+                if(existingAssignment != null)
+                {
+                    existingAssignment.inputField = assignment.inputField;
+                }
+                else
+                {
+                    theForm.assignments.Add(new Assignment
+                    {
+                        Id = Guid.NewGuid(),
+                        inputField = assignment.inputField,
+                        outputField = assignment.outputField
+                    });
+
+                }
+            }
+            theForm.assignments = submitFormViewModel.Assignments;
+            SaveChanges();
+        }
+
         ///<summary>
         /// This method gets the templates from the database
         /// NOTE: this is not being used yet, it redirects to the sample templates
         /// <returns>Collection of template flows</returns>
         ///</summary>
         public IList<Flow> GetTemplates()
-        {            
+        {
             //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
-            return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
-                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
-                .Include(t=>t.destination)
-                .Include(t => t.forms)
+            return Flows.Where(t => t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+                .Include(t => t.criteria).ThenInclude(c => c.answers)
+                .Include(t => t.destination)
+                .Include(t => t.forms).ThenInclude(f => f.assignments)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)

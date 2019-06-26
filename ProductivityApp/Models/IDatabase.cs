@@ -15,5 +15,6 @@ namespace ProductivityApp.Models
         Flow FindFlowById(Guid Id);
         Flow SaveNewTemplate(Flow template);
         Flow StartNewTemplate(Flow template);
+        int SaveChanges();
     }
 }

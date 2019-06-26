@@ -6,7 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-
+using System;
+using ProductivityApp.Models.ViewModels;
 namespace ProductivityApp.Controllers
 {
     public class TemplateController : Controller
@@ -21,23 +22,56 @@ namespace ProductivityApp.Controllers
         
         }
 
-        public class TemplateViewModel
-        {
-            [Required]
-            public string name {get;set;}
-            public string description {get;set;}
-
-            public List<Field> fields {get;set;}
-            public List<Criteria> criteria {get;set;}
-            public List<IFormFile> files {get;set;}
-        }
-
+      
 
         [HttpGet]
         public ActionResult Create()
         {
             return View(new TemplateViewModel ());
         }
+        [HttpGet]
+        public ActionResult Fields(Guid id)
+        {
+            var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == id);
+
+            if(existingTemplate == null)
+            {
+                return NotFound();
+            }
+            var vm = new TemplateFieldsViewModel
+            {
+                 Criteria = existingTemplate.criteria.ToList(),
+                 Id = existingTemplate.Id,
+                 Fields = existingTemplate.inputSurvey.fields.ToList()                                 
+            };
+
+            return View(vm);
+
+        }
+
+       
+
+
+        [HttpPost]
+        public ActionResult Fields(TemplateFieldsViewModel vm)
+        {
+            if(ModelState.IsValid)
+            {
+                var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == vm.Id);
+
+                if(existingTemplate == null)
+                {
+                    return NotFound();
+                }
+
+                existingTemplate.criteria = vm.Criteria;
+                existingTemplate.inputSurvey.fields = vm.Fields;                
+                database.SaveChanges();
+                
+            }
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public ActionResult Create(TemplateViewModel templateViewModel)
         {
@@ -87,7 +121,7 @@ namespace ProductivityApp.Controllers
                     }
                     
                 }
-                return RedirectToAction("Index","Flow");
+                return RedirectToAction("Fields","Template",new { id = newTemplate.Id } );
             }
             return View(templateViewModel);
         }

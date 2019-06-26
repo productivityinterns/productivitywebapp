@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProductivityApp.Controllers;
+using ProductivityApp.Models.ViewModels;
 
 namespace ProductivityApp.Models
 {
@@ -87,8 +88,7 @@ namespace ProductivityApp.Models
             }
 
             
-            SaveChanges();
-            SaveChanges();
+            SaveChanges();            
             return template;
         }
 
@@ -205,25 +205,14 @@ namespace ProductivityApp.Models
                 .ToList();
             return forms;
         }
-        
+     
         ///<summary>
         /// This method gets the templates from the database
         /// NOTE: this is not being used yet, it redirects to the sample templates
         /// <returns>Collection of template flows</returns>
         ///</summary>
         public IList<Flow> GetTemplates()
-        {
-            //return GetSampleTemplates();
-            var templates = Flows.Where(t => t.IsATemplate);
-            //get sample flow if none exist
-            // if(templates.Count() == 0)
-            // {
-            //     foreach(var template in GetSampleTemplates())
-            //     {
-            //         Flows.Add(template);
-            //     }
-            //     SaveChanges();
-            // }
+        {            
             //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
             return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
@@ -559,5 +548,6 @@ namespace ProductivityApp.Models
 
             return templates;
         }
+        
     }
 }

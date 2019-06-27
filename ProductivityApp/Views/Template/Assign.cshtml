@@ -33,19 +33,19 @@
     <script src="~/lib/pdf.js/pdf.worker.js"></script>
     <div class="btn btn-primary" id="save-button">Save Form</div>
     <script>
+            
+
             document.addEventListener('DOMContentLoaded', function()
             {
             //put existing values from this assignment into a obj map
                 assignments = [];
-                @{foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
+                @foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
                 {
                     @:assignemnt = { inputField: '@a.inputField', outputField: '@a.outputField' };
                     @:assignments.push(assignemnt);
 
 
-                }
-                }
-                console.log(assignments);
+                }                                
                 loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[ViewBag.FormIndex].fileName');
                 loadingtask.promise.then(function (pdf) {
                     pdf.getPage(1).then(function (page) {
@@ -56,6 +56,13 @@
                                 if (element.fieldType = "Tx") {
                                     //if there is a text field, create an input box in the overlay
                                     inputTag = document.createElement('div');
+
+                                    //get the value from assignments if it exists, and put it in the field
+                                    var foundValue = assignments.find((a) =>
+                                    {
+                                        return (a.outputField == element.fieldName);                                                                                    
+                                    });
+                                    
                                     var widthInch = (element.rect[2]/72)-(element.rect[0]/72);
                                     var heightInch = (element.rect[3]/72)-(element.rect[1]/72);
                                     var leftDist = (element.rect[0]/72);

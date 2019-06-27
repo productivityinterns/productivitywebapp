@@ -56,7 +56,15 @@
                                 if (element.fieldType = "Tx") {
                                     //if there is a text field, create an input box in the overlay
                                     inputTag = document.createElement('div');
-                                    inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style='width:10em' />`;
+                                    var widthInch = (element.rect[2]/72)-(element.rect[0]/72);
+                                    var heightInch = (element.rect[3]/72)-(element.rect[1]/72);
+                                    var leftDist = (element.rect[0]/72);
+                                    var bottomDist = (element.rect[1]/72 );
+                                    var topDist = (10.5 - bottomDist);
+                                    console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
+                                    console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches"); 
+                                    inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
+                                    console.log("Fieldname:"+ element.fieldName);
                                     //Figure out
                                     document.getElementById("overlay-form").append(inputTag);
                                 }
@@ -66,7 +74,7 @@
                         });
 
                         console.log("I have a page.!");
-                        console.log(page);
+                        console.log("Page:" + page);
                         var scale = 2.0;
                         var viewport = page.getViewport(scale)
 

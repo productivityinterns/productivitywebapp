@@ -33,19 +33,19 @@
     <script src="~/lib/pdf.js/pdf.worker.js"></script>
     <div class="btn btn-primary" id="save-button">Save Form</div>
     <script>
+            
+
             document.addEventListener('DOMContentLoaded', function()
             {
             //put existing values from this assignment into a obj map
                 assignments = [];
-                @{foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
+                @foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
                 {
                     @:assignemnt = { inputField: '@a.inputField', outputField: '@a.outputField' };
                     @:assignments.push(assignemnt);
 
 
-                }
-                }
-                console.log(assignments);
+                }                                
                 loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[ViewBag.FormIndex].fileName');
                 loadingtask.promise.then(function (pdf) {
                     pdf.getPage(1).then(function (page) {
@@ -56,8 +56,15 @@
                                 if (element.fieldType = "Tx") {
                                     //if there is a text field, create an input box in the overlay
                                     inputTag = document.createElement('div');
-                                    inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style='width:10em' />`;
-                                    //Figure out
+
+                                    //get the value from assignments if it exists, and put it in the field
+                                    var foundValue = assignments.find((a) =>
+                                    {
+                                        return (a.outputField == element.fieldName);                                                                                    
+                                    });
+                                    
+                                    inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style='width:10em' value='${foundValue.inputField}' />`;
+                                    
                                     document.getElementById("overlay-form").append(inputTag);
                                 }
                             });

@@ -1,0 +1,140 @@
+﻿@model ProductivityApp.Models.ViewModels.TemplateFieldsViewModel
+
+@{
+    ViewData["Title"] = "Fields";
+}
+
+<h2>Fields</h2>
+
+<h4>TemplateFieldsViewModel</h4>
+<hr />
+@{ var fieldCtr = -1;}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Fields">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <h4>Fields</h4>
+            <div id="fields-container">
+                @foreach (var field in Model.Fields)
+                {
+                    fieldCtr++;
+                    <div class="form-group">
+                        <label>Tag</label>
+                        <input class="form-control" name="Fields[@fieldCtr].tag" value="@field.tag" />
+                    </div>
+                    <div class="form-group">
+                        <label>Prompt</label>
+                        <input class="form-control" name="Fields[@fieldCtr].prompt" value="@field.prompt" />
+                    </div>
+                    <div class="form-group">
+                        <label>Kind</label>
+
+                        <select class="form-control" name="Fields[@fieldCtr].Kind">
+                            @foreach (Field.Kinds kind in Enum.GetValues(typeof(Field.Kinds)))
+                            {
+                                if (kind == field.Kind)
+                                {
+                                    <option selected>@kind.ToString()</option>
+                                }
+                                else
+                                {
+                                    <option>@kind.ToString()</option>
+                                }
+                            }
+                            <option>String</option>foreach
+                            <option>Number</option>
+                            <option>Date</option>
+                        </select>
+                    </div>
+                }
+                <h4>Criteria</h4>
+                @{ int criteriaCtr = -1;}
+                @foreach (var criteria in Model.Criteria)
+                {
+
+                    criteriaCtr++;
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input class="form-control" name="Criteria[@criteriaCtr].Category" value="@criteria.Category" />
+                    </div>
+                    <div class="form-group">
+                        <label>Prompt</label>
+                        <input class="form-control" name="Criteria[@criteriaCtr].Prompt" value="@criteria.prompt" />
+                    </div>
+                    <div class="form-group">
+                        <label>Answers</label>
+                        @foreach(var answer in criteria.answers)
+                        {
+
+                        }
+                        
+                    </div>
+                }
+            </div>foreach
+            <div class="form-group">
+                <div id="add-field-button" value="Add new field" class="btn btn-primary">Add new field</div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+
+        </form>
+
+
+        <div id="new-field-template" style="display:none;">
+            <div class="form-group">
+                <label>Tag</label>
+                <input class="tag form-control" name="Fields[@fieldCtr].tag" />
+            </div>
+            <div class="form-group">
+                <label>Prompt</label>
+                <input class="prompt form-control" name="Fields[@fieldCtr].prompt" />
+            </div>
+            <div class="form-group">
+                <label>Kind</label>
+
+                <select class="kind form-control" name="Fields[@fieldCtr].Kind">
+                    @foreach (Field.Kinds kind in Enum.GetValues(typeof(Field.Kinds)))
+                    {
+                        <option>@kind.ToString()</option>
+                    }
+                    <option>String</option>foreach
+                    <option>Number</option>
+                    <option>Date</option>
+                </select>
+                <hr />
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        <script>
+
+
+            $(function () {
+                var fieldCtr = @fieldCtr
+                    console.log(fieldCtr);
+
+                $("#add-field-button").click(() => {
+                    console.log("I dun clicked it");
+                    fieldCtr = fieldCtr + 1;
+                    //todo: set counter for fields
+                    fieldName = `Fields[${fieldCtr}]`
+                    clone = $("#new-field-template").clone(false);
+                    $(clone).find(".tag").attr("name", fieldName + ".tag");
+                    $(clone).find(".kind").attr("name", fieldName + ".kind");
+                    $(clone).find(".prompt").attr("name", fieldName + ".prompt");                    
+                    $(clone).show().appendTo("#fields-container");
+                })
+            });
+        </script>
+
+    }

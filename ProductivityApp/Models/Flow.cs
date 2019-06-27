@@ -115,8 +115,8 @@ public class Flow {
     /// <returns></returns>
     public string GetAssignmentText(Assignment assignment){
         string theText = "";
-        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
-       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField?.ToLower()).FirstOrDefault();
+       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField?.ToLower()).FirstOrDefault();
         if(matchingField != null)
         {
             theText = matchingField.answer;

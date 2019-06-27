@@ -6,7 +6,9 @@ public interface IFileHandler
     void WriteToFiles(Flow flow);
     string Zip(Guid id);
 
-    void DeleteFolder(Guid id);
+    void DeleteFolder(Guid id,bool isTemplate);
 
     string GetActiveFormsPath();
+
+    void SaveForm(Byte[] bytes,string fileName, Guid id, string kind);
 }

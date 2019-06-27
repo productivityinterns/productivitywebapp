@@ -13,5 +13,10 @@ namespace ProductivityApp.Models
         Flow InitializeTemplate(Flow template, IFileHandler fileHandler);
         Flow SaveFlow(FlowController.FillViewModel flow);
         Flow FindFlowById(Guid Id);
+        Flow SaveNewTemplate(Flow template);
+        Flow StartNewTemplate(Flow template);
+
+        void UpdateFormTemplateAssignments(ViewModels.AssignSubmitViewModel submitFormViewModel);
+        int SaveChanges();
     }
 }

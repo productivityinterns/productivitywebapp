@@ -1,20 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.Collections.Generic;
-using System.Web;
-using iText;
 using iText.Forms;
 using iText.Forms.Fields;
-using iText.Pdfa;
-using iText.IO.Colors;
-using iText.Signatures;
-using iText.Kernel;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Layer;
 
 /// <summary>
 /// The file handler deals with all forms of reading/writing files (in this case, copying and filling forms)
@@ -57,6 +47,22 @@ public class FileHandler : IFileHandler
             File.Copy(file, dest); 
         }        
     }
+        ///<summary>
+        /// THis function takes a byte array, a file, a guid, and a kind and saves the bytes as a file with
+        /// this name and extention given, in a folder in the templates folder with the name of the guid
+        ///
+        ///</summary>        
+        public void SaveForm(Byte[] bytes,string fileName, Guid id, string kind) {
+            var templatePath = GetActiveTemplatesPath();
+            var templateFolderPath = Path.Combine(templatePath,id.ToString());
+            if (!Directory.Exists(templateFolderPath)) {
+                Directory.CreateDirectory(templateFolderPath);
+            }
+            var filePath = Path.Combine(templateFolderPath,(fileName +"."+kind));
+            //maybe wrap this in using
+            System.IO.File.WriteAllBytes(filePath,bytes);
+        }
+
     ///<summary>
     /// This method iterates through the assignments for each form and prints the user inputed value
     /// to the form field
@@ -146,13 +152,16 @@ public class FileHandler : IFileHandler
     /// This method delets a specific directory and all of the child directories and files
     /// <param name="id">The guid of  the current flow, also the name of the flows directory</param>
     ///</summary>
-    public void DeleteFolder(Guid id) {
-        var fPath = GetActiveFormsPath();
+    public void DeleteFolder(Guid id, bool isTemplate) {
+        var fPath = "";
+        if(isTemplate) {
+            fPath = GetActiveTemplatesPath();
+        } else {
+            fPath = GetActiveFormsPath();
+        }
         var filePath = Path.Combine(fPath,id.ToString());
         if (Directory.Exists(filePath)) {
             Directory.Delete(filePath,true);//deletes all children
-            //Directory.Delete(filePath);     //deletes the newly emptied folder
-
         }
     }
     ///<summary>

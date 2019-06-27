@@ -78,8 +78,9 @@ namespace ProductivityApp.Controllers
         }
         public IActionResult Remove(Guid id)
         {
+            var flow = database.FindFlowById(id);
             database.DeleteFlow(id);
-            fileHandler.DeleteFolder(id); 
+            fileHandler.DeleteFolder(id,flow.IsATemplate); 
             return RedirectToAction("index",null);
         }
         public IActionResult Survey()
@@ -100,6 +101,46 @@ namespace ProductivityApp.Controllers
 
         public IActionResult About() {
             return View();
+        }
+        [HttpGet]
+        public IActionResult Create() {
+            return RedirectToAction("create","template");
+            //return View(new TemplateViewModel ());
+        }
+        // public class TemplateViewModel
+        // {
+        //     public Guid Id { get; set; }
+         
+        //     public Survey inputSurvey { set; get; }         
+        //     public IList<Criteria> criteria { set; get; }
+        //     public Destination destination { set; get; }
+        //     public  string name {set;get;}
+        //     public IList<Form> forms {set; get;}
+        //     public  string Description {set;get;}
+
+
+        // }
+        // [HttpPost]
+        // public IActionResult Create(TemplateViewModel templateVm) {
+        //     //save the template in the template db
+        //     //this will redicrect to the pdf assignment page not index.
+        //     Debug.Print("FLow name: "+templateVm.name);
+        //     Debug.Print("Flow desc: "+templateVm.Description);
+        //     Flow template = new Flow {
+        //         name = templateVm.name,
+        //         Description = templateVm.Description,
+        //         IsATemplate = true,
+        //         inputSurvey = new Survey(),
+                
+        //     };
+        //     database.SaveNewTemplate(template);
+        //     //DO NOT FORGET TO CREATE THE DIRECTORY FOR THE TEMPLATE
+        //     //make sure to 
+        //     return RedirectToAction("index");
+        // }
+        public IActionResult DeleteTemplate(Guid id) {
+            database.DeleteFlow(id);
+            return RedirectToAction("index");
         }
         // public IActionResult Download(string path) {
         //     return File(path, System.Net.Mime.MediaTypeNames.Application.Octet,  Path.GetFileName(path));

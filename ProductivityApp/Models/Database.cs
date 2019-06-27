@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProductivityApp.Controllers;
+using ProductivityApp.Models.ViewModels;
 
 namespace ProductivityApp.Models
 {
@@ -30,7 +31,66 @@ namespace ProductivityApp.Models
             
             
         }
+        public Flow StartNewTemplate(Flow template) {
+            template.Id = Guid.NewGuid();
+            Flows.Add(template);
+            SaveChanges();
+            return template;
+        }
+        //this method is messed up, cant get it to dave to the db,
+        // and the one time i got it to save to the db the forms were nulled  out
+        public Flow SaveNewTemplate(Flow template) {
 
+            var existingFlow = Flows
+                .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
+                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
+                .Include(f=>f.criteria)
+                .Include(f=>f.destination)
+                .Where(f => f.Id == template.Id).FirstOrDefault();
+
+            if(existingFlow == null)
+            {
+                throw new ArgumentException("The specified flow does not exist.");
+            }
+            //fill in field answers frmo the user
+            foreach(var field in existingFlow.inputSurvey.fields)
+            {
+                var userField = template.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();                
+                if(userField != null)
+                {
+                    field.answer = userField.answer;
+                }
+                else
+                {
+                    field.answer = "";
+                }
+            }
+            //Fill in criteria from user input
+            foreach(var criteria in existingFlow.criteria)
+            {
+                var userCriteria = template.criteria.Where(c => c.Category == criteria.Category).FirstOrDefault();
+                if(userCriteria != null)
+                {
+                    criteria.SelectedValue = userCriteria.SelectedValue;
+                }
+                else
+                {
+                    criteria.SelectedValue = null;
+                }
+            }
+            if(existingFlow.forms == null) {
+                existingFlow.forms = template.forms;
+            }
+            if (template.destination != null)
+            {
+                existingFlow.destination.EmailAddresses = template.destination.EmailAddresses;
+                existingFlow.destination.zip = template.destination.zip;
+            }
+
+            
+            SaveChanges();            
+            return template;
+        }
 
         /// <summary>
         /// Instantiate a new flow object from the source template.
@@ -124,7 +184,7 @@ namespace ProductivityApp.Models
         /// <returns>flow</returns>
         ///</summary>
         public Flow FindFlowById(Guid Id) {
-            var flow = Flows.Where(t=> !t.IsATemplate && (t.Id == Id));
+            var flow = Flows.Where((t=>(t.Id == Id)));
             return flow.Single();
         }
         /// <summary>
@@ -139,6 +199,7 @@ namespace ProductivityApp.Models
             .Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
+                .Include(t=> t.forms)
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -146,6 +207,46 @@ namespace ProductivityApp.Models
 
             return forms;
         }
+
+        /// <summary>
+        /// Find a form that matches the id specified, and replace it's assignemnts with those passed in
+        /// </summary>
+        /// <param name="submitFormViewModel"></param>
+        public void UpdateFormTemplateAssignments(ViewModels.AssignSubmitViewModel submitFormViewModel)
+        {
+         
+            var theForm = Flows.Include(f=>f.forms).ThenInclude(f=>f.assignments).Where(f => f.IsATemplate).SelectMany(f => f.forms).Include(f=>f.assignments).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
+
+            if(theForm == null)
+            {
+                throw new ArgumentOutOfRangeException("The form specified does not exist.");
+            }
+            //replace existing assignments if already there, or add new if not
+            foreach(var assignment in submitFormViewModel.Assignments)
+            {
+                if(theForm.assignments == null)
+                {
+                    theForm.assignments = new List<Assignment>();
+                }
+                var existingAssignment = theForm.assignments.Where(a => a.outputField == assignment.outputField).FirstOrDefault();
+                if(existingAssignment != null)
+                {
+                    existingAssignment.inputField = assignment.inputField;                    
+                }
+                else
+                {
+                    theForm.assignments.Add(new Assignment
+                    {
+                        Id = Guid.NewGuid(),
+                        inputField = assignment.inputField,
+                        outputField = assignment.outputField
+                    });
+
+                }
+            }            
+            SaveChanges();
+        }
+
         /// <summary>
         /// Correctly order criteria, fields, and answers, and return the ordered flow
         /// </summary>
@@ -169,21 +270,11 @@ namespace ProductivityApp.Models
         ///</summary>
         public IList<Flow> GetTemplates()
         {
-            return GetSampleTemplates();
-            var templates = Flows.Where(t => t.IsATemplate);
-            //get sample flow if none exist
-            if(templates.Count() < 3)
-            {
-                foreach(var template in GetSampleTemplates())
-                {
-                    Flows.Add(template);
-                }
-                SaveChanges();
-            }
             //This is setup so that I get all the sub-tables required. Sadly we need to do this in EF net core. You will have to do this in GetFlows() as well! -mg
-            return Flows.Where(t=>t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
-                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
-                .Include(t=>t.destination)
+            return Flows.Where(t => t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+                .Include(t => t.criteria).ThenInclude(c => c.answers)
+                .Include(t => t.destination)
+                .Include(t => t.forms).ThenInclude(f => f.assignments)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
@@ -201,6 +292,7 @@ namespace ProductivityApp.Models
                 .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
                 .Include(t=>t.criteria).ThenInclude(c=>c.answers)
                 .Include(t=>t.destination)
+                .Include(t => t.forms)
                 .OrderByDescending(t=>t.inputSurvey.timeCreated)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
@@ -537,5 +629,6 @@ namespace ProductivityApp.Models
 
             return templates;
         }
+        
     }
 }

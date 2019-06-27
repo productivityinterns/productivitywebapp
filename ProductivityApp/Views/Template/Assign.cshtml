@@ -1,0 +1,159 @@
+﻿@model Flow
+<style>
+    .container {
+        position: relative;
+    }
+
+        .container canvas, .overlay {
+            position: absolute;
+        }
+
+    .overlay {
+        /* We wil use this overlay to draw th form ontop of the PDF document.
+           The PDF is for all intents and purposes a fancy background picture, and the guts of this are entirely in our overlay and the form inside of it
+        */
+        position: absolute;
+        z-index: 100;
+        opacity: .8;
+        
+    }
+    .nomargin
+    {
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+    }
+
+    .overlay input {
+        position: relative;
+    }
+</style>
+<div class="container">
+    <div id="overlaydiv" class="overlay nomargin">
+        <form id="overlay-form" class="nomargin"></form>
+    </div>
+    <canvas id="canvas" width="500" height="500"></canvas>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/pdf.js/pdf.js"></script>
+    <script src="~/lib/pdf.js/pdf.worker.js"></script>
+    <div class="btn btn-primary" id="save-button">Save Form</div>
+    <script>
+            
+
+            document.addEventListener('DOMContentLoaded', function()
+            {
+            //put existing values from this assignment into a obj map
+                assignments = [];
+                @foreach (var a in Model.forms[ViewBag.FormIndex].assignments)
+                {
+                    @:assignemnt = { inputField: '@a.inputField', outputField: '@a.outputField' };
+                    @:assignments.push(assignemnt);
+
+
+                }                                
+                loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[ViewBag.FormIndex].fileName');
+                loadingtask.promise.then(function (pdf) {
+                    pdf.getPage(1).then(function (page) {
+                        console.log("Annotations:");
+                        page.getAnnotations().then(function (items) {
+                            //For each input of "tx" type, make an input box
+                            items.forEach((element) => {
+                                if (element.fieldType = "Tx") {
+                                    //if there is a text field, create an input box in the overlay
+                                    inputTag = document.createElement('div');
+
+                                    //get the value from assignments if it exists, and put it in the field
+                                    var foundValue = assignments.find((a) =>
+                                    {
+                                        return (a.outputField == element.fieldName);                                                                                    
+                                    });
+                                    
+                                    console.log(`Found a value : ${foundValue.inputField}`);
+                                    var widthInch = (element.rect[2]/72)-(element.rect[0]/72);
+                                    var heightInch = (element.rect[3]/72)-(element.rect[1]/72);
+                                    var leftDist = (element.rect[0]/72);
+                                    var bottomDist = (element.rect[1]/72 );
+                                    var topDist = (10.5 - bottomDist);
+                                    console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
+                                    console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches"); 
+                                    inputTag.innerHTML = `<input type='text' value='${foundValue.inputField}' data-fieldname='${element.fieldName}' class='assignment-input' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch}in; height:${heightInch*1.25}in;margin: 0 0 0 0;padding: 0 0 0 0;' />`;
+                                    console.log("Fieldname:"+ element.fieldName);
+                                    //Figure out
+                                    document.getElementById("overlay-form").append(inputTag);
+                                }
+                            });
+                            items[0].borderStyle.width = 10;
+                            console.log(items);
+                        });
+
+                        console.log("I have a page.!");
+                        console.log("Page:" + page);
+                        var scale = 1.3;
+                        var viewport = page.getViewport(scale)
+
+                        var canvas = document.getElementById('canvas');
+                        var context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        var overlayDiv = document.getElementById('overlaydiv');
+                        overlayDiv.style.height = viewport.height + "px";
+                        overlayDiv.style.width = viewport.width + "px";
+
+                        var renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        renderTask = page.render(renderContext);
+                        renderTask.promise.then(function (err) {
+                            console.log('Page rendered');
+                            console.log(err);
+                        });
+                    });
+                });
+
+                //fill in assignment values into fields
+                //TODO: Iterate through assignments and fill back in what we can
+
+                //jquery stuff for submitting the form
+                $(function () {
+                    $("#save-button").click(() => {
+                    form = {
+                    id : '@Model.forms[ViewBag.FormIndex].Id',
+                            Assignments : []
+                        };
+                        //look at every box with class assignment-input
+                        //build up a in-memory list of assignments
+                        $(".assignment-input").each(function (element) {
+                        var assignment = {
+                                outputField: $(this).data('fieldname'),
+                                inputField: $(this).val()
+                            };
+                            form.Assignments.push(assignment);
+                });
+
+                        console.log(form);
+
+                        //and post them to /assign
+                        $.ajax({
+                            type: "POST",
+                            url: "/Template/Assign",
+                            data: form,
+                            success: function () {
+                                console.log("It worked.");
+                                window.location = "/Flow";
+                            }, error: function (err) {
+                                console.log(err);
+                            }
+
+
+                        });
+                        //when im done, take me back
+                    });
+                });
+      });
+    </script>
+
+
+
+}

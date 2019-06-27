@@ -91,7 +91,7 @@ namespace ProductivityApp.Controllers
         }
 
 //please forgive me -MG
-        public IActionResult DownloadForReels(Guid id)
+        public IActionResult DownloadFiles(Guid id)
         {
             string path = fileHandler.Zip(id);
             return File($"~/forms/activeForms/{id.ToString()}/{id.ToString()}.zip", "application/octet-stream",$"forms-{id.ToString()}.zip");

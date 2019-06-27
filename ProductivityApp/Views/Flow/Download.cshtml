@@ -1,9 +1,9 @@
 @model Guid
 <h3>Download</h3>
 <div class="row">
-    <p>Your download should begin soon, if it does not, click <a asp-action="DownloadForReels" asp-route-id="@Model.ToString()">here.</a></p>
+    <p>Your download should begin soon, if it does not, click <a asp-action="DownloadFiles" asp-route-id="@Model.ToString()">here.</a></p>
     <hr>
                 <!-- TODO: Add a copy to clipboard button-->
-    <p>Your shareable link to these forms is:  <a asp-action="DownloadForReels" asp-route-id="@Model.ToString()">@Context.Request.Host@Url.Content("~/flow/downloadforreels/" + Model.ToString())</a></p>  
+    <p>Your shareable link to these forms is:  <a asp-action="DownloadFiles" asp-route-id="@Model.ToString()">@Context.Request.Host@Url.Content("~/flow/downloadforreels/" + Model.ToString())</a></p>  
 
 </div>

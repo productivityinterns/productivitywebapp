@@ -69,7 +69,7 @@ namespace ProductivityApp.Controllers
                 database.SaveChanges();
                 
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Assign",new { id = vm.Id});
         }
         [HttpGet]                
         public ActionResult Assign(Guid id)

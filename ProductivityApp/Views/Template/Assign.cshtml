@@ -86,14 +86,16 @@
 
     <div class="btn btn-primary" id="save-button">Save Form</div>
     <script>
-        function openForm() {
-           
-            document.getElementById("myForm").style.display = "block";
-        }
+            function openForm(x) {
+                console.log(x.getAttribute("data-fieldname"));
+                //TODO: In here create an assignment by grabing the output field and the tag of the input
+                document.getElementById("myForm").style.display = "block"; 
+                
+            }
 
-        function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        } 
+            function closeForm() {
+                document.getElementById("myForm").style.display = "none";
+            } 
             document.addEventListener('DOMContentLoaded', function()
             {
             //put existing values from this assignment into a obj map
@@ -127,10 +129,10 @@
                                     var leftDist = (element.rect[0]/72);
                                     var bottomDist = (element.rect[1]/72 );
                                     var topDist = (10.5 - bottomDist);
-                                    console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
-                                    console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches"); 
-                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' class='assignment-input open-button' onclick='openForm()' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
-                                    console.log("Fieldname:"+ element.fieldName);
+                                    // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
+                                    //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
+                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' class='assignment-input open-button' onclick='openForm(this)' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
+                                    //console.log("Fieldname:"+ element.fieldName);
                                     //Figure out
                                     document.getElementById("overlay-form").append(inputTag);
                                 }

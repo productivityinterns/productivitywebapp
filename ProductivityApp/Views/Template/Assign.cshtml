@@ -72,9 +72,10 @@
 
             <label><b>Prompt</b></label>
             <!-- Combo boxes here  -->
-            <input type="text" placeholder="Field name" name="field" required>
-            <button type="submit" class="btn btn-success btn-sm" onclick="closeForm()">Fill</button>
-            <button type="submit" class="btn btn-danger btn-sm" onclick="closeForm()">Close</button>
+            <input type="text" placeholder="Field name" name="field" id="inputTag">
+            <input type="hidden" name="outputTag" id="outputTag">
+            <button class="btn btn-success btn-sm" onclick="closeForm()">Fill</button>
+            <button class="btn btn-danger btn-sm" onclick="closeForm()">Close</button>
         </form>
     </div>
     <canvas id="canvas" width="500" height="500"></canvas>
@@ -88,6 +89,7 @@
     <script>
             function openForm(x) {
                 console.log(x.getAttribute("data-fieldname"));
+                document.getElementById("outputTag").value = x.getAttribute("data-fieldname");
                 //TODO: In here create an assignment by grabing the output field and the tag of the input
                 document.getElementById("myForm").style.display = "block"; 
                 
@@ -95,6 +97,10 @@
 
             function closeForm() {
                 document.getElementById("myForm").style.display = "none";
+                var intag = document.getElementById("inputTag").value;
+                //TODO: Grab take intag and assign it to the box 
+
+                console.log(intag);
             } 
             document.addEventListener('DOMContentLoaded', function()
             {

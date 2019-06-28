@@ -72,16 +72,15 @@
 
             <!-- <label><b>Prompt</b></label> -->
 
-            <label>Choose a browser from this list:
-            <input list="inputTag" name="inputTag" id="inputTag" />
-            </label>
-            <datalist id="inputTags">
-                @foreach(var field in Model.inputSurvey.fields) {
-                    <option value="@field.tag">@field.prompt</option>
-                }
-            </datalist>
+        <label>Choose the prompt that maps to here: 
+        <input list="tags" name="tags" /></label> 
+        <datalist id="tags"> 
+            @foreach(var field in Model.inputSurvey.fields) { 
+                <option value="@field.tag">@field.prompt</option> 
+            } 
+        </datalist>
             <input type="hidden" name="outputTag" id="outputTag">
-            <a class="btn btn-success btn-sm" onclick="closeForm()">Fill</a>
+            <a class="btn btn-success btn-sm" onclick="closeAndFillForm()">Fill</a>
             <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
         </form>
     </div>
@@ -102,9 +101,9 @@
                 
             }
 
-            function closeForm() {
+            function closeAndFillForm() {
                 document.getElementById("myForm").style.display = "none";
-                var intag = document.getElementById("inputTag").value;
+                var intag = document.getElementsByName("tags")[0].value;
                 console.log(intag);
                 var n = document.getElementById("outputTag").value;
                 var out = $('[data-fieldname="'+n+'"]')
@@ -113,6 +112,11 @@
                 return false;
                 //TODO: Grab take intag and assign it to the box 
 
+               
+            } 
+            function closForm() {
+                document.getElementById("myForm").style.display = "none";
+                return false;
                
             } 
             document.addEventListener('DOMContentLoaded', function()

@@ -82,8 +82,8 @@
             <input type="text" placeholder="Field name" name="field" id="inputTag">
             <input type="hidden" name="outputTag" id="outputTag">
 
-            <button class="btn btn-success btn-sm" onclick="closeForm()">Fill</button>
-            <button class="btn btn-danger btn-sm" onclick="closeForm()">Close</button>
+            <a class="btn btn-success btn-sm" onclick="closeForm()">Fill</a>
+            <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
         </form>
     </div>
     <canvas id="canvas" width="500" height="500"></canvas>
@@ -106,9 +106,11 @@
             function closeForm() {
                 document.getElementById("myForm").style.display = "none";
                 var intag = document.getElementById("inputTag").value;
+                console.log("clickity clack");
+                return false;
                 //TODO: Grab take intag and assign it to the box 
 
-                console.log(intag);
+               
             } 
             document.addEventListener('DOMContentLoaded', function()
             {

@@ -128,6 +128,17 @@ public class FileHandler : IFileHandler
     public string GetActiveTemplatesPath() {
         return _environment.WebRootFileProvider.GetFileInfo("forms/templateForms").PhysicalPath;
     }
+
+    public string SaveTemplateImage(Byte[] bytes,string fileName, Guid id) {
+        var imgFolderPath = GetImagesPath();
+        var imagePath = Path.Combine(imgFolderPath, (id.ToString() + ".jpg"));
+        System.IO.File.WriteAllBytes(imagePath,bytes);
+        return imagePath;
+    }
+
+    public string GetImagesPath() {
+        return _environment.WebRootFileProvider.GetFileInfo("images/templateImages").PhysicalPath;
+    }
     
     ///<summary>
     /// This method creates a zipfile of a directory.

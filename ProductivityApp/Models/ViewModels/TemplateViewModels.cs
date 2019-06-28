@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ProductivityApp.Models.ViewModels
 {
-        /// <summary>
-        /// A model that contains both fields and criteria for a specific template.
-        /// </summary>
-        public class TemplateFieldsViewModel
+    /// <summary>
+    /// A model that contains both fields and criteria for a specific template.
+    /// </summary>
+    public class TemplateFieldsViewModel
         {
             [Required]
             public Guid Id { get; set; }
@@ -26,6 +24,8 @@ namespace ProductivityApp.Models.ViewModels
         public List<Field> fields { get; set; }
         public List<Criteria> criteria { get; set; }
         public List<IFormFile> files { get; set; }
+
+        public IFormFile image {get; set;}
     }
 
     /// <summary>

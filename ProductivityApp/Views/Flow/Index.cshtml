@@ -14,7 +14,7 @@
         <div class="col-md-4 panel ">
               <a asp-action="initialize" asp-route-id="@template.name" style="text-decoration:none;color:black;">
                     <div class="panel-body mb-4" style="box-shadow: 5px 5px 10px  #d9dedb;">
-                     <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src='@($"images/{(template.ThumbnailImage ?? "placeholder.jpg")}")'data-holder-rendered="true">
+                     <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src='@($"images/templateImages/{(template.Id.ToString())}.jpg")'data-holder-rendered="true">
                      <div class="card-body">
                          <h4>@template.name</h4>
                          <em class="d-flex justify-content-between align-items-center">@template.Description</em>

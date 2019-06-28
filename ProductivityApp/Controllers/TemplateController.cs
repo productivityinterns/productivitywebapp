@@ -116,6 +116,8 @@ namespace ProductivityApp.Controllers
                      forms = new List<Form>()
                     
                 };
+
+                 
                 //for each file that was uploaded, add a form to the template
                 foreach(var file in templateViewModel.files)
                 {
@@ -144,6 +146,19 @@ namespace ProductivityApp.Controllers
                     }
                     
                 }
+                if (templateViewModel.image.Name == "image") {
+                         
+                        using(var readStream = templateViewModel.image.OpenReadStream())
+                        {
+                            using(var ms = new  MemoryStream())
+                            {
+                                readStream.CopyTo(ms);
+                                var bytes = ms.ToArray();
+                                 template.ThumbnailImage = fileHandler.SaveTemplateImage(bytes,Path.GetFileNameWithoutExtension(templateViewModel.image.FileName),template.Id);
+                            }
+                        }
+                        //TODO: FIgure out how the image string is handled then pass it out  that way
+                    }
                 return RedirectToAction("Fields","Template",new { id = newTemplate.Id } );
             }
             return View(templateViewModel);

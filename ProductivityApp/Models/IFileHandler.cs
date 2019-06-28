@@ -9,6 +9,6 @@ public interface IFileHandler
     void DeleteFolder(Guid id,bool isTemplate);
 
     string GetActiveFormsPath();
-
+    string SaveTemplateImage(Byte[] bytes, string fileName, Guid id);
     void SaveForm(Byte[] bytes,string fileName, Guid id, string kind);
 }

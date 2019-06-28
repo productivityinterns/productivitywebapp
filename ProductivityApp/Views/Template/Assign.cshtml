@@ -70,10 +70,18 @@
         <form class="form-container">
             <h3>Assign this field</h3>
 
-            <label><b>Prompt</b></label>
-            <!-- Combo boxes here  -->
+            <!-- <label><b>Prompt</b></label> -->
+
+            <label>Choose a browser from this list:
+        <input list="tags" name="tags" /></label>
+        <datalist id="tags">
+            @foreach(var field in Model.inputSurvey.fields) {
+                <option value="@field.tag">@field.prompt</option>
+            }
+        </datalist>
             <input type="text" placeholder="Field name" name="field" id="inputTag">
             <input type="hidden" name="outputTag" id="outputTag">
+
             <button class="btn btn-success btn-sm" onclick="closeForm()">Fill</button>
             <button class="btn btn-danger btn-sm" onclick="closeForm()">Close</button>
         </form>

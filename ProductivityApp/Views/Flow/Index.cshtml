@@ -47,7 +47,8 @@
            
            <tr>
 
-               <td><a class="btn btn-sm btn-primary" asp-action="fill" asp-route-id="@fill.Id" ><span class="glyphicon glyphicon-pencil"></span> Fill</a>  <a class="btn btn-sm btn-default" asp-action="download" asp-route-id="@fill.Id"><span class="glyphicon glyphicon-download"></span> Send</a>  @fill.name</td>
+               <td><a class="btn btn-sm btn-primary" asp-action="fill" asp-route-id="@fill.Id" ><span class="glyphicon glyphicon-pencil"></span> Fill</a>  
+               <a class="btn btn-sm btn-default" download="@fill.Id" asp-action="download" onclick="window.location='/Flow/Download/@fill.Id';" asp-route-id="@fill.Id"><span class="glyphicon glyphicon-download"></span> Send</a>  @fill.name</td>
            <td>@fill.Description</td>
            <td>@fill.inputSurvey.timeCreated</td>
            <td><a class="btn btn-sm btn-danger" asp-action="Remove" asp-route-id="@fill.Id" method="post"><span class="glyphicon glyphicon-trash"></span> Delete</a> </td>

@@ -20,10 +20,62 @@
         .overlay input {
             position: relative;
         }
+
+        /*  ---------------------- Popup style sheet  -------------------------------------  */
+
+        {box-sizing: border-box;}
+
+        /* The popup form - hidden by default */
+        .form-popup {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+        max-width: 300px;
+        padding: 10px;
+        background-color: white;
+        }
+
+        /* Full-width input fields */
+        .form-container input[type=text]{
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        }
+
+        /* When the inputs get focus, do something */
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+        }
+
+        /* Add some hover effects to buttons */
+        .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+        }
 </style>
 <div class="container">
     <div id="overlaydiv" class="overlay">
         <form id="overlay-form"></form>
+    </div>
+    <div class="form-popup" id="myForm">
+        <form class="form-container">
+            <h3>Assign this field</h3>
+
+            <label><b>Prompt</b></label>
+            <!-- Combo boxes here  -->
+            <input type="text" placeholder="Field name" name="field" required>
+            <button type="submit" class="btn btn-success btn-sm" onclick="closeForm()">Fill</button>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="closeForm()">Close</button>
+        </form>
     </div>
     <canvas id="canvas" width="500" height="500"></canvas>
 </div>
@@ -31,10 +83,17 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/pdf.js/pdf.js"></script>
     <script src="~/lib/pdf.js/pdf.worker.js"></script>
+
     <div class="btn btn-primary" id="save-button">Save Form</div>
     <script>
-            
+        function openForm() {
+           
+            document.getElementById("myForm").style.display = "block";
+        }
 
+        function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+        } 
             document.addEventListener('DOMContentLoaded', function()
             {
             //put existing values from this assignment into a obj map
@@ -70,7 +129,7 @@
                                     var topDist = (10.5 - bottomDist);
                                     console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
                                     console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches"); 
-                                    inputTag.innerHTML = `<input type='text' data-fieldname='${element.fieldName}' class='assignment-input' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
+                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' class='assignment-input open-button' onclick='openForm()' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
                                     console.log("Fieldname:"+ element.fieldName);
                                     //Figure out
                                     document.getElementById("overlay-form").append(inputTag);
@@ -82,7 +141,7 @@
 
                         console.log("I have a page.!");
                         console.log("Page:" + page);
-                        var scale = 2.0;
+                        var scale = 1.25;
                         var viewport = page.getViewport(scale)
 
                         var canvas = document.getElementById('canvas');

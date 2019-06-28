@@ -17,8 +17,8 @@
                      <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src='@($"images/{(template.ThumbnailImage ?? "placeholder.jpg")}")'data-holder-rendered="true">
                      <div class="card-body">
                          <h4>@template.name</h4>
-                         <em class="d-flex justify-content-between align-items-center">@template.Description</em>
-
+                         <em class="d-flex justify-content-between align-items-center" style="line-height:1.5em; min-height:3em;display:flex;">@template.Description</em>
+                  
                          <a class="btn btn-sm btn-default" asp-action="fields" asp-controller="template" asp-route-id="@template.Id"><span class="glyphicon glyphicon-pencil"></span>Fields</a>
                          <a class="btn btn-sm btn-default" asp-action="assign" asp-controller="template" asp-route-id="@template.Id"><span class="glyphicon glyphicon-pencil"></span>Assign</a>
                          <a class="btn btn-sm btn-danger" asp-action="remove" asp-route-id="@template.Id"><span class="glyphicon glyphicon-trash"></span>Delete</a>

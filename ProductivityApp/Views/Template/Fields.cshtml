@@ -21,11 +21,11 @@
                 {
                     fieldCtr++;
                     <div class="form-group">
-                        <label>Tag <span class="glyphicon glyphicon-info-sign" title = "This is a short name used for referencing the data a user enters."></span></label>
+                        <label>Tag </label>
                         <input class="form-control" name="Fields[@fieldCtr].tag" value="@field.tag" />  
                     </div>
                     <div class="form-group">
-                        <label>Prompt <span class="glyphicon glyphicon-info-sign"  title = "This is a longer question/statement asking a user for data." ></span></label>
+                        <label>Prompt </label>
                         <input class="form-control" name="Fields[@fieldCtr].prompt" value="@field.prompt"/>
                     </div>
                     <div class="form-group">
@@ -86,11 +86,11 @@
 
         <div id="new-field-template" style="display:none;">
             <div class="form-group">
-                <label>Tag</label>
+                <label>Tag <span class="glyphicon glyphicon-info-sign" title = "This is a short name used for referencing the data a user enters."></span></label>
                 <input class="tag form-control" name="Fields[@fieldCtr].tag" />
             </div>
             <div class="form-group">
-                <label>Prompt</label>
+                <label>Prompt <span class="glyphicon glyphicon-info-sign"  title = "This is a longer question/statement asking a user for data." ></span></label>
                 <input class="prompt form-control" name="Fields[@fieldCtr].prompt" />
             </div>
             <div class="form-group">

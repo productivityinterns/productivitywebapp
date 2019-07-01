@@ -21,12 +21,12 @@
                 {
                     fieldCtr++;
                     <div class="form-group">
-                        <label>Tag</label>
-                        <input class="form-control" name="Fields[@fieldCtr].tag" value="@field.tag" />
+                        <label>Tag <span class="glyphicon glyphicon-info-sign" title = "This is a short name used for referencing the data a user enters."></span></label>
+                        <input class="form-control" name="Fields[@fieldCtr].tag" value="@field.tag" />  
                     </div>
                     <div class="form-group">
-                        <label>Prompt</label>
-                        <input class="form-control" name="Fields[@fieldCtr].prompt" value="@field.prompt" />
+                        <label>Prompt <span class="glyphicon glyphicon-info-sign"  title = "This is a longer question/statement asking a user for data." ></span></label>
+                        <input class="form-control" name="Fields[@fieldCtr].prompt" value="@field.prompt"/>
                     </div>
                     <div class="form-group">
                         <label>Kind</label>
@@ -122,8 +122,15 @@
     @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
         <script>
+            $( function() {
+                $( document ).tooltip();
+            } );
+  
+        </script>
+        <script>
 
-
+                
+            
             function DeleteField(field)
             {
                $(field).parent().parent().remove();

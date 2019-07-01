@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductivityApp.Models;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
 using System;
 using ProductivityApp.Models.ViewModels;
 using System.Drawing.Printing;
@@ -147,12 +145,10 @@ namespace ProductivityApp.Controllers
                     }
 
                 }
-                if (templateViewModel.image == null)
+
+                if (templateViewModel.image != null)
                 {
-                    //TODO: handle
-                }
-                else
-                {
+
                     using (var readStream = templateViewModel.image.OpenReadStream())
                     {
                         using (var ms = new MemoryStream())
@@ -162,7 +158,17 @@ namespace ProductivityApp.Controllers
                             template.ThumbnailImage = fileHandler.SaveTemplateImage(bytes, Path.GetFileNameWithoutExtension(templateViewModel.image.FileName), template.Id);
                         }
                     }
-                    //TODO: FIgure out how the image string is handled then pass it out  that way
+                }
+                else
+                {
+                    Random rnd = new Random();
+                    int pic = rnd.Next(1, 11);
+                    var imgFolderPath = fileHandler.GetImagesPath();
+                    string imagePath = Path.Combine(imgFolderPath, (pic.ToString() + ".jpg"));
+                    template.ThumbnailImage = imagePath;
+                    var templateImage = Path.Combine(imgFolderPath, (template.Id.ToString() + ".jpg"));
+                    fileHandler.ClonePlaceHolder(imagePath,templateImage);
+                    
                 }
                 return RedirectToAction("Fields", "Template", new { id = newTemplate.Id });
             }

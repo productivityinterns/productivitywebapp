@@ -109,6 +109,7 @@
                 var out = $('[data-fieldname="'+n+'"]')
                 out[0].value = intag;
                 console.log(out);
+                 document.getElementsByName("tags")[0].value = "";
                 return false;
                 //TODO: Grab take intag and assign it to the box 
 
@@ -116,7 +117,8 @@
             } 
             function closForm() {
                 document.getElementById("myForm").style.display = "none";
-                return false;
+                 document.getElementsByName("tags")[0].value = "";
+                 return false;
                
             } 
             document.addEventListener('DOMContentLoaded', function()

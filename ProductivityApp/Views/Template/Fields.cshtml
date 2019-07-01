@@ -8,7 +8,8 @@
 
 <h4>TemplateFieldsViewModel</h4>
 <hr />
-@{ var fieldCtr = -1;}
+@{ var fieldCtr = -1;
+var criteriaCtr= -1;}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Fields">
@@ -49,8 +50,15 @@
                         </select>
                     </div>
                 }
-                <h4>Criteria</h4>
-                @{ int criteriaCtr = -1;}
+ 
+            
+                <div id="add-field-button" value="Add new field" class="btn btn-primary">Add new field</div>
+                </div>
+            
+            <div id="criteria-container">
+                <div class="form-group">
+                               <h4>Criteria</h4>
+        
                 @foreach (var criteria in Model.Criteria)
                 {
 
@@ -63,23 +71,16 @@
                         <label>Prompt</label>
                         <input class="form-control" name="Criteria[@criteriaCtr].Prompt" value="@criteria.prompt" />
                     </div>
-                    <div class="form-group">
-                        <label>Answers</label>
-                        @foreach(var answer in criteria.answers)
-                        {
-
-                        }
-                        
-                    </div>
+                    
                 }
             </div>
             <div class="form-group">
-                <div id="add-field-button" value="Add new field" class="btn btn-primary">Add new field</div>
+                <div id="add-criteria-button" value="Add new criteria" class="btn btn-primary">Add new criteria</div>
             </div>
-           
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+
 
         </form>
 
@@ -113,6 +114,34 @@
             </div>
 
         </div>
+
+
+        <div id="new-criteria-template" style="display:none;">
+            <div class="form-group">
+                <label>Category</label>
+                <input class="tag form-control" name="Criteria[@criteriaCtr].category" />
+            </div>
+            <div class="form-group">
+                <label>Prompt</label>
+                <input class="prompt form-control" name="Criteria[@criteriaCtr].prompt" />
+            </div>
+            <div class="form-group">
+                <label>Answers</label>
+       
+                        <option>Yes</option>
+                        <option>No</option>
+                        
+                </div>
+                <div class="form-group">
+                <div id="remove-criteria-button" value="delete criteria" class="btn btn-danger" onClick="DeleteField(this)">Delete criteria</div>
+            
+            </div>
+                <hr />
+            </div>
+             
+
+        </div>
+
     </div>
 
     <div>
@@ -145,7 +174,24 @@
                     $(clone).find(".prompt").attr("name", fieldName + ".prompt");                    
                     $(clone).show().appendTo("#fields-container");
                 })
-            });          
+            }); 
+
+            $(function () {
+                var criteriaCtr = @criteriaCtr
+                    console.log(criteriaCtr);
+                $("#add-criteria-button").click(() => {
+                    console.log("I dun clicked it");
+                    criteriaCtr = criteriaCtr + 1;
+                    //todo: set counter for fields
+                    criteriaName = `Criteria[${criteriaCtr}]`
+                    clone = $("#new-criteria-template").clone(false);
+                    $(clone).find(".category").attr("name", criteriaName + ".tag");
+                    $(clone).find(".prompt").attr("name", criteriaName + ".kind");
+                    $(clone).find(".answer").attr("name", criteriaName + ".prompt");                    
+                    $(clone).show().appendTo("#criteria-container"); 
+                     })
+            });
+        
         </script>
 
     }

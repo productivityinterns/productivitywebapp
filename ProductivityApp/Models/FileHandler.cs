@@ -132,6 +132,12 @@ public class FileHandler : IFileHandler
 
     public string SaveTemplateImage(Byte[] bytes,string fileName, Guid id) {
         var imgFolderPath = GetImagesPath();
+        
+        if(!Directory.Exists(imgFolderPath))
+        {
+            Directory.CreateDirectory(imgFolderPath);
+        }
+
         var imagePath = Path.Combine(imgFolderPath, (id.ToString() + ".jpg"));
         System.IO.File.WriteAllBytes(imagePath,bytes);
         return imagePath;

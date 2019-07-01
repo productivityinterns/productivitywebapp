@@ -15,11 +15,17 @@
         position: absolute;
         z-index: 100;
         opacity: .8;
+        
+    }
+    .nomargin
+    {
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
     }
 
-        .overlay input {
-            position: relative;
-        }
+    .overlay input {
+        position: relative;
+    }
 
         /*  ---------------------- Popup style sheet  -------------------------------------  */
 
@@ -61,8 +67,8 @@
         }
 </style>
 <div class="container">
-    <div id="overlaydiv" class="overlay">
-        <form id="overlay-form"></form>
+    <div id="overlaydiv" class="overlay nomargin">
+        <form id="overlay-form" class="nomargin"></form>
     </div>
     <div class="form-popup" id="myForm">
         <form class="form-container">
@@ -154,6 +160,7 @@
                                         return (a.outputField == element.fieldName);                                                                                    
                                     });
                                     
+                                    console.log(`Found a value : ${foundValue.inputField}`);
                                     var widthInch = (element.rect[2]/72)-(element.rect[0]/72);
                                     var heightInch = (element.rect[3]/72)-(element.rect[1]/72);
                                     var leftDist = (element.rect[0]/72);

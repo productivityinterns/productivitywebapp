@@ -85,9 +85,10 @@ public class FileHandler : IFileHandler
                 if (flow.checkFilter(a.filter))
                 {
                     string theText = flow.GetAssignmentText(a);
-                    //a.inputField = theText;
+                    //Potential problem, for checkboxes that are yes/no they are indexed as 1_01[0], 1_01[1] respectively
+                    //may ywant to handle that
                     var formfill = acroform.GetField(a.outputField);
-                        if (formfill is PdfButtonFormField && theText != "yes" && theText != "true")
+                        if ((formfill == null || formfill is PdfButtonFormField) && theText != "yes" && theText != "true")
                         {
                         } else {
                             acroform.GetField(a.outputField).SetValue(theText);

@@ -119,6 +119,7 @@ namespace ProductivityApp.Models
         ///</summary>
         public Flow SaveFlow(FlowController.FillViewModel flow)
         {
+            
 
             var existingFlow = Flows
                 .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
@@ -202,7 +203,8 @@ namespace ProductivityApp.Models
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
-                .ToList();
+                .Select(f=>OrderFlowItems(f)).ToList();
+
             return forms;
         }
 
@@ -245,6 +247,22 @@ namespace ProductivityApp.Models
             SaveChanges();
         }
 
+        /// <summary>
+        /// Correctly order criteria, fields, and answers, and return the ordered flow
+        /// </summary>
+        /// <param name="flow">An unordered(?) flow</param>
+        /// <returns>The same object, with ordered items properly sorted</returns>
+        public Flow OrderFlowItems(Flow form)
+        {            
+            form.criteria = form.criteria.OrderBy(c=>c.Order).ToList();
+            foreach(var criteria in form.criteria)
+            {
+                criteria.answers = criteria.answers.OrderBy(a=>a.Order).ToList();
+            }
+            form.inputSurvey.fields = form.inputSurvey.fields.OrderBy(f=>f.Order).ToList();
+            return form;
+        }
+
         ///<summary>
         /// This method gets the templates from the database
         /// NOTE: this is not being used yet, it redirects to the sample templates
@@ -260,7 +278,7 @@ namespace ProductivityApp.Models
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
-                .ToList();
+                 .Select(t=>OrderFlowItems(t)).ToList();
         }
 
         ///<summary>
@@ -279,6 +297,7 @@ namespace ProductivityApp.Models
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
+                .Select(f=>OrderFlowItems(f))
                 .ToList();
 
         }
@@ -406,21 +425,22 @@ namespace ProductivityApp.Models
                 {
                     Id = Guid.NewGuid(),
                     fields = new List<Field> {//0)
-                     new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null   ),
-                     new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null),
+                     new Field(Field.Kinds.String,"firstname","Please enter Donee's first name", null ,-5  ),
+                     new Field(Field.Kinds.String,"lastname","Please enter Donee's last name",null,-4),
                      new Field(Field.Kinds.String,"street","Please enter street address",null),
                      new Field(Field.Kinds.String,"address","Enter City, State, and Country",null),
                      new Field(Field.Kinds.String,"zip","Enter Zip Code",null),
                     new Field(Field.Kinds.String,"phone","Enter Telphone number",null),
 
                      new Field(Field.Kinds.String,"tin1","Donee's TIN ",null),
-                      new Field(Field.Kinds.String,"tin2","Doner's TIN ",null),
-                       new Field(Field.Kinds.String,"name2","Donor's name",null),
-                        new Field(Field.Kinds.String,"address2","Street address",null),
-                         new Field(Field.Kinds.String,"address2","City/town, State, Zip Code, Country",null),
+                      new Field(Field.Kinds.String,"filerTin","Filer's TIN ",null),
+                       new Field(Field.Kinds.String,"filerFirstName","Filer's first name",null),
+                       new Field(Field.Kinds.String,"filerLastName","Filer's last name",null),
+                        new Field(Field.Kinds.String,"filerAddress1","Street address",null),
+                         new Field(Field.Kinds.String,"filerAdress2","City/town, State, Zip Code, Country",null),
 
                          //1
-                    new Field(Field.Kinds.String,"date","Date of contribution",null),
+                    new Field(Field.Kinds.String,"date","Date of contribution",null,-6),
                     //2a
                     new Field(Field.Kinds.String,"miles","Odometer mileage",null),
                     //2b
@@ -437,7 +457,8 @@ namespace ProductivityApp.Models
                           new Field(Field.Kinds.String,"amount","Gross proceeds from sale",null),
                           //6b
                      new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
-
+                            //6c
+                            new Field(Field.Kinds.String,"goodsDescription", "Describe the goods and services, if any, that were provided.",new Filter("6a","yes"))
                     
                 }
                 },
@@ -446,16 +467,19 @@ namespace ProductivityApp.Models
                     new Criteria{
                       Id = Guid.NewGuid(),
                        prompt = "Did you provide goods or services in exchange for the vehicle?",
+                       Order = -3,
                        Category = "6a",
                        answers = new List<Answer>
                        {
-                           new Answer("Yes","yes"),
-                           new Answer("No","no"),
+                           //MG: I switched these explicitly to test the filtering, will switch it back when everything is gtg!
+                           new Answer("Yes","yes",1),
+                           new Answer("No","no",0),
                        }
                     },
                     new Criteria() {
                         Id = Guid.NewGuid(),
                        prompt = "Donee certifies that vehicle was sold in arm's length transaction to unrelated party",
+                       Order = -1,
                        Category = "Vehicle Transaction",
                        answers = new List<Answer>
                        {
@@ -467,6 +491,7 @@ namespace ProductivityApp.Models
                         new Criteria() {
                       Id = Guid.NewGuid(),
                        prompt = "Donee certifies that vehicle will not be transferred for money, other property, or services before completion of material improvements or significant intervening use",
+                       Order = -2,
                        Category = "Transfer Information",
                        answers = new List<Answer>
                        {
@@ -497,7 +522,7 @@ namespace ProductivityApp.Models
                           new Criteria() {
                       Id = Guid.NewGuid(),
                        prompt = "Describe the goods and services, if any, that were provided. If this box is checked, donee certifies that the goods and services consisted solely of intangible religious benefits.",
-                       Category = "Charitable Contributions",
+                       Category = "Charitable Contributions",                   
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
@@ -530,31 +555,43 @@ namespace ProductivityApp.Models
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_2[0]"
                             },
                             new Assignment {
-                                inputField = "tin2",
+                                inputField = "filerTin",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_3[0]",
                             },
                             new Assignment {
-                                inputField = "name2",
+                                inputField = "filerFirstName",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_4[0]"
                             },
                             new Assignment {
-                                inputField = "address2",
+                                inputField = "filerAddress1",
                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_5[0]"
+                            },
+                            new Assignment {
+                                inputField = "filerAddress2",
+                                outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_7[0]"
                             },
                              //here is how to do a checkbox assignment
                             new Assignment {
                                 inputField ="6a",
-                                outputField = "topmostSubform[0].CopyA[0].c1_3[0]"
+                                outputField = "topmostSubform[0].CopyA[0].c1_5[0]"
                             },
                             //here is the resulting filter that is dependent on the checkbox
                             new Assignment {
                                  inputField ="barter",
-                                 outputField = "topmostSubform[0].CopyA[0].TopLeftColumn[0].f1_6[0]",
+                                 outputField = "topmostSubform[0].CopyA[0].f1_16[0]",
                                  filter = new Filter{
                                      name = "6a",
                                      value = "yes"
 
                                  }
+                            },
+                            new Assignment {
+                                inputField = "goodsDescription",
+                                outputField = "topmostSubform[0].CopyA[0].f1_17[0]",
+                                filter = new Filter {
+                                    name = "6a",
+                                    value = "yes"
+                                }
                             }
                         }
                         
@@ -565,17 +602,22 @@ namespace ProductivityApp.Models
                         kind = "pdf",
                         assignments = new List<Assignment> {
                             new Assignment {
-                                inputField= "firstname",
+                                inputField= "filerFirstName",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_1[0]"
                             },
                             new Assignment {
-                                inputField= "lastname",
+                                inputField= "filerLastName",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_2[0]"
                             },
                             new Assignment {
-                                inputField = "address2",
+                                inputField = "filerAddress1",
                                 outputField = "topmostSubform[0].Page1[0].Entity[0].f1_6[0]"
+                            },
+                             new Assignment {
+                                inputField = "filerAddress2",
+                                outputField = "topmostSubform[0].Page1[0].Entity[0].f1_8[0]"
                             }
+
                         }
                     }
                 }

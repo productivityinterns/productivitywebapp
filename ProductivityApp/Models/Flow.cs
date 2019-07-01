@@ -72,40 +72,7 @@ public class Flow {
     /// <returns></returns>
     public Flow CloneTemplate()
     {
-        Flow clonedFlow = CopyHelpers.Clone<Flow>(this);
-        //now set all guid id's to new id's. There are fancy ways to do this, but let's jsut get it done and worry about that another time. -MG
-        //we could for example tag stuff with [JsonIgnore] and then use the jsonserializers. but we might want to actually send the flow id later in json in the webapp
-
-        //we might also consider just using a combination of parent id and unique-to-this-flow but again this is probably aside from trying to get this done ASAP. Once we know the mechanics of it
-        //this gets a lot easier and we can approach it with a "I've done this before" attitude!
-        // ok, i started doing below, and it felt realy wrong, so I will try to do this in reflection. -MG
-        /*
-        clonedFlow.Id = Guid.NewGuid();
-        clonedFlow.inputSurvey.Id = Guid.NewGuid();
-        foreach(var field in clonedFlow.inputSurvey.fields)
-        {
-            field.Id = Guid.NewGuid();
-        }
-        foreach(var assignment in clonedFlow.assignments)
-        {
-            assignment.Id = Guid.NewGuid();
-            assignment.inputField.Id = Guid.NewGuid();
-        }
-        foreach(var criteria in clonedFlow.criteria)
-        {
-            criteria.Id = Guid.NewGuid();
-            foreach(var ca in criteria.answers)
-            {
-                ca.Id = Guid.NewGuid();
-            }
-        }
-        foreach(var dest in clonedFlow.destinations)
-        {
-            dest.Id = Guid.NewGuid();
-        }
-        ....that was way too wordy, see body of InitializeFlow for inefficient yet way less manual-intensive reflection method
-         */
-
+        Flow clonedFlow = CopyHelpers.Clone<Flow>(this);    
         return clonedFlow;
     }
     //Since this is an instance method, you already have the template (this object) and don't need a parameter! -MG
@@ -148,8 +115,8 @@ public class Flow {
     /// <returns></returns>
     public string GetAssignmentText(Assignment assignment){
         string theText = "";
-        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
-       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField.ToLower()).FirstOrDefault();
+        var matchingField = this.inputSurvey.fields.Where(f => f.tag != null &&  f.tag.ToLower() == assignment.inputField?.ToLower()).FirstOrDefault();
+       var matchingCriteria = this.criteria.Where(c => c.Category != null && c.Category.ToLower() == assignment.inputField?.ToLower()).FirstOrDefault();
         if(matchingField != null)
         {
             theText = matchingField.answer;

@@ -15,6 +15,7 @@
         position: absolute;
         z-index: 100;
         opacity: .8;
+        
     }
 
         .overlay input {
@@ -27,23 +28,59 @@
 
         /* The popup form - hidden by default */
         .form-popup {
-        display: none;
+         position:absolute; 
+         margin left:1em; 
+         margin right:1em
+
+        /*display: none;
         position: fixed;
         bottom: 0;
         right: 15px;
         border: 3px solid #f1f1f1;
         z-index: 9;
-        }
+        } */
+     /*  .form-popup { 
+        position:absolute; 
+        left:1em; 
+        right:1em
+      
+      /* left:1em; 
+       right:1em
+       display:inline-block;*/
+        
+      
+        
+       /* style=position: absolute;
+        left:2;
+        top:2; 
+        width:2; 
+        height:2;
+        width:100px;
+        text-align: right;
+} */
+
+       /* .form-popup {
+         position:absolute; 
+         left:1em; 
+         right:1em
+
+
+
+       /* width: 100%;
+        clear: both; 
+}  
 
         /* Add styles to the form container */
         .form-container {
+        position:absolute; 
+        margin-left:5em; 
         max-width: 300px;
         padding: 10px;
         background-color: white;
         }
 
         /* Full-width input fields */
-        .form-container input[type=text]{
+        /*.form-container input[type=text]{
         width: 100%;
         padding: 15px;
         margin: 5px 0 22px 0;
@@ -52,15 +89,15 @@
         }
 
         /* When the inputs get focus, do something */
-        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        /*.form-container input[type=text]:focus, .form-container input[type=password]:focus {
         background-color: #ddd;
         outline: none;
         }
 
         /* Add some hover effects to buttons */
-        .form-container .btn:hover, .open-button:hover {
+        /*.form-container .btn:hover, .open-button:hover {
         opacity: 1;
-        }
+        }*/
 </style>
 <div class="container">
     <div id="overlaydiv" class="overlay">

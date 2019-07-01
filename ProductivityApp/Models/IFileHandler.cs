@@ -11,4 +11,6 @@ public interface IFileHandler
     string GetActiveFormsPath();
     string SaveTemplateImage(Byte[] bytes, string fileName, Guid id);
     void SaveForm(Byte[] bytes,string fileName, Guid id, string kind);
+    string GetImagesPath();
+    void ClonePlaceHolder(string src, string dest);
 }

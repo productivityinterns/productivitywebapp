@@ -17,12 +17,14 @@ namespace ProductivityApp.Models.ViewModels
     }
      public class TemplateViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Name is required.")]
         public string name { get; set; }
         public string description { get; set; }
 
         public List<Field> fields { get; set; }
         public List<Criteria> criteria { get; set; }
+
+        [Required]
         public List<IFormFile> files { get; set; }
 
         public IFormFile image {get; set;}

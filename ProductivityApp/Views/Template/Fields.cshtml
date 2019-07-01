@@ -34,11 +34,11 @@
             <div class="form-inline">
 
                 <div class="form-group">
-                    <label>Tag</label>
+                    <label>Tag <span class="glyphicon glyphicon-info-sign" title="This is a short name used for referencing the data a user enters."></span></label>
                     <input class="form-control tag" name="Fields[@fieldCtr].tag" value="@field.tag" />
                 </div>
                 <div class="form-group">
-                    <label>Prompt</label>
+                    <label>Prompt <span class="glyphicon glyphicon-info-sign" title="This is a longer question/statement asking a user for data."></span></label>
                     <input class="form-control prompt" name="Fields[@fieldCtr].prompt" value="@field.prompt" />
                 </div>
                 <div class="form-group">
@@ -80,11 +80,11 @@
             criteriaCtr++;
             <div class="form-inline">
                 <div class="form-group">
-                    <label>Category</label>
+                    <label>Category  <span class="glyphicon glyphicon-info-sign" title="This is a short name used for referencing the data a user enters."></span></label>
                     <input class="form-control category" name="Criteria[@criteriaCtr].Category" value="@criteria.Category" />
                 </div>
                 <div class="form-group">
-                    <label>Prompt</label>
+                    <label>Prompt <span class="glyphicon glyphicon-info-sign" title="This is a longer question/statement asking a user for data."></span></label>
                     <input class="form-control prompt" name="Criteria[@criteriaCtr].Prompt" value="@criteria.prompt" />
                 </div>                
                 @{ var theAnswers = string.Join(",", criteria.answers.Select(s => s.Text).ToList());}
@@ -113,11 +113,11 @@
 
 <div id="new-field-template" style="display:none" class="form-inline">
     <div class="form-group">
-        <label>Tag</label>
+        <label>Tag <span class="glyphicon glyphicon-info-sign" title="This is a short name used for referencing the data a user enters."></span></label>
         <input class="tag form-control" name="Fields[@fieldCtr].tag" />
     </div>
     <div class="form-group">
-        <label>Prompt</label>
+        <label>Prompt <span class="glyphicon glyphicon-info-sign" title="This is a longer question/statement asking a user for data."></span></label>
         <input class="prompt form-control" name="Fields[@fieldCtr].prompt" />
     </div>
     <div class="form-group">
@@ -144,11 +144,11 @@
 
 <div id="new-criteria-template" style="display:none;" class="form-inline">
     <div class="form-group">
-        <label>Category</label>
+        <label>Category  <span class="glyphicon glyphicon-info-sign" title="This is a short name used for referencing the data a user enters."></span></label>
         <input class="category form-control" name="Criteria[@criteriaCtr].category" />
     </div>
     <div class="form-group">
-        <label>Prompt</label>
+        <label>Prompt <span class="glyphicon glyphicon-info-sign" title="This is a longer question/statement asking a user for data."></span></label>
         <input class="prompt form-control" name="Criteria[@criteriaCtr].prompt" />
     </div>
     <div class="form-group">

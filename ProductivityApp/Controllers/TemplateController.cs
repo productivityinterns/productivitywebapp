@@ -62,6 +62,10 @@ namespace ProductivityApp.Controllers
                 {
                     return NotFound();
                 }
+                //create empty lists if values are absent
+                vm.Criteria = vm.Criteria ?? new List<Criteria>();
+                vm.Fields = vm.Fields ?? new List<Field>();
+
                 //turn criteria selectedValue into a set of answers
                 foreach(var criteria in vm.Criteria)
                 {   int answerIndex = 0;

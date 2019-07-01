@@ -72,10 +72,11 @@
                         
                     </div>
                 }
-            </div>foreach
+            </div>
             <div class="form-group">
                 <div id="add-field-button" value="Add new field" class="btn btn-primary">Add new field</div>
             </div>
+           
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
@@ -106,6 +107,10 @@
                 </select>
                 <hr />
             </div>
+             <div class="form-group">
+                <div id="remove-field-button" value="delete field" class="btn btn-danger" onClick="DeleteField(this)">Delete field</div>
+            
+            </div>
 
         </div>
     </div>
@@ -117,6 +122,12 @@
     @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
         <script>
+
+
+            function DeleteField(field)
+            {
+               $(field).parent().parent().remove();
+            }
 
 
             $(function () {
@@ -134,7 +145,7 @@
                     $(clone).find(".prompt").attr("name", fieldName + ".prompt");                    
                     $(clone).show().appendTo("#fields-container");
                 })
-            });
+            });          
         </script>
 
     }

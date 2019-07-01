@@ -93,11 +93,13 @@ namespace ProductivityApp.Controllers
             return View(vm);
         }
         [HttpGet]
-        public ActionResult Assign(Guid id)
+        public ActionResult Assign(Guid id, int formNum)
         {
             var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == id);
+
+            
             //TODO: Change this later to the form being edited.
-            ViewBag.FormIndex = 0;
+            ViewBag.FormIndex = formNum;
 
             if (existingTemplate == null)
             {

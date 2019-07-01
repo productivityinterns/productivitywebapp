@@ -159,8 +159,12 @@
                                     {
                                         return (a.outputField == element.fieldName);                                                                                    
                                     });
-                                    
-                                    console.log(`Found a value : ${foundValue.inputField}`);
+                                    var blank = "";
+                                    if(foundValue) {
+                                        console.log(`Found a value : ${foundValue.inputField}`);
+                                        blank = foundValue.inputField;
+                                    }
+                                    //
                                     var widthInch = (element.rect[2]/72)-(element.rect[0]/72);
                                     var heightInch = (element.rect[3]/72)-(element.rect[1]/72);
                                     var leftDist = (element.rect[0]/72);
@@ -168,7 +172,7 @@
                                     var topDist = (10.5 - bottomDist);
                                     // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
                                     //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
-                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value="" class='assignment-input open-button' onclick='openForm(this)' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' readonly/>`;
+                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this)' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' readonly/>`;
                                     //console.log("Fieldname:"+ element.fieldName);
                                     //Figure out
                                     document.getElementById("overlay-form").append(inputTag);

@@ -63,13 +63,31 @@ namespace ProductivityApp.Controllers
                 {
                     return NotFound();
                 }
+                //turn criteria selectedValue into a set of answers
+                foreach(var criteria in vm.Criteria)
+                {   int answerIndex = 0;
+                    criteria.answers = new List<Answer>();
+                    var userInput = criteria.SelectedValue?.Split(',');
+                    foreach(var input in userInput)
+                    {
+                        criteria.answers.Add(
+                            new Answer
+                            {
+                                Id = Guid.NewGuid(),
+                                Order = answerIndex++,
+                                Text = input,
+                               value = input
 
+                            });
+                    }
+                    criteria.SelectedValue = "";
+                }
                 existingTemplate.criteria = vm.Criteria;
                 existingTemplate.inputSurvey.fields = vm.Fields;                
                 database.SaveChanges();
-                
+                return RedirectToAction("Assign", new { id = vm.Id });
             }
-            return RedirectToAction("Assign",new { id = vm.Id});
+            return View(vm);
         }
         [HttpGet]                
         public ActionResult Assign(Guid id)

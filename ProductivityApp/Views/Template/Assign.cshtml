@@ -71,7 +71,7 @@
             <!-- <label><b>Prompt</b></label> -->
 
         <label>Choose the prompt that maps to here: 
-        <input list="tags" name="tags" /></label> 
+        <input list="tags" name="tags"></label> 
         <datalist id="tags"> 
             @foreach(var field in Model.inputSurvey.fields) { 
                 <option value="@field.tag">@field.prompt</option> 
@@ -102,6 +102,7 @@
                 document.getElementById("myForm").style.position="fixed";
                 document.getElementById("myForm").style.left= pos.left.toString()+"px"; 
                 document.getElementById("myForm").style.top = (pos.top + 20).toString()+"px";
+                document.getElementsByName("tags")[0].focus();
                 document.getElementById("myForm").style.zIndex = "9999"
             }
 
@@ -160,7 +161,7 @@
                                     var topDist = (10.5 - bottomDist);
                                     // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
                                     //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
-                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value="" class='assignment-input open-button' onclick='openForm(this)' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' />`;
+                                    inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value="" class='assignment-input open-button' onclick='openForm(this)' style=' position: absolute; left: ${leftDist}in; top: ${topDist}in; width:${widthInch*1.25}in; height:${heightInch*1.25}in;' readonly/>`;
                                     //console.log("Fieldname:"+ element.fieldName);
                                     //Figure out
                                     document.getElementById("overlay-form").append(inputTag);

@@ -47,6 +47,9 @@ public class FileHandler : IFileHandler
             File.Copy(file, dest); 
         }        
     }
+    public void ClonePlaceHolder(string src, string dest) {
+        File.Copy(src,dest);
+    }
         ///<summary>
         /// THis function takes a byte array, a file, a guid, and a kind and saves the bytes as a file with
         /// this name and extention given, in a folder in the templates folder with the name of the guid

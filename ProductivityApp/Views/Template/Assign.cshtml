@@ -29,8 +29,6 @@
         .form-popup {
         display: none;
         position: fixed;
-        bottom: 0;
-        right: 15px;
         border: 3px solid #f1f1f1;
         z-index: 9;
         }
@@ -39,7 +37,7 @@
         .form-container {
         max-width: 300px;
         padding: 10px;
-        background-color: white;
+        background-color: #FFFFFC;
         }
 
         /* Full-width input fields */
@@ -96,9 +94,15 @@
             function openForm(x) {
                 console.log(x.getAttribute("data-fieldname"));
                 document.getElementById("outputTag").value = x.getAttribute("data-fieldname");
-                //TODO: In here create an assignment by grabing the output field and the tag of the input
+
+                var pos = $(x).offset();
+                console.log(pos+":"+pos.left + ":" + pos.top );
+
                 document.getElementById("myForm").style.display = "block"; 
-                
+                document.getElementById("myForm").style.position="fixed";
+                document.getElementById("myForm").style.left= pos.left.toString()+"px"; 
+                document.getElementById("myForm").style.top = (pos.top + 20).toString()+"px";
+                document.getElementById("myForm").style.zIndex = "9999"
             }
 
             function closeAndFillForm() {
@@ -115,7 +119,7 @@
 
                
             } 
-            function closForm() {
+            function closeForm() {
                 document.getElementById("myForm").style.display = "none";
                  document.getElementsByName("tags")[0].value = "";
                  return false;

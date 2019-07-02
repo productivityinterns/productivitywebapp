@@ -22,16 +22,17 @@ namespace ProductivityApp.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=flows.db");
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);  
-            
-            
+            base.OnModelCreating(builder);
+
+
         }
-        public Flow StartNewTemplate(Flow template) {
+        public Flow StartNewTemplate(Flow template)
+        {
             template.Id = Guid.NewGuid();
             Flows.Add(template);
             SaveChanges();
@@ -39,24 +40,25 @@ namespace ProductivityApp.Models
         }
         //this method is messed up, cant get it to dave to the db,
         // and the one time i got it to save to the db the forms were nulled  out
-        public Flow SaveNewTemplate(Flow template) {
+        public Flow SaveNewTemplate(Flow template)
+        {
 
             var existingFlow = Flows
-                .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
-                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
-                .Include(f=>f.criteria)
-                .Include(f=>f.destination)
+                .Include(f => f.inputSurvey).ThenInclude(f => f.fields)
+                .Include(f => f.forms).ThenInclude(f => f.assignments).ThenInclude(f => f.filter)
+                .Include(f => f.criteria)
+                .Include(f => f.destination)
                 .Where(f => f.Id == template.Id).FirstOrDefault();
 
-            if(existingFlow == null)
+            if (existingFlow == null)
             {
                 throw new ArgumentException("The specified flow does not exist.");
             }
             //fill in field answers frmo the user
-            foreach(var field in existingFlow.inputSurvey.fields)
+            foreach (var field in existingFlow.inputSurvey.fields)
             {
-                var userField = template.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();                
-                if(userField != null)
+                var userField = template.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();
+                if (userField != null)
                 {
                     field.answer = userField.answer;
                 }
@@ -66,10 +68,10 @@ namespace ProductivityApp.Models
                 }
             }
             //Fill in criteria from user input
-            foreach(var criteria in existingFlow.criteria)
+            foreach (var criteria in existingFlow.criteria)
             {
                 var userCriteria = template.criteria.Where(c => c.Category == criteria.Category).FirstOrDefault();
-                if(userCriteria != null)
+                if (userCriteria != null)
                 {
                     criteria.SelectedValue = userCriteria.SelectedValue;
                 }
@@ -78,7 +80,8 @@ namespace ProductivityApp.Models
                     criteria.SelectedValue = null;
                 }
             }
-            if(existingFlow.forms == null) {
+            if (existingFlow.forms == null)
+            {
                 existingFlow.forms = template.forms;
             }
             if (template.destination != null)
@@ -87,8 +90,8 @@ namespace ProductivityApp.Models
                 existingFlow.destination.zip = template.destination.zip;
             }
 
-            
-            SaveChanges();            
+
+            SaveChanges();
             return template;
         }
 
@@ -98,14 +101,14 @@ namespace ProductivityApp.Models
         /// </summary>
         /// <param name="template">The source template to copy</param>
         /// <returns>the newly instantiated flow</returns>
-        public Flow InitializeTemplate(Flow template,IFileHandler fileHandler)
+        public Flow InitializeTemplate(Flow template, IFileHandler fileHandler)
         {
             //get a copy of flow from the template
             var newFlow = template.initializeFlow();
 
             //copy forms from template to newFlow
-            fileHandler.InstantiateDirectory(template.Id,newFlow.Id);
-            
+            fileHandler.InstantiateDirectory(template.Id, newFlow.Id);
+
             //add the new flow to the tracked database
             Flows.Add(newFlow);
             //commit changes, must do this!
@@ -119,23 +122,23 @@ namespace ProductivityApp.Models
         ///</summary>
         public Flow SaveFlow(FlowController.FillViewModel flow)
         {
-            
+
 
             var existingFlow = Flows
-                .Include(f=>f.inputSurvey).ThenInclude(f=>f.fields)
-                .Include(f=>f.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
-                .Include(f=>f.criteria)
-                .Include(f=>f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
+                .Include(f => f.inputSurvey).ThenInclude(f => f.fields)
+                .Include(f => f.forms).ThenInclude(f => f.assignments).ThenInclude(f => f.filter)
+                .Include(f => f.criteria)
+                .Include(f => f.destination).Where(f => f.Id == flow.Id).FirstOrDefault();
 
-            if(existingFlow == null)
+            if (existingFlow == null)
             {
                 throw new ArgumentException("The specified flow does not exist.");
             }
             //fill in field answers frmo the user
-            foreach(var field in existingFlow.inputSurvey.fields)
+            foreach (var field in existingFlow.inputSurvey.fields)
             {
-                var userField = flow.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();                
-                if(userField != null)
+                var userField = flow.inputSurvey.fields.Where(f => f.Id == field.Id).FirstOrDefault();
+                if (userField != null)
                 {
                     field.answer = userField.answer;
                 }
@@ -145,10 +148,10 @@ namespace ProductivityApp.Models
                 }
             }
             //Fill in criteria from user input
-            foreach(var criteria in existingFlow.criteria)
+            foreach (var criteria in existingFlow.criteria)
             {
                 var userCriteria = flow.criteria.Where(c => c.Category == criteria.Category).FirstOrDefault();
-                if(userCriteria != null)
+                if (userCriteria != null)
                 {
                     criteria.SelectedValue = userCriteria.SelectedValue;
                 }
@@ -162,12 +165,12 @@ namespace ProductivityApp.Models
                 existingFlow.destination.EmailAddresses = flow.destination.EmailAddresses;
                 existingFlow.destination.zip = flow.destination.zip;
             }
-            
+
             SaveChanges();
             return existingFlow;
         }
         ///<summary>
-         ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
+        ///This method finds and removes a flow from the DBSet called Flows by identifying a specified GUID
         /// <param name="id">The Guid of the flow to be deleted</param>
         ///</summary>
         public void DeleteFlow(Guid Id)
@@ -176,15 +179,16 @@ namespace ProductivityApp.Models
             //flow.criteria = new List<Criteria>();
             Flows.Remove(flow);
             SaveChanges();
-            
+
         }
         ///<summary>
         /// This method gets a flow from the database by its Guid 
         /// <param name="id">The Guid of the desired flow</param>
         /// <returns>flow</returns>
         ///</summary>
-        public Flow FindFlowById(Guid Id) {
-            var flow = Flows.Where((t=>(t.Id == Id)));
+        public Flow FindFlowById(Guid Id)
+        {
+            var flow = Flows.Where((t => (t.Id == Id)));
             return flow.Single();
         }
         /// <summary>
@@ -199,11 +203,11 @@ namespace ProductivityApp.Models
             .Include(t => t.inputSurvey).ThenInclude(t => t.fields)
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
-                .Include(t=> t.forms)
+                .Include(t => t.forms)
                 //.Include(t => t.assignments).ThenInclude(t => t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
-                .Select(f=>OrderFlowItems(f)).ToList();
+                .Select(f => OrderFlowItems(f)).ToList();
 
             return forms;
         }
@@ -214,36 +218,42 @@ namespace ProductivityApp.Models
         /// <param name="submitFormViewModel"></param>
         public void UpdateFormTemplateAssignments(ViewModels.AssignSubmitViewModel submitFormViewModel)
         {
-         
-            var theForm = Flows.Include(f=>f.forms).ThenInclude(f=>f.assignments).Where(f => f.IsATemplate).SelectMany(f => f.forms).Include(f=>f.assignments).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
 
-            if(theForm == null)
+            var theForm = Flows.Include(f => f.forms).ThenInclude(f => f.assignments).Where(f => f.IsATemplate).SelectMany(f => f.forms).Include(f => f.assignments).Where(f => f.Id == submitFormViewModel.Id).FirstOrDefault();
+
+            if (theForm == null)
             {
                 throw new ArgumentOutOfRangeException("The form specified does not exist.");
             }
             //replace existing assignments if already there, or add new if not
-            foreach(var assignment in submitFormViewModel.Assignments)
-            {
-                if(theForm.assignments == null)
-                {
-                    theForm.assignments = new List<Assignment>();
-                }
-                var existingAssignment = theForm.assignments.Where(a => a.outputField == assignment.outputField).FirstOrDefault();
-                if(existingAssignment != null)
-                {
-                    existingAssignment.inputField = assignment.inputField;                    
-                }
-                else
-                {
-                    theForm.assignments.Add(new Assignment
-                    {
-                        Id = Guid.NewGuid(),
-                        inputField = assignment.inputField,
-                        outputField = assignment.outputField
-                    });
 
+            //TODO: Handle null assignment becasue a user passed in a form that is not acro
+            if (submitFormViewModel.Assignments != null)
+            {
+                foreach (var assignment in submitFormViewModel.Assignments)
+                {
+                    if (theForm.assignments == null)
+                    {
+                        theForm.assignments = new List<Assignment>();
+                    }
+                    var existingAssignment = theForm.assignments.Where(a => a.outputField == assignment.outputField).FirstOrDefault();
+                    if (existingAssignment != null)
+                    {
+                        existingAssignment.inputField = assignment.inputField;
+                    }
+                    else
+                    {
+                        theForm.assignments.Add(new Assignment
+                        {
+                            Id = Guid.NewGuid(),
+                            inputField = assignment.inputField,
+                            outputField = assignment.outputField
+                        });
+
+                    }
                 }
-            }            
+            }
+
             SaveChanges();
         }
 
@@ -253,13 +263,13 @@ namespace ProductivityApp.Models
         /// <param name="flow">An unordered(?) flow</param>
         /// <returns>The same object, with ordered items properly sorted</returns>
         public Flow OrderFlowItems(Flow form)
-        {            
-            form.criteria = form.criteria.OrderBy(c=>c.Order).ToList();
-            foreach(var criteria in form.criteria)
+        {
+            form.criteria = form.criteria.OrderBy(c => c.Order).ToList();
+            foreach (var criteria in form.criteria)
             {
-                criteria.answers = criteria.answers.OrderBy(a=>a.Order).ToList();
+                criteria.answers = criteria.answers.OrderBy(a => a.Order).ToList();
             }
-            form.inputSurvey.fields = form.inputSurvey.fields.OrderBy(f=>f.Order).ToList();
+            form.inputSurvey.fields = form.inputSurvey.fields.OrderBy(f => f.Order).ToList();
             return form;
         }
 
@@ -275,29 +285,30 @@ namespace ProductivityApp.Models
                 .Include(t => t.criteria).ThenInclude(c => c.answers)
                 .Include(t => t.destination)
                 .Include(t => t.forms).ThenInclude(f => f.assignments)
-                //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
-                //.Include(t => t.assignments).ThenInclude(t => t.outputField)
-                //.Include(t => t.assignments).ThenInclude(t => t.filter)
-                 .Select(t=>OrderFlowItems(t)).ToList();
+                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
+                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
+                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
+                 .Select(t => OrderFlowItems(t)).ToList();
         }
 
         ///<summary>
         /// This method gets the user created flows from the database
         /// <returns>Collection of flows</returns>
         ///</summary>
-        public IList<Flow> GetFlows() {
+        public IList<Flow> GetFlows()
+        {
             SaveChanges();
-            var flows = Flows.Where(t=> !t.IsATemplate) ;
-            return Flows.Where(t=>!t.IsATemplate).Include(t=>t.inputSurvey).ThenInclude(t=>t.fields)
-                .Include(t=>t.forms).ThenInclude(f=>f.assignments).ThenInclude(f=>f.filter)
-                .Include(t=>t.criteria).ThenInclude(c=>c.answers)
-                .Include(t=>t.destination)
+            var flows = Flows.Where(t => !t.IsATemplate);
+            return Flows.Where(t => !t.IsATemplate).Include(t => t.inputSurvey).ThenInclude(t => t.fields)
+                .Include(t => t.forms).ThenInclude(f => f.assignments).ThenInclude(f => f.filter)
+                .Include(t => t.criteria).ThenInclude(c => c.answers)
+                .Include(t => t.destination)
                 .Include(t => t.forms)
-                .OrderByDescending(t=>t.inputSurvey.timeCreated)
+                .OrderByDescending(t => t.inputSurvey.timeCreated)
                 //.Include(t=>t.assignments).ThenInclude(t=>t.inputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.outputField)
                 //.Include(t => t.assignments).ThenInclude(t => t.filter)
-                .Select(f=>OrderFlowItems(f))
+                .Select(f => OrderFlowItems(f))
                 .ToList();
 
         }
@@ -349,7 +360,7 @@ namespace ProductivityApp.Models
                     name = "Form 2"
                     }
                 },
-               // assignments = new List<Assignment>(),
+                // assignments = new List<Assignment>(),
                 criteria = new List<Criteria> {
                   new Criteria{
                        Id = Guid.NewGuid(),
@@ -390,7 +401,7 @@ namespace ProductivityApp.Models
                     }
                   }
               },
-                destination =  new Destination()
+                destination = new Destination()
             };
             Flow template2 = new Flow
             {
@@ -420,7 +431,7 @@ namespace ProductivityApp.Models
                 ThumbnailImage = "placeholder.jpg",
                 Id = new Guid("5710c736-f5b9-475f-9ef5-76529ea05fb0"),
                 name = "Taxes",
-                Description = "File your taxes.",                
+                Description = "File your taxes.",
                 inputSurvey = new Survey
                 {
                     Id = Guid.NewGuid(),
@@ -459,7 +470,7 @@ namespace ProductivityApp.Models
                      new Field(Field.Kinds.String,"barter","Value of goods and services provided in exchange for the vehicle",new Filter("6a", "yes")),
                             //6c
                             new Field(Field.Kinds.String,"goodsDescription", "Describe the goods and services, if any, that were provided.",new Filter("6a","yes"))
-                    
+
                 }
                 },
                 //assignments = new List<Assignment>(),
@@ -487,7 +498,7 @@ namespace ProductivityApp.Models
                            new Answer("No","no"),
                        }
                     },
-            
+
                         new Criteria() {
                       Id = Guid.NewGuid(),
                        prompt = "Donee certifies that vehicle will not be transferred for money, other property, or services before completion of material improvements or significant intervening use",
@@ -498,7 +509,7 @@ namespace ProductivityApp.Models
                            new Answer("Yes","yes"),
                            new Answer("No","no"),
                        }
-                
+
                   },  new Criteria() {
                       Id = Guid.NewGuid(),
                        prompt = "Donee certifies that vehicle is to be transferred to a needy individual for significantly below fair market value in furtherance of donee’s charitable purpose",
@@ -522,7 +533,7 @@ namespace ProductivityApp.Models
                           new Criteria() {
                       Id = Guid.NewGuid(),
                        prompt = "Describe the goods and services, if any, that were provided. If this box is checked, donee certifies that the goods and services consisted solely of intangible religious benefits.",
-                       Category = "Charitable Contributions",                   
+                       Category = "Charitable Contributions",
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
@@ -535,10 +546,10 @@ namespace ProductivityApp.Models
                        answers = new List<Answer>
                        {
                            new Answer("Yes","yes"),
-                        
+
                        }
                     },
-                  }, 
+                  },
                 destination = new Destination(),
                 forms = new List<Form> {
                     new Form {
@@ -594,7 +605,7 @@ namespace ProductivityApp.Models
                                 }
                             }
                         }
-                        
+
                     },
                     new Form {
                         name = "f1040ez",
@@ -629,6 +640,6 @@ namespace ProductivityApp.Models
 
             return templates;
         }
-        
+
     }
 }

@@ -12,13 +12,17 @@ namespace ProductivityApp.Models.ViewModels
         {
             [Required]
             public Guid Id { get; set; }
+            [Required]
             public List<Field> Fields { get; set; }
             public List<Criteria> Criteria { get; set; }
     }
      public class TemplateViewModel
     {
         [Required(ErrorMessage = "Name is required.")]
+        [StringLength(30)]
         public string name { get; set; }
+
+        [StringLength(80)]
         public string description { get; set; }
 
         public List<Field> fields { get; set; }

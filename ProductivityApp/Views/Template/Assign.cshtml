@@ -158,13 +158,13 @@
 
                 
                 myForm.style.zIndex = "1000" //don't go over the menu                
-                var left = x.offsetLeft + (myForm.clientWidth / 2);
-                var top = x.offsetTop + offset;
+                var left = x.offsetLeft;// + (x.clientWidth / 4);
+                var top = x.offsetTop + offset;// + (x.clientHeight /4 );
                 
                 myForm.style.left = `${left}px`;
                 myForm.style.top = `${top}px`;                
                 document.getElementsByName("tags")[0].focus();
-                myForm.style.left = left.toString() + "px";
+                //myForm.style.left = left.toString() + "px";
                 //myForm.style.top = top.toString() + "px";               
             }
 

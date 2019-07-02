@@ -12,6 +12,8 @@ namespace ProductivityApp.Models.ViewModels
         {
             [Required]
             public Guid Id { get; set; }
+            [Required(ErrorMessage = "At least one field must be supplied.")]
+            [MinLength(1,ErrorMessage = "At least one field must be supplied.")]
             public List<Field> Fields { get; set; }
             public List<Criteria> Criteria { get; set; }
     }

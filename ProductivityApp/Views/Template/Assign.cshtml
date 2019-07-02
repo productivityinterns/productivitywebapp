@@ -108,12 +108,16 @@
         <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
     </div>
 </div>
-<div class="container" id="canvascontainer">
+<div class="pagebody">
+   
+</div>
+<!-- Use this to duplicate new pages 2 and 3 and etc-->
+<div class="container canvascontainer" id="canvascontainertemplate" style="display:none;">
     <div id="overlaydiv" class="overlay nomargin">
         <form id="overlay-form" class="nomargin"></form>
     </div>
 
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <canvas id="canvas" width="0" height="0"></canvas>
 </div>
 <div class="row" style="vertical-align:bottom;">
 
@@ -193,75 +197,99 @@
 
                 }
                 loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[currentForm].fileName');
-                loadingtask.promise.then(function (pdf) {
+                loadingtask.promise.then(async function (pdf) {
+                    var offsetY = 0;
+                    for (var pageIndex = 1; pageIndex  < pdf.numPages; pageIndex++) {
 
-                    pdf.getPage(1).then(function (page) {
-                        var canvas = document.getElementById('canvas');
-                        viewport = page.getViewport(pdfScale)
-                        console.log("Annotations:");
+                       
+                        
+                        console.log("Before the promise");
+                        await pdf.getPage(pageIndex).then(async function (page) {
 
-                        console.log("I have a page.!");
-                        console.log("Page:" + page);
-                        console.log("Viewport");
-                        console.log(viewport);
+                            //copy the canvas template into the pagebody
+                            //and get the new ids
+                            clone = $("#canvascontainertemplate").clone(false);
+                            $(clone).find("canvas").attr("id", `canvas-${pageIndex}`);
+                            $(clone).find(".overlay").attr("id", `overlay-${pageIndex}`);
+                            $(clone).find(".overlay").find("form").attr("id", `overlay-form-${pageIndex}`);
+                            $(clone).attr('id', `template-${pageIndex}`);
+                            $(clone).show().appendTo(".pagebody");
+
+                            var canvas = document.getElementById(`canvas-${pageIndex}`);
+                            viewport = page.getViewport(pdfScale)
+                            console.log("Annotations:");
+
+                            console.log("I have a page.!");
+                            console.log("Page:" + page);
+                            console.log("Viewport");
+                            console.log(viewport);
 
 
-                        var context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        var overlayDiv = document.getElementById('overlaydiv');
-                        overlayDiv.style.height = viewport.height + "px";
-                        overlayDiv.style.width = viewport.width + "px";
+                            var context = canvas.getContext('2d');
+                            canvas.style.left = '0px';
+                            canvas.style.top = `${offsetY}px`;                            
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            var overlayDiv = document.getElementById(`overlay-${pageIndex}`);
+                            overlayDiv.style.top = `${offsetY}px`
+                            overlayDiv.style.height = viewport.height + "px";
+                            overlayDiv.style.width = viewport.width + "px";
+                         
+                            
 
-                        var container = document.getElementById('canvascontainer');
-                        container.style.height = overlayDiv.style.height;
-                        container.style.width = overlayDiv.style.width;
-                        var renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        renderTask = page.render(renderContext);
-                        renderTask.promise.then(function (err) {
-                            console.log('Page rendered');
-                            console.log(err);
-                        });
+                            var container = document.getElementById(`template-${pageIndex}`);
+                            //container.style.height = overlayDiv.style.height;
+                            //container.style.width = overlayDiv.style.width;
+                            var renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            renderTask = page.render(renderContext);
+                            renderTask.promise.then(function (err) {
+                                console.log('Page rendered');
+                                console.log(err);
+                            });
 
-                        page.getAnnotations().then(function (items) {
-                            var canvas_offset =
-                                //For each input of "tx" type, make an input box
-                                items.forEach((element) => {
-                                    if (element.fieldType = "Tx") {
-                                        //if there is a text field, create an input box in the overlay
-                                        inputTag = document.createElement('div');
-                                        inputTag.className = "nomargin";
+                            await page.getAnnotations().then(function (items) {
+                                var canvas_offset =
+                                    //For each input of "tx" type, make an input box
+                                    items.forEach((element) => {
+                                        if (element.fieldType = "Tx") {
+                                            //if there is a text field, create an input box in the overlay
+                                            inputTag = document.createElement('div');
+                                            inputTag.className = "nomargin";
 
-                                        //get the value from assignments if it exists, and put it in the field
-                                        var foundValue = assignments.find((a) => {
-                                            return (a.outputField == element.fieldName);
-                                        });
-                                        var blank = "";
-                                        if (foundValue) {
-                                            console.log(`Found a value : ${foundValue.inputField}`);
-                                            blank = foundValue.inputField;
+                                            //get the value from assignments if it exists, and put it in the field
+                                            var foundValue = assignments.find((a) => {
+                                                return (a.outputField == element.fieldName);
+                                            });
+                                            var blank = "";
+                                            if (foundValue) {
+                                                console.log(`Found a value : ${foundValue.inputField}`);
+                                                blank = foundValue.inputField;
+                                            }
+
+                                            var heightPx = (element.rect[3] - element.rect[1]) * pdfScale;
+                                            var widthPx = (element.rect[2] - element.rect[0]) * pdfScale;
+                                            var leftPx = element.rect[0] * pdfScale;
+                                            var topPx =viewport.height - (element.rect[1] * pdfScale) - heightPx;
+
+                                            // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches");
+                                            //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
+                                            inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this)' style='border: 1px solid red; position: absolute; padding: 0px; margin:0px;left: ${leftPx}px; top: ${topPx}px; width:${widthPx}px; height:${heightPx}px;' readonly/>`;
+                                            //console.log("Fieldname:"+ element.fieldName);
+                                            //Figure out
+                                            document.getElementById(`overlay-form-${pageIndex}`).append(inputTag);
                                         }
-
-                                        var heightPx = (element.rect[3] - element.rect[1]) * pdfScale;
-                                        var widthPx = (element.rect[2] - element.rect[0]) * pdfScale;
-                                        var leftPx = element.rect[0] * pdfScale;
-                                        var topPx = viewport.height - (element.rect[1] * pdfScale) - heightPx;
-
-                                        // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches");
-                                        //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
-                                        inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this)' style='border: 1px solid red; position: absolute; padding: 0px; margin:0px;left: ${leftPx}px; top: ${topPx}px; width:${widthPx}px; height:${heightPx}px;' readonly/>`;
-                                        //console.log("Fieldname:"+ element.fieldName);
-                                        //Figure out
-                                        document.getElementById("overlay-form").append(inputTag);
-                                    }
-                                });
-                            //items[0].borderStyle.width = 10;
-                            console.log(items);
+                                    });
+                                //items[0].borderStyle.width = 10;
+                                console.log(items);
+                            });
+                               //increment height offset for multiple pages.
+                            offsetY += canvas.height;
                         });
-                    });
+                        console.log("After the promise");
+                    }
                 });
 
                 //fill in assignment values into fields

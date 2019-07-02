@@ -72,16 +72,17 @@
             opacity: 1;
         }
 </style>
-<div class="form-popup" id="myForm">
-    <form class="form-container">
+<div class="form-popup" id="myForm"  onkeyup="tagsKeyUp(event)">
+    <div class="form-container">
         <h3>Assign this field</h3>
 
         <!-- <label><b>Prompt</b></label> -->
 
         <label>
             Choose the prompt that maps to here:
-            <input list="tags" name="tags">
+
         </label>
+        <input list="tags" name="tags">
         <datalist id="tags">
             @foreach (var field in Model.inputSurvey.fields)
             {
@@ -91,7 +92,7 @@
         <input type="hidden" name="outputTag" id="outputTag">
         <a class="btn btn-success btn-sm" onclick="closeAndFillForm()">Fill</a>
         <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
-    </form>
+    </div>
 </div>
 <div class="container" id="canvascontainer">
     <div id="overlaydiv" class="overlay nomargin">
@@ -114,6 +115,18 @@
     <script>
         var pdfScale = 1.5;
         var viewport = null;
+
+        //handle escape and enter presses for the fill window
+        function tagsKeyUp(evt) {
+            if (evt && evt.key == "Escape") {
+                closeForm();
+            }
+            else if (evt && evt.key == "Enter") {
+                closeAndFillForm();
+            }
+        }
+
+            //open the tags popup at the element at X, absolute to the page.
             function openForm(x) {
                 console.log(x.getAttribute("data-fieldname"));
                 document.getElementById("outputTag").value = x.getAttribute("data-fieldname");

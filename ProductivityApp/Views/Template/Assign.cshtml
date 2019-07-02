@@ -145,7 +145,7 @@
         }
 
             //open the tags popup at the element at X, absolute to the page.
-            function openForm(x) {
+            function openForm(x,offset) {
                 console.log(x.getAttribute("data-fieldname"));
                 document.getElementById("outputTag").value = x.getAttribute("data-fieldname");
                 var myForm = document.getElementById("myForm");                
@@ -156,7 +156,7 @@
                 
                 myForm.style.zIndex = "1000" //don't go over the menu                
                 var left = x.offsetLeft + (myForm.clientWidth / 2);
-                var top = x.offsetTop;
+                var top = x.offsetTop + offset;
                 
                 myForm.style.left = `${left}px`;
                 myForm.style.top = `${top}px`;                
@@ -250,8 +250,7 @@
                                 console.log(err);
                             });
 
-                            await page.getAnnotations().then(function (items) {
-                                var canvas_offset =
+                            await page.getAnnotations().then(function (items) {                                
                                     //For each input of "tx" type, make an input box
                                     items.forEach((element) => {
                                         if (element.fieldType = "Tx") {
@@ -276,7 +275,7 @@
 
                                             // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches");
                                             //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
-                                            inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this)' style='border: 1px solid red; position: absolute; padding: 0px; margin:0px;left: ${leftPx}px; top: ${topPx}px; width:${widthPx}px; height:${heightPx}px;' readonly/>`;
+                                            inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this,${offsetY})' style='border: 1px solid red; position: absolute; padding: 0px; margin:0px;left: ${leftPx}px; top: ${topPx}px; width:${widthPx}px; height:${heightPx}px;' readonly/>`;
                                             //console.log("Fieldname:"+ element.fieldName);
                                             //Figure out
                                             document.getElementById(`overlay-form-${pageIndex}`).append(inputTag);

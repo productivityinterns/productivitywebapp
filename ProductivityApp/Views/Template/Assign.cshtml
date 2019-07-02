@@ -20,10 +20,9 @@
         position: absolute;
         z-index: 100;
         opacity: .8;
-        
     }
-    .nomargin
-    {
+
+    .nomargin {
         margin: 0 0 0 0;
         padding: 0 0 0 0;
     }
@@ -32,72 +31,74 @@
         position: relative;
     }
 
-        /*  ---------------------- Popup style sheet  -------------------------------------  */
+    /*  ---------------------- Popup style sheet  -------------------------------------  */
 
-        {box-sizing: border-box;}
+    {
+        box-sizing: border-box;
+    }
 
-        /* The popup form - hidden by default */
-        .form-popup {
+    /* The popup form - hidden by default */
+    .form-popup {
         display: none;
-        position: fixed;
+        position: absolute;
         border: 3px solid #f1f1f1;
         z-index: 9;
-        }
+    }
 
-        /* Add styles to the form container */
-        .form-container {
+    /* Add styles to the form container */
+    .form-container {
         max-width: 300px;
         padding: 10px;
         background-color: #FFFFFC;
-        }
+    }
 
         /* Full-width input fields */
-        .form-container input[type=text]{
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
+        .form-container input[type=text] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            border: none;
+            background: #f1f1f1;
         }
 
-        /* When the inputs get focus, do something */
-        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-        }
+            /* When the inputs get focus, do something */
+            .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+                background-color: #ddd;
+                outline: none;
+            }
 
         /* Add some hover effects to buttons */
         .form-container .btn:hover, .open-button:hover {
-        opacity: 1;
+            opacity: 1;
         }
 </style>
+<div class="form-popup" id="myForm">
+    <form class="form-container">
+        <h3>Assign this field</h3>
 
+        <!-- <label><b>Prompt</b></label> -->
+
+        <label>
+            Choose the prompt that maps to here:
+            <input list="tags" name="tags">
+        </label>
+        <datalist id="tags">
+            @foreach (var field in Model.inputSurvey.fields)
+            {
+                <option value="@field.tag">@field.prompt</option>
+            }
+        </datalist>
+        <input type="hidden" name="outputTag" id="outputTag">
+        <a class="btn btn-success btn-sm" onclick="closeAndFillForm()">Fill</a>
+        <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
+    </form>
+</div>
 <div class="container" id="canvascontainer">
     <div id="overlaydiv" class="overlay nomargin">
         <form id="overlay-form" class="nomargin"></form>
     </div>
-    <div class="form-popup" id="myForm">
-        <form class="form-container">
-            <h3>Assign this field</h3>
 
-            <!-- <label><b>Prompt</b></label> -->
-
-            <label>
-                Choose the prompt that maps to here:
-                <input list="tags" name="tags">
-            </label>
-            <datalist id="tags">
-                @foreach (var field in Model.inputSurvey.fields)
-                {
-                    <option value="@field.tag">@field.prompt</option>
-                }
-            </datalist>
-            <input type="hidden" name="outputTag" id="outputTag">
-            <a class="btn btn-success btn-sm" onclick="closeAndFillForm()">Fill</a>
-            <a class="btn btn-danger btn-sm" onclick="closeForm()">Close</a>
-        </form>
-    </div>
-    <canvas id="canvas" width="500" height="500"></canvas>    
+    <canvas id="canvas" width="500" height="500"></canvas>
 </div>
 <div class="row" style="vertical-align:bottom;">
 
@@ -109,23 +110,28 @@
     <script src="~/lib/pdf.js/pdf.js"></script>
     <script src="~/lib/pdf.js/pdf.worker.js"></script>
 
-    
+
     <script>
         var pdfScale = 1.5;
         var viewport = null;
             function openForm(x) {
                 console.log(x.getAttribute("data-fieldname"));
                 document.getElementById("outputTag").value = x.getAttribute("data-fieldname");
+                var myForm = document.getElementById("myForm");                
+                
+                myForm.style.display = "block";
+                myForm.style.position="absolute";
 
-                var pos = $(x).offset();
-                console.log(pos+":"+pos.left + ":" + pos.top );
-
-                document.getElementById("myForm").style.display = "block"; 
-                document.getElementById("myForm").style.position="fixed";
-                document.getElementById("myForm").style.left= pos.left.toString()+"px"; 
-                document.getElementById("myForm").style.top = (pos.top + 20).toString()+"px";
+                
+                myForm.style.zIndex = "9999"                
+                var left = x.offsetLeft + (myForm.clientWidth / 2);
+                var top = x.offsetTop;
+                
+                myForm.style.left = `${left}px`;
+                myForm.style.top = `${top}px`;                
                 document.getElementsByName("tags")[0].focus();
-                document.getElementById("myForm").style.zIndex = "9999"
+                myForm.style.left = left.toString() + "px";
+                //myForm.style.top = top.toString() + "px";               
             }
 
             function closeAndFillForm() {
@@ -138,16 +144,16 @@
                 console.log(out);
                  document.getElementsByName("tags")[0].value = "";
                 return false;
-                //TODO: Grab take intag and assign it to the box 
+                //TODO: Grab take intag and assign it to the box
 
-               
-            } 
+
+            }
             function closeForm() {
                 document.getElementById("myForm").style.display = "none";
                  document.getElementsByName("tags")[0].value = "";
                  return false;
-               
-            } 
+
+            }
             document.addEventListener('DOMContentLoaded', function()
             {
             //put existing values from this assignment into a obj map
@@ -158,21 +164,21 @@
                     @:assignments.push(assignemnt);
 
 
-                }                                
+                }
                 loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[currentForm].fileName');
                 loadingtask.promise.then(function (pdf) {
-                    
+
                     pdf.getPage(1).then(function (page) {
                         var canvas = document.getElementById('canvas');
-                        viewport = page.getViewport(pdfScale)                        
-                        console.log("Annotations:");                       
+                        viewport = page.getViewport(pdfScale)
+                        console.log("Annotations:");
 
                         console.log("I have a page.!");
                         console.log("Page:" + page);
                         console.log("Viewport");
                         console.log(viewport);
 
-                        
+
                         var context = canvas.getContext('2d');
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
@@ -217,7 +223,7 @@
                                         var leftPx = element.rect[0] * pdfScale;
                                         var topPx = viewport.height - (element.rect[1] * pdfScale) - heightPx;
 
-                                        // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches"); 
+                                        // console.log("WIDTH: "+ element.fieldName+ " :: "+widthInch + " inches");
                                         //console.log("HEIGHT: "+ element.fieldName+ " :: "+heightInch + " inches");  -->
                                         inputTag.innerHTML = `<input type='text'  data-fieldname='${element.fieldName}' value='${blank}' class='assignment-input open-button' onclick='openForm(this)' style='border: 1px solid red; position: absolute; padding: 0px; margin:0px;left: ${leftPx}px; top: ${topPx}px; width:${widthPx}px; height:${heightPx}px;' readonly/>`;
                                         //console.log("Fieldname:"+ element.fieldName);
@@ -233,6 +239,10 @@
 
                 //fill in assignment values into fields
                 //TODO: Iterate through assignments and fill back in what we can
+
+                //get total and current forms into js
+                var totalForms = @totalForms;
+                var currentForm = @currentForm;
 
                 //jquery stuff for submitting the form
                 $(function () {
@@ -260,7 +270,14 @@
                             data: form,
                             success: function () {
                                 console.log("It worked.");
-                                window.location = "/Flow";
+                                //increment the form if any are left.
+                                if (currentForm >= (totalForms - 1)) {
+                                    window.location = "/Flow";
+                                }
+                                else {
+                                    window.location = "/Template/Assign/?id=@Model.Id&formNum=@(currentForm+1)";
+                                }
+
                             }, error: function (err) {
                                 console.log(err);
                             }

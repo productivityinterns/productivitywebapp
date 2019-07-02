@@ -102,6 +102,9 @@ namespace ProductivityApp.Controllers
         public IActionResult About() {
             return View();
         }
+        public IActionResult Help() {
+            return View();
+        }
         [HttpGet]
         public IActionResult Create() {
             return RedirectToAction("create","template");

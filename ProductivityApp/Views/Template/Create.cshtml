@@ -8,7 +8,7 @@
         <div class="form-group">
                 <label data-val-required="This is required">Name your workflow:</label>
                 <span asp-validation-for="name" class="text-danger"></span>
-                <input class="form-control" type="text" name="name" value="@Model.name" />
+                <input class="form-control" type="text" name="name" value="@Model.name" maxlength="30" />
                 <label>Describe your workflow:</label>
                 <input class="form-control" type="text" name="Description" value="@Model.description" maxlength="80" />
         </div>

@@ -54,28 +54,52 @@ namespace ProductivityApp.Controllers
         [HttpPost]
         public ActionResult Fields(TemplateFieldsViewModel vm)
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == vm.Id);
 
-                if (existingTemplate == null)
+                if(existingTemplate == null)
                 {
                     return NotFound();
                 }
+                //create empty lists if values are absent
+                vm.Criteria = vm.Criteria ?? new List<Criteria>();
+                vm.Fields = vm.Fields ?? new List<Field>();
 
+                //turn criteria selectedValue into a set of answers
+                foreach(var criteria in vm.Criteria)
+                {   int answerIndex = 0;
+                    criteria.answers = new List<Answer>();
+                    var userInput = criteria.SelectedValue?.Split(',');
+                    foreach(var input in userInput)
+                    {
+                        criteria.answers.Add(
+                            new Answer
+                            {
+                                Id = Guid.NewGuid(),
+                                Order = answerIndex++,
+                                Text = input,
+                               value = input
+
+                            });
+                    }
+                    criteria.SelectedValue = "";
+                }
                 existingTemplate.criteria = vm.Criteria;
-                existingTemplate.inputSurvey.fields = vm.Fields;
+                existingTemplate.inputSurvey.fields = vm.Fields;                
                 database.SaveChanges();
-
+                return RedirectToAction("Assign", new { id = vm.Id });
             }
-            return RedirectToAction("Assign", new { id = vm.Id });
+            return View(vm);
         }
         [HttpGet]
-        public ActionResult Assign(Guid id)
+        public ActionResult Assign(Guid id, int formNum)
         {
             var existingTemplate = database.GetTemplates().FirstOrDefault(t => t.Id == id);
+
+            
             //TODO: Change this later to the form being edited.
-            ViewBag.FormIndex = 0;
+            ViewBag.FormIndex = formNum;
 
             if (existingTemplate == null)
             {

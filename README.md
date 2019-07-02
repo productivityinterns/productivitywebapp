@@ -1,5 +1,9 @@
-# productivitywebapp
-A webapp for increasing productivity when filling out forms
+# Scryber  
+Scryber is a webapp for increasing productivity, and decreasing the amount of time spent repetitively filling out the same information in different places, over and over again. Scryber allows users to create a template once, and be able to fill in that process in a matter of minutes many times moving forward.  
+
+Scryber has the capability to print your data directly to fillable PDF documents with an intuituve data mapping system and allows you to map repetivie data entry to many documents instantly.  
+
+There is now no need to type out your name, address, date, compnay name, etc... everytime you fill out a generic expense report or other business document, once the template is created, all you need to do is enter the information once!
 
 ## Building  
 Navigate to the directory containing the project solution file and build:  

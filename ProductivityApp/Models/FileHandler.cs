@@ -176,6 +176,9 @@ public class FileHandler : IFileHandler
         var fPath = "";
         if(isTemplate) {
             fPath = GetActiveTemplatesPath();
+            var imagePath = GetImagesPath();
+            imagePath = Path.Combine(imagePath,(id.ToString() + ".jpg"));
+            File.Delete(imagePath);
         } else {
             fPath = GetActiveFormsPath();
         }

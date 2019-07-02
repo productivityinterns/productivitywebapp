@@ -98,6 +98,10 @@
             {
                 <option value="@field.tag">@field.prompt</option>
             }
+            @foreach (var criterion in Model.criteria) 
+            {
+                <option value="@criterion.Category">@criterion.prompt</option>
+            }
         </datalist>
         <input type="hidden" name="outputTag" id="outputTag">
         <a class="btn btn-success btn-sm" onclick="closeAndFillForm()">Fill</a>

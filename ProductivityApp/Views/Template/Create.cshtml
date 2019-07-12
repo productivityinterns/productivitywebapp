@@ -27,7 +27,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-        $('[data-val-required]').after('<span style="color:red; font-size: 20px; vertical-align: middle;"> *</span>');
+        $('[data-val-required]').after('<span style="color:red; font-size: 20px; vertical-align: middle;"> *This Field is Required</span>');
         function test(b) {
             if(b) {
               //  alert("Ya done messed up");

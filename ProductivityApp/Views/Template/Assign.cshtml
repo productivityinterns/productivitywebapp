@@ -207,7 +207,7 @@
                 loadingtask =  pdfjsLib.getDocument('/forms/templateForms/@Model.Id/@Model.forms[currentForm].fileName');
                 loadingtask.promise.then(async function (pdf) {
                     var offsetY = 0;
-                    for (var pageIndex = 1; pageIndex  < pdf.numPages; pageIndex++) {
+                    for (var pageIndex = 1; pageIndex  <= pdf.numPages; pageIndex++) {
 
                        
                         
